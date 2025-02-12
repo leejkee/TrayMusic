@@ -4,3 +4,6 @@ build/
 .vscode/
 # MacOS Cache
 .DS_Store
+# CLion cache
+cmake-build-debug/
+.idea/
