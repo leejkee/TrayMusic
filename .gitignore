@@ -7,3 +7,4 @@ build/
 # CLion cache
 cmake-build-debug/
 .idea/
+CMakeLists.txt.user

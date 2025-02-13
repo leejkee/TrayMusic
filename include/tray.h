@@ -1,6 +1,6 @@
 #ifndef TRAY_H
 #define TRAY_H
-#include <QDialog>
+#include <QMainWindow>
 #include <QSystemTrayIcon>
 
 QT_BEGIN_NAMESPACE
@@ -17,7 +17,7 @@ class QAction;
 
 QT_END_NAMESPACE
 
-class Window final : public QDialog {
+class Window final : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -36,7 +36,7 @@ private:
     void createActions();
     void createTrayIconMenu();
 
-
+    QWidget* centralWidget;
     QGroupBox* iconGroupBox;
     QLabel* iconLabel;
     QComboBox* iconComboBox;

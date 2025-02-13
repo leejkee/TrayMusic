@@ -15,8 +15,7 @@
 #include <QVBoxLayout>
 #include <QCloseEvent>
 #include <QMessageBox>
-#include <QShowEvent>
-#include <QDebug>
+
 
 Window::Window() {
     createIconGroupBox();
@@ -31,10 +30,13 @@ Window::Window() {
     connect(this->showIconCheckBox, &QCheckBox::toggled, systemTrayIcon,
             &QSystemTrayIcon::setVisible);
 
+    centralWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(iconGroupBox);
     mainLayout->addWidget(messageGroupBox);
-    setLayout(mainLayout);
+    centralWidget->setLayout(mainLayout);
+    setCentralWidget(centralWidget);
+
     iconComboBox->setCurrentIndex(1);
     systemTrayIcon->show();
     setWindowTitle(tr("Tray"));
@@ -171,7 +173,7 @@ void Window::setVisible(bool visible) {
     minimizeAction->setEnabled(visible);
     maximizeAction->setEnabled(!isMaximized());
     restoreAction->setEnabled(isMaximized() || !visible);
-    QDialog::setVisible(visible);
+    QMainWindow::setVisible(visible);
 }
 
 void Window::closeEvent(QCloseEvent *event) {

@@ -17,7 +17,7 @@
         "CMAKE_MAKE_PROGRAM": "C:/Qt/Tools/Ninja/ninja.exe"
       },
       "environment": {
-        "PATH": "C:/Qt/6.8.0/mingw_64/bin;${sourceDir}/bin"
+        "PATH": "C:/Qt/6.8.0/mingw_64/bin;${sourceDir}/bin;C:/Qt/6.8.0/mingw_64/lib"
       }
     }
   ],
