@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QMessageBox>
-
-#include "tray.h"
+#include <QSystemTrayIcon>
+#include "MainWindow.h"
 
 int main(int argc, char** argv)
 {
@@ -14,8 +14,8 @@ int main(int argc, char** argv)
             return 1;
         // Otherwise "lurk": if a system tray is started later, the icon will appear.
     }
-    // QApplication::setQuitOnLastWindowClosed(false);
-    Window w;
+    QApplication::setQuitOnLastWindowClosed(false);
+    MainWindow w;
     w.show();
     return app.exec();
 }
