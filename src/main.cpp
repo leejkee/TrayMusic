@@ -14,7 +14,7 @@ int main(int argc, char** argv)
             return 1;
         // Otherwise "lurk": if a system tray is started later, the icon will appear.
     }
-    QApplication::setQuitOnLastWindowClosed(false);
+    // QApplication::setQuitOnLastWindowClosed(false);
     MainWindow w;
     w.show();
     return app.exec();

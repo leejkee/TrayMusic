@@ -4,16 +4,21 @@
 
 #include "MainWindow.h"
 #include <QApplication>
+#include <QAudioOutput>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QSystemTrayIcon>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QPushButton>
+#include <QLabel>
 #include "TrayUI.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-      , ui(new TrayUI) {
+      , ui(new TrayUI)
+    , m_player(new Player){
     CWidget = new QWidget(this);
     setCentralWidget(CWidget);
     ui->setupUI(this);
@@ -23,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
     delete ui;
+    delete m_player;
 }
 
 void MainWindow::createConnect() {
@@ -44,6 +50,19 @@ void MainWindow::createConnect() {
     });
 
     connect(ui->showIconCheckBox, &QCheckBox::toggled, ui->systemTrayIcon, &QSystemTrayIcon::setVisible);
+    connect(ui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
+        if (const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Mp3"),"", tr("Mp3 Files (*.mp3)")); fileName.isEmpty()) {
+            return;
+        }
+        else {
+            m_player->loadMusic(QUrl::fromLocalFile(fileName));
+            ui->labelSongName->setText(fileName);
+        }
+    });
+
+    connect(ui->pushButtonPlay, &QPushButton::clicked, this, [this]() {
+        m_player->playToggle();
+    });
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

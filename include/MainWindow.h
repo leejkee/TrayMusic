@@ -5,6 +5,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
+#include "Player.h"
 class TrayUI;
 
 class MainWindow : public QMainWindow {
@@ -22,6 +23,7 @@ private:
     void setVisible(bool visible) override;
     QWidget *CWidget;
     TrayUI *ui;
+    Player *m_player;
 };
 
 

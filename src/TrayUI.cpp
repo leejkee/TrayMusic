@@ -9,48 +9,29 @@
 #include <QPushButton>
 #include <QSystemTrayIcon>
 #include <QVBoxLayout>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 
 TrayUI::TrayUI() {
 }
 
-/// You should calls the function QMainWindow::setCentralWidget() before you use this function
+/// You should call the function QMainWindow::setCentralWidget() before you use this function
 /// @param parent the pointer to MainWindow
 void TrayUI::setupUI(QMainWindow *parent) {
     createIconGroupBox();
-    createMessageGroupBox();
+    createMusicPlayerGroupBox();
     createActions(parent);
     createTrayIconMenu(parent);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(iconGroupBox);
-    mainLayout->addWidget(messageGroupBox);
+    mainLayout->addWidget(musicPlayerGroupBox);
     QWidget* parentPtr = parent->centralWidget();
     if (parentPtr != nullptr) {
         parentPtr->setLayout(mainLayout);
     }
 }
 
-// Window::Window() {
-//     createIconGroupBox();
-//     createMessageGroupBox();
-//     createActions();
-//     createTrayIconMenu();
-//     connect(iconComboBox, &QComboBox::currentIndexChanged, this,
-//             &Window::setIcon);
-//     connect(this->showIconCheckBox, &QCheckBox::toggled, systemTrayIcon,
-//             &QSystemTrayIcon::setVisible);
-//
-//     centralWidget = new QWidget(this);
-//     QVBoxLayout *mainLayout = new QVBoxLayout;
-//     mainLayout->addWidget(iconGroupBox);
-//     mainLayout->addWidget(messageGroupBox);
-//     centralWidget->setLayout(mainLayout);
-//     setCentralWidget(centralWidget);
-//
-//     iconComboBox->setCurrentIndex(1);
-//     systemTrayIcon->show();
-//     setWindowTitle(tr("Tray"));
-// }
 
 void TrayUI::createIconGroupBox() {
     iconGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", ("Tray Icon")));
@@ -71,8 +52,18 @@ void TrayUI::createIconGroupBox() {
     iconGroupBox->setLayout(iconLayout);
 }
 
-void TrayUI::createMessageGroupBox() {
-    messageGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", "Music Player"));
+void TrayUI::createMusicPlayerGroupBox() {
+    musicPlayerGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", "Music Player"));
+    pushButtonPlay = new QPushButton(QCoreApplication::translate("TrayUI", "Play"));
+    pushButtonPlay->setCheckable(true);
+    pushButtonPlay->setAutoExclusive(true);
+    labelSongName = new QLabel(QCoreApplication::translate("TrayUI", "Song Name"));
+    pushButtonLoadFile = new QPushButton(QCoreApplication::translate("TrayUI", "Load File"));
+    QGridLayout *Layout = new QGridLayout;
+    Layout->addWidget(pushButtonLoadFile, 0, 0, 1, 1);
+    Layout->addWidget(pushButtonPlay, 0, 1, 1, 1);
+    Layout->addWidget(labelSongName, 1, 0, 1, 2);
+    musicPlayerGroupBox->setLayout(Layout);
 }
 
 void TrayUI::createActions(QWidget* parent) {

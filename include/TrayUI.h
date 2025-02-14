@@ -1,5 +1,6 @@
 #ifndef TRAYUI_H
 #define TRAYUI_H
+#include <QMediaPlayer>
 
 class QGroupBox;
 class QLabel;
@@ -10,7 +11,8 @@ class QAction;
 class QSystemTrayIcon;
 class QWidget;
 class QMainWindow;
-
+class QMediaPlayer;
+class QPushButton;
 class TrayUI {
 public:
     TrayUI();
@@ -21,7 +23,7 @@ public:
     QLabel* iconLabel;
     QComboBox* iconComboBox;
     QCheckBox* showIconCheckBox;
-    QGroupBox *messageGroupBox;
+    QGroupBox *musicPlayerGroupBox;
     QAction* minimizeAction;
     QAction* maximizeAction;
     QAction* restoreAction;
@@ -29,12 +31,15 @@ public:
     QSystemTrayIcon *systemTrayIcon;
     QMenu *trayIconMenu;
 
+    QPushButton *pushButtonPlay;
+    QLabel *labelSongName;
+    QPushButton *pushButtonLoadFile;
+
 private:
     void createIconGroupBox();
-    void createMessageGroupBox();
+    void createMusicPlayerGroupBox();
     void createActions(QWidget *parent);
     void createTrayIconMenu(QWidget *parent);
-
 };
 
 #endif

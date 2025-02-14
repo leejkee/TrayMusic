@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Gui Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia)
 
 file(GLOB_RECURSE PROJECT_SOURCES
         "src/*.cpp"
@@ -26,9 +26,8 @@ qt_add_executable(TrayMusic
 )
 
 target_link_libraries(TrayMusic PRIVATE
-        Qt6::Core
         Qt6::Widgets
-        Qt6::Gui
+        Qt6::Multimedia
 )
 
 set_target_properties(TrayMusic PROPERTIES
