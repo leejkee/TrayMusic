@@ -34,6 +34,7 @@ public:
     QPushButton *pushButtonPlay;
     QLabel *labelSongName;
     QPushButton *pushButtonLoadFile;
+    QPushButton *pushButtonSetVolume;
 
 private:
     void createIconGroupBox();

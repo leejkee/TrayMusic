@@ -7,27 +7,35 @@
 
 class QMediaPlayer;
 class QAudioOutput;
-class Player
-{
-  public:
-    Player();
-    ~Player();
 
-    void loadMusic(const QUrl& mp3Url);
+class Player final : public QObject {
+    Q_OBJECT
+
+public:
+    Player();
+
+    ~Player() override;
+
+    void loadMusic(const QUrl &mp3Url);
+
     void volumeUp();
+
     void volumeDown();
+
     void volumeSet(float volume);
+
     void playToggle();
+
     void muteToggle();
+
     [[nodiscard]] bool playStatus() const;
 
-  private:
-    QMediaPlayer *player;
-    QAudioOutput *audioOut;
-    bool isPlay;
-    float volume;
-
-
-
+private:
+    QMediaPlayer *m_player;
+    QAudioOutput *m_audioOut;
+    bool m_isPlay;
+    float m_volume;
+Q_SIGNALS:
+    void playStatusChanged(bool isPlay);
 };
 #endif //PLAYER_H

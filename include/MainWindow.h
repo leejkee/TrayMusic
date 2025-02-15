@@ -8,14 +8,14 @@
 #include "Player.h"
 class TrayUI;
 
-class MainWindow : public QMainWindow {
-
+class MainWindow final : public QMainWindow {
+Q_OBJECT
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
 
 private:

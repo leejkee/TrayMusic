@@ -55,10 +55,11 @@ void TrayUI::createIconGroupBox() {
 void TrayUI::createMusicPlayerGroupBox() {
     musicPlayerGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", "Music Player"));
     pushButtonPlay = new QPushButton(QCoreApplication::translate("TrayUI", "Play"));
-    pushButtonPlay->setCheckable(true);
-    pushButtonPlay->setAutoExclusive(true);
+    // pushButtonPlay->setCheckable(true);
+    // pushButtonPlay->setAutoExclusive(true);
     labelSongName = new QLabel(QCoreApplication::translate("TrayUI", "Song Name"));
     pushButtonLoadFile = new QPushButton(QCoreApplication::translate("TrayUI", "Load File"));
+
     QGridLayout *Layout = new QGridLayout;
     Layout->addWidget(pushButtonLoadFile, 0, 0, 1, 1);
     Layout->addWidget(pushButtonPlay, 0, 1, 1, 1);

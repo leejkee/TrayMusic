@@ -4,60 +4,60 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include "Player.h"
-#include <QFileDialog>
 
 Player::Player()
-    : player(new QMediaPlayer)
-      , audioOut(new QAudioOutput)
-      , isPlay(false)
-      , volume(0.3) {
-    player->setAudioOutput(audioOut);
-    audioOut->setVolume(volume);
+    : m_player(new QMediaPlayer)
+      , m_audioOut(new QAudioOutput)
+      , m_isPlay(false)
+      , m_volume(0.3) {
+    m_player->setAudioOutput(m_audioOut);
+    m_audioOut->setVolume(m_volume);
 }
 
 Player::~Player() {
-    delete player;
-    delete audioOut;
+    delete m_player;
+    delete m_audioOut;
 }
 
 void Player::loadMusic(const QUrl &mp3Url) {
-    player->setSource(mp3Url);
+    m_player->setSource(mp3Url);
 }
 
 void Player::volumeUp() {
-    volume = (volume == 1 ? 1 : (volume + static_cast<float>(0.2)));
-    audioOut->setVolume(volume);
+    m_volume = (m_volume == 1 ? 1 : (m_volume + static_cast<float>(0.2)));
+    m_audioOut->setVolume(m_volume);
 }
 
 void Player::volumeDown() {
-    volume = (volume == 0 ? 0 : (volume - static_cast<float>(0.2)));
-    audioOut->setVolume(volume);
+    m_volume = (m_volume == 0 ? 0 : (m_volume - static_cast<float>(0.2)));
+    m_audioOut->setVolume(m_volume);
 }
 
 void Player::volumeSet(const float volume) {
-    audioOut->setVolume(volume);
+    m_audioOut->setVolume(volume);
 }
 
 void Player::muteToggle() {
-    if (volume == 0) {
+    if (m_volume == 0) {
         volumeUp();
         return;
     }
-    volume = 0;
-    volumeSet(volume);
+    m_volume = 0;
+    volumeSet(m_volume);
 }
 
 
 void Player::playToggle() {
-    if (isPlay == true) {
-        player->play();
-        isPlay = false;
+    if (m_isPlay != true) {
+        m_player->play();
+        m_isPlay = true;
     } else {
-        player->pause();
-        isPlay = true;
+        m_player->pause();
+        m_isPlay = false;
     }
+    emit playStatusChanged(m_isPlay);
 }
 
 bool Player::playStatus() const {
-    return this->isPlay;
+    return this->m_isPlay;
 }

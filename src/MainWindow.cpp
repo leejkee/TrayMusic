@@ -63,6 +63,15 @@ void MainWindow::createConnect() {
     connect(ui->pushButtonPlay, &QPushButton::clicked, this, [this]() {
         m_player->playToggle();
     });
+
+    connect(m_player, &Player::playStatusChanged, this, [this](const bool isPlaying) {
+        if (isPlaying) {
+            ui->pushButtonPlay->setText("Pause");
+        }
+        else {
+            ui->pushButtonPlay->setText("Play");
+        }
+    });
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
