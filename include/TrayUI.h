@@ -20,10 +20,9 @@ public:
 
 
     QGroupBox* iconGroupBox;
-    QLabel* iconLabel;
-    QComboBox* iconComboBox;
+    QPushButton *pushButtonLoadFile;
     QCheckBox* showIconCheckBox;
-    QGroupBox *musicPlayerGroupBox;
+
     QAction* minimizeAction;
     QAction* maximizeAction;
     QAction* restoreAction;
@@ -31,10 +30,18 @@ public:
     QSystemTrayIcon *systemTrayIcon;
     QMenu *trayIconMenu;
 
+    QGroupBox *musicPlayerGroupBox;
     QPushButton *pushButtonPlay;
     QLabel *labelSongName;
-    QPushButton *pushButtonLoadFile;
+    QPushButton *pushButtonPre;
+    QPushButton *pushButtonNext;
     QPushButton *pushButtonSetVolume;
+    const QString trayIconSVG;
+    const QString playIconSVG;
+    const QString pauseIconSVG;
+    const QString preIconSVG;
+    const QString nextIconSVG;
+
 
 private:
     void createIconGroupBox();

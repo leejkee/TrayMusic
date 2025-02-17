@@ -3,20 +3,60 @@
 //
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QDir>
 #include "Player.h"
 
-Player::Player()
+
+Player::Player(const QStringList& list)
     : m_player(new QMediaPlayer)
       , m_audioOut(new QAudioOutput)
       , m_isPlay(false)
       , m_volume(0.3) {
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
+    if (!list.isEmpty()) {
+        for (const auto& it : list) {
+            QDir dir(it);
+            QStringList files = dir.entryList(QDir::Files);
+            for (const auto& file : files) {
+                m_musicList.append(dir.absoluteFilePath(file));
+            }
+        }
+        m_currentMusicIt = m_musicList.begin();
+        loadMusic(QUrl::fromLocalFile(*m_currentMusicIt));
+    }
+}
+
+void Player::setPlayStatus(const bool playStatus) {
+    if (playStatus != m_isPlay) {
+        m_isPlay = playStatus;
+        emit playStatusChanged(m_isPlay);
+    }
 }
 
 Player::~Player() {
     delete m_player;
     delete m_audioOut;
+}
+
+void Player::nextMusic() {
+    if (m_currentMusicIt == m_musicList.end()) {
+        m_currentMusicIt = m_musicList.begin();
+    }
+    ++m_currentMusicIt;
+    emit currentMusicChanged(*m_currentMusicIt);
+    loadMusic(*m_currentMusicIt);
+    m_player->play();
+}
+
+void Player::previousMusic() {
+    if (m_currentMusicIt == m_musicList.begin()) {
+        m_currentMusicIt = m_musicList.end();
+    }
+    --m_currentMusicIt;
+    emit currentMusicChanged(*m_currentMusicIt);
+    loadMusic(*m_currentMusicIt);
+    m_player->play();
 }
 
 void Player::loadMusic(const QUrl &mp3Url) {
@@ -50,14 +90,9 @@ void Player::muteToggle() {
 void Player::playToggle() {
     if (m_isPlay != true) {
         m_player->play();
-        m_isPlay = true;
+        setPlayStatus(true);
     } else {
         m_player->pause();
-        m_isPlay = false;
+        setPlayStatus(false);
     }
-    emit playStatusChanged(m_isPlay);
-}
-
-bool Player::playStatus() const {
-    return this->m_isPlay;
 }

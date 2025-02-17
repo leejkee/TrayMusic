@@ -1,7 +1,9 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
-   <file>images/bad.png</file>
-   <file>images/heart.png</file>
-   <file>images/trash.png</file>
+   <file>images/icon.svg</file>
+   <file>images/play.svg</file>
+   <file>images/pause.svg</file>
+   <file>images/pre.svg</file>
+   <file>images/next.svg</file>
 </qresource>
 </RCC>

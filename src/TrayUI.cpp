@@ -9,11 +9,15 @@
 #include <QPushButton>
 #include <QSystemTrayIcon>
 #include <QVBoxLayout>
-#include <QMediaPlayer>
-#include <QAudioOutput>
 
 
-TrayUI::TrayUI() {
+TrayUI::TrayUI()
+    : trayIconSVG(":images/icon.svg")
+    , playIconSVG(":/images/play.svg")
+    , pauseIconSVG(":/images/pause.svg")
+    , preIconSVG(":/images/pre.svg")
+    , nextIconSVG(":/images/next.svg")
+{
 }
 
 /// You should call the function QMainWindow::setCentralWidget() before you use this function
@@ -26,7 +30,7 @@ void TrayUI::setupUI(QMainWindow *parent) {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(iconGroupBox);
     mainLayout->addWidget(musicPlayerGroupBox);
-    QWidget* parentPtr = parent->centralWidget();
+    QWidget *parentPtr = parent->centralWidget();
     if (parentPtr != nullptr) {
         parentPtr->setLayout(mainLayout);
     }
@@ -35,39 +39,36 @@ void TrayUI::setupUI(QMainWindow *parent) {
 
 void TrayUI::createIconGroupBox() {
     iconGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", ("Tray Icon")));
-
-    iconLabel = new QLabel(QCoreApplication::translate("TrayUI", ("Icon:")));
-    iconComboBox = new QComboBox;
-    iconComboBox->addItem(QIcon(":/images/bad.png"), QCoreApplication::translate("TrayUI", ("Bad")));
-    iconComboBox->addItem(QIcon(":/images/heart.png"), QCoreApplication::translate("TrayUI", ("Heart")));
-    iconComboBox->addItem(QIcon(":/images/trash.png"), QCoreApplication::translate("TrayUI", ("Trash")));
     showIconCheckBox = new QCheckBox(QCoreApplication::translate("TrayUI", "Show icon"));
     showIconCheckBox->setChecked(true);
+    pushButtonLoadFile = new QPushButton(QCoreApplication::translate("TrayUI", "Load File"));
 
     QHBoxLayout *iconLayout = new QHBoxLayout;
-    iconLayout->addWidget(iconLabel);
-    iconLayout->addWidget(iconComboBox);
-    iconLayout->addStretch();
     iconLayout->addWidget(showIconCheckBox);
+    iconLayout->addStretch();
+    iconLayout->addWidget(pushButtonLoadFile);
     iconGroupBox->setLayout(iconLayout);
 }
 
 void TrayUI::createMusicPlayerGroupBox() {
     musicPlayerGroupBox = new QGroupBox(QCoreApplication::translate("TrayUI", "Music Player"));
-    pushButtonPlay = new QPushButton(QCoreApplication::translate("TrayUI", "Play"));
-    // pushButtonPlay->setCheckable(true);
-    // pushButtonPlay->setAutoExclusive(true);
+    pushButtonPlay = new QPushButton(QIcon(playIconSVG), "");
     labelSongName = new QLabel(QCoreApplication::translate("TrayUI", "Song Name"));
-    pushButtonLoadFile = new QPushButton(QCoreApplication::translate("TrayUI", "Load File"));
+    pushButtonPre = new QPushButton(QIcon(preIconSVG), "");
+    pushButtonNext = new QPushButton(QIcon(nextIconSVG), "");
+    pushButtonPlay->setEnabled(false);
+    pushButtonNext->setEnabled(false);
+    pushButtonPre->setEnabled(false);
 
     QGridLayout *Layout = new QGridLayout;
-    Layout->addWidget(pushButtonLoadFile, 0, 0, 1, 1);
-    Layout->addWidget(pushButtonPlay, 0, 1, 1, 1);
-    Layout->addWidget(labelSongName, 1, 0, 1, 2);
+    Layout->addWidget(labelSongName, 0, 0, 1, 3);
+    Layout->addWidget(pushButtonPlay, 1, 1, 1, 1);
+    Layout->addWidget(pushButtonNext, 1, 2, 1, 1);
+    Layout->addWidget(pushButtonPre, 1, 0, 1, 1);
     musicPlayerGroupBox->setLayout(Layout);
 }
 
-void TrayUI::createActions(QWidget* parent) {
+void TrayUI::createActions(QWidget *parent) {
     minimizeAction = new QAction(QCoreApplication::translate("TrayUI", "Minimize"), parent);
     maximizeAction = new QAction(QCoreApplication::translate("TrayUI", "Maximize"), parent);
     restoreAction = new QAction(QCoreApplication::translate("TrayUI", "Restore"), parent);
@@ -85,10 +86,8 @@ void TrayUI::createTrayIconMenu(QWidget *parent) {
     systemTrayIcon = new QSystemTrayIcon(parent);
     systemTrayIcon->setContextMenu(trayIconMenu);
 
-    const auto icon = iconComboBox->itemIcon(iconComboBox->currentIndex());
+    const auto icon = QIcon(trayIconSVG);
     systemTrayIcon->setIcon(icon);
     parent->setWindowIcon(icon);
-    systemTrayIcon->setToolTip(iconComboBox->itemText(iconComboBox->currentIndex()));
+    systemTrayIcon->setToolTip("Tray Music");
 }
-
-

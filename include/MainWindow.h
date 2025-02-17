@@ -19,11 +19,20 @@ protected:
 
 
 private:
+    void initMainApplication();
     void createConnect();
     void setVisible(bool visible) override;
-    QWidget *CWidget;
-    TrayUI *ui;
+
+
+void loadSettings();
+    QWidget *m_centralWidget;
+    TrayUI *m_gui;
     Player *m_player;
+
+public Q_SLOTS:
+    void setPlayButtonIcon(bool play);
+    void changeMusicLabelName(const QString& name);
+
 };
 
 
