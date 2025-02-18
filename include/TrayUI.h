@@ -1,6 +1,8 @@
 #ifndef TRAYUI_H
 #define TRAYUI_H
-#include <QMediaPlayer>
+#include <QLabel>
+#include <QSlider>
+#include <QPushButton>
 
 class QGroupBox;
 class QLabel;
@@ -13,12 +15,11 @@ class QWidget;
 class QMainWindow;
 class QMediaPlayer;
 class QPushButton;
+
 class TrayUI {
 public:
     TrayUI();
     void setupUI(QMainWindow *parent);
-
-
     QGroupBox* iconGroupBox;
     QPushButton *pushButtonLoadFile;
     QCheckBox* showIconCheckBox;
@@ -32,15 +33,20 @@ public:
 
     QGroupBox *musicPlayerGroupBox;
     QPushButton *pushButtonPlay;
-    QLabel *labelSongName;
+    QLabel *labelMusicFileName;
     QPushButton *pushButtonPre;
     QPushButton *pushButtonNext;
-    QPushButton *pushButtonSetVolume;
-    const QString trayIconSVG;
-    const QString playIconSVG;
-    const QString pauseIconSVG;
-    const QString preIconSVG;
-    const QString nextIconSVG;
+    QWidget *volumeControlWidget;
+    QPushButton *volumeCtrlButton;
+    QSlider *volumeSlider;
+
+    static const QString trayIconSVG;
+    static const QString playIconSVG;
+    static const QString pauseIconSVG;
+    static const QString preIconSVG;
+    static const QString nextIconSVG;
+    static const QString volumeSVG;
+    static const QString volumeMuteSVG;
 
 
 private:

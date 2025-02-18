@@ -15,9 +15,7 @@ file(GLOB_RECURSE PROJECT_SOURCES
         "include/*.h"
         "res/*.qrc"
 )
-file(GLOB_RECURSE UI_FILES
-        "ui/*.ui"
-)
+
 include_directories("include")
 
 qt_add_executable(TrayMusic
@@ -32,7 +30,6 @@ target_link_libraries(TrayMusic PRIVATE
 
 set_target_properties(TrayMusic PROPERTIES
         WIN32_EXECUTABLE TRUE
-        MACOSX_BUNDLE TRUE
 )
 
 include(GNUInstallDirs)

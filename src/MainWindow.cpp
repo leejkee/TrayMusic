@@ -2,7 +2,6 @@
 // Created by cww on 25-2-13.
 //
 
-#include "MainWindow.h"
 #include <QApplication>
 #include <QAudioOutput>
 #include <QCheckBox>
@@ -10,15 +9,17 @@
 #include <QSystemTrayIcon>
 #include <QCloseEvent>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QPushButton>
 #include <QLabel>
+
+#include "MainWindow.h"
 #include "TrayUI.h"
+#include "Player.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_centralWidget(new QWidget(this))
-      , m_gui(new TrayUI)
+    , m_gui(new TrayUI)
 {
     initMainApplication();
 }
@@ -41,11 +42,11 @@ void MainWindow::initMainApplication() {
     m_gui->setupUI(this);
     createConnect();
     m_gui->systemTrayIcon->show();
-    m_gui->labelSongName->setText(m_player->currentMusic());
+    m_gui->labelMusicFileName->setText(m_player->currentMusic());
     m_gui->pushButtonPlay->setEnabled(true);
     m_gui->pushButtonNext->setEnabled(true);
     m_gui->pushButtonPre->setEnabled(true);
-    this->setWindowIcon(QIcon(":/images/icon.svg"));
+    this->setWindowIcon(QIcon(TrayUI::trayIconSVG));
 }
 
 void MainWindow::createConnect() {
@@ -77,10 +78,35 @@ void MainWindow::createConnect() {
         m_player->playToggle();
     });
 
-    connect(m_player, &Player::playStatusChanged, this, &MainWindow::setPlayButtonIcon);
 
+    connect(m_player, &Player::playStatusChanged, this, &MainWindow::setPlayButtonIcon);
     connect(m_player, &Player::currentMusicChanged, this, &MainWindow::changeMusicLabelName);
+    connect(m_gui->volumeSlider, &QSlider::valueChanged, m_player, &Player::setVolume);
+    connect(m_player, &Player::volumeChanged, this, [this](const int v) {
+        if (v != 0) {
+            this->m_gui->volumeCtrlButton->setIcon(QIcon(TrayUI::volumeSVG));
+        }
+        else {
+            this->m_gui->volumeCtrlButton->setIcon(QIcon(TrayUI::volumeMuteSVG));
+        }
+    });
+    connect(m_gui->volumeCtrlButton, &QPushButton::clicked, this, [this]() {
+        if (m_player->getVolume() == 0) {
+            m_player->setVolume(m_gui->volumeSlider->value());
+        }
+        else {
+            m_player->setVolume(0);
+        }
+    });
+
+    connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
+        QPoint pos = m_gui->volumeCtrlButton->pos() + QPoint(m_gui->volumeCtrlButton->width(), 0);
+        m_gui->volumeControlWidget->move(pos);
+        m_gui->volumeControlWidget->show();
+        // 不可信，控件不能随着主窗口移动
+    });
 }
+
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (!event->spontaneous() || !isVisible())
@@ -103,18 +129,33 @@ void MainWindow::setVisible(const bool visible) {
     QMainWindow::setVisible(visible);
 }
 
-void MainWindow::setPlayButtonIcon(bool play) {
+void MainWindow::setPlayButtonIcon(const bool play) {
     if (play) {
-        m_gui->pushButtonPlay->setIcon(QIcon(m_gui->pauseIconSVG));
+        m_gui->pushButtonPlay->setIcon(QIcon(TrayUI::pauseIconSVG));
     }
     else {
-        m_gui->pushButtonPlay->setIcon(QIcon(m_gui->playIconSVG));
+        m_gui->pushButtonPlay->setIcon(QIcon(TrayUI::playIconSVG));
     }
 }
 
 void MainWindow::changeMusicLabelName(const QString& name) {
     if (!name.isEmpty()) {
-        m_gui->labelSongName->setText(name);
+        const auto label = name.right(name.size() - name.lastIndexOf('/') - 1);
+        m_gui->labelMusicFileName->setText(label);
     }
 }
+
+// void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+//     if (m_gui->volumeCtrlButton->geometry().contains(event->pos())) {
+//         QPoint pos = m_gui->volumeCtrlButton->pos() + QPoint(m_gui->volumeCtrlButton->width(), 0);
+//         m_gui->volumeControlWidget->move(pos);
+//         m_gui->volumeControlWidget->show();
+//     }
+// }
+//
+// void MainWindow::mouseLeaveEvent(QMouseEvent *event) {
+//     if (!m_gui->volumeCtrlButton->geometry().contains(event->pos())) {
+//         m_gui->volumeControlWidget->hide();
+//     }
+// }
 

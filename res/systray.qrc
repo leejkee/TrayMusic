@@ -5,5 +5,7 @@
    <file>images/pause.svg</file>
    <file>images/pre.svg</file>
    <file>images/next.svg</file>
+   <file>images/high-volume.svg</file>
+   <file>images/no-volume.svg</file>
 </qresource>
 </RCC>

@@ -11,7 +11,7 @@ class QAudioOutput;
 class Player final : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool playStatus READ playStatus WRITE setPlayStatus NOTIFY playStatusChanged)
-    // Q_PROPERTY(QStringList currentMusic READ currentMusic WRITE setCurrentMusic NOTIFY currentMusicChanged)
+    Q_PROPERTY(int volume READ getVolume WRITE setVolume NOTIFY volumeChanged)
 
 
 public:
@@ -21,17 +21,16 @@ public:
 
     void loadMusic(const QUrl &mp3Url);
 
-    void volumeUp();
-
-    void volumeDown();
-
-    void volumeSet(float volume);
+    void setVolume(int volume);
+    [[nodiscard]] float getVolume() const;
 
     void playToggle();
 
-    void muteToggle();
 
-    [[nodiscard]] QString currentMusic() const { return *m_currentMusicIt; };
+    [[nodiscard]] QString currentMusic() const {
+        return m_currentMusicIt->right(
+            m_currentMusicIt->size() - m_currentMusicIt->lastIndexOf("/") - 1);
+    };
 
     [[nodiscard]] bool playStatus() const { return m_isPlay; };
 
@@ -41,7 +40,6 @@ private:
     QMediaPlayer *m_player;
     QAudioOutput *m_audioOut;
     QStringList::iterator m_currentMusicIt;
-    // QString m_currentMusic;
     QStringList m_musicList;
     bool m_isPlay;
     float m_volume;
@@ -51,9 +49,13 @@ Q_SIGNALS:
 
     void currentMusicChanged(QString currentMusic);
 
+    void volumeChanged(int volume);
+
 public Q_SLOTS:
     void nextMusic();
 
     void previousMusic();
+
+    // void muteToggle();
 };
 #endif //PLAYER_H

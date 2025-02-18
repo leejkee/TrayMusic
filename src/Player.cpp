@@ -47,6 +47,7 @@ void Player::nextMusic() {
     emit currentMusicChanged(*m_currentMusicIt);
     loadMusic(*m_currentMusicIt);
     m_player->play();
+    setPlayStatus(true);
 }
 
 void Player::previousMusic() {
@@ -57,34 +58,31 @@ void Player::previousMusic() {
     emit currentMusicChanged(*m_currentMusicIt);
     loadMusic(*m_currentMusicIt);
     m_player->play();
+    setPlayStatus(true);
 }
 
 void Player::loadMusic(const QUrl &mp3Url) {
     m_player->setSource(mp3Url);
 }
 
-void Player::volumeUp() {
-    m_volume = (m_volume == 1 ? 1 : (m_volume + static_cast<float>(0.2)));
-    m_audioOut->setVolume(m_volume);
-}
-
-void Player::volumeDown() {
-    m_volume = (m_volume == 0 ? 0 : (m_volume - static_cast<float>(0.2)));
-    m_audioOut->setVolume(m_volume);
-}
-
-void Player::volumeSet(const float volume) {
-    m_audioOut->setVolume(volume);
-}
-
-void Player::muteToggle() {
-    if (m_volume == 0) {
-        volumeUp();
-        return;
+void Player::setVolume(int volume) {
+    if (volume > 100) {
+        volume = 100;
     }
-    m_volume = 0;
-    volumeSet(m_volume);
+    else if (volume < 0) {
+        volume = 0;
+    }
+    if (const float v = static_cast<float>(volume) / 100.0f; v != m_volume) {
+        m_audioOut->setVolume(v);
+        m_volume = v;
+        emit volumeChanged(volume);
+    }
 }
+
+float Player::getVolume() const {
+    return m_volume;
+}
+
 
 
 void Player::playToggle() {
@@ -96,3 +94,12 @@ void Player::playToggle() {
         setPlayStatus(false);
     }
 }
+
+// void Player::muteToggle() {
+//     if (m_volume == 0) {
+//         setVolume(30);
+//     }
+//     else {
+//         setVolume(0);
+//     }
+// }
