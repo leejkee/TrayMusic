@@ -5,157 +5,158 @@
 #include <QApplication>
 #include <QAudioOutput>
 #include <QCheckBox>
-#include <QComboBox>
-#include <QSystemTrayIcon>
 #include <QCloseEvent>
+#include <QComboBox>
+#include <QMenu>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QLabel>
-
+#include <QSystemTrayIcon>
 #include "MainWindow.h"
-#include "TrayUI.h"
+#include <QGroupBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "Player.h"
+#include "Assets.h"
+#include "IconWidget.h"
+#include "PlayerWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , m_centralWidget(new QWidget(this))
-    , m_gui(new TrayUI)
-{
-    initMainApplication();
+    : QMainWindow(parent), m_centralWidget(new QWidget(this)) {
+  initMainApplication();
+
 }
 
 MainWindow::~MainWindow() {
-    delete m_gui;
-    delete m_player;
+  delete m_player;
 }
 
 void MainWindow::loadSettings() {
-    QStringList musicPathList;
-    musicPathList.append("C:/Users/cww/Music/lostgrace");
-    m_player = new Player(musicPathList);
+  QStringList musicPathList;
+  musicPathList.append("C:/Users/cww/Music/lostgrace");
+  m_player = new Player(musicPathList);
 }
 
-
 void MainWindow::initMainApplication() {
-    loadSettings();
-    setCentralWidget(m_centralWidget);
-    m_gui->setupUI(this);
-    createConnect();
-    m_gui->systemTrayIcon->show();
-    m_gui->labelMusicFileName->setText(m_player->currentMusic());
-    m_gui->pushButtonPlay->setEnabled(true);
-    m_gui->pushButtonNext->setEnabled(true);
-    m_gui->pushButtonPre->setEnabled(true);
-    this->setWindowIcon(QIcon(TrayUI::trayIconSVG));
+  loadSettings();
+  setCentralWidget(m_centralWidget);
+  initTray();
+  m_iconWidget = new IconWidget(m_centralWidget);
+  m_playerWidget = new PlayerWidget(m_centralWidget);
+  createConnect();
+  m_playerWidget->changeMusicName(m_player->currentMusic());
+  m_playerWidget->setButtonVisible(true);
+  const auto layout = new QVBoxLayout;
+  layout->addWidget(m_iconWidget);
+  layout->addWidget(m_playerWidget);
+  m_centralWidget->setLayout(layout);
+
+  this->setWindowIcon(QIcon(Res::trayIconSVG));
 }
 
 void MainWindow::createConnect() {
-    // quit the application
-    connect(m_gui->quitAction, &QAction::triggered, qApp, &QApplication::quit);
+  // quit the application
+  connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
-    // resize the main window
-    connect(m_gui->maximizeAction, &QAction::triggered, this, &MainWindow::showMaximized);
-    connect(m_gui->minimizeAction, &QAction::triggered, this, &MainWindow::hide);
-    connect(m_gui->restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
+  // resize the main window
+  connect(maximizeAction, &QAction::triggered, this, &MainWindow::showMaximized);
 
-    connect(m_gui->showIconCheckBox, &QCheckBox::toggled, m_gui->systemTrayIcon, &QSystemTrayIcon::setVisible);
+  connect(minimizeAction, &QAction::triggered, this, &MainWindow::hide);
 
-    // play music
-    // connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
-    //     if (const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Mp3"),"", tr("Mp3 Files (*.mp3)")); fileName.isEmpty()) {
-    //         return;
-    //     }
-    //     else {
-    //         m_player->loadMusic(QUrl::fromLocalFile(fileName));
-    //         m_gui->labelSongName->setText(fileName);
-    //     }
-    // });
+  connect(restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
 
-    connect(m_gui->pushButtonNext, &QPushButton::clicked, m_player, &Player::nextMusic);
-    connect(m_gui->pushButtonPre, &QPushButton::clicked, m_player, &Player::previousMusic);
+  connect(m_iconWidget->showIconCheckBox, &QCheckBox::toggled, systemTrayIcon, &QSystemTrayIcon::setVisible);
 
-    connect(m_gui->pushButtonPlay, &QPushButton::clicked, this, [this]() {
-        m_player->playToggle();
-    });
+  // play music
+  // connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
+  //     if (const QString fileName = QFileDialog::getOpenFileName(this,
+  //     tr("Open Mp3"),"", tr("Mp3 Files (*.mp3)")); fileName.isEmpty()) {
+  //         return;
+  //     }
+  //     else {
+  //         m_player->loadMusic(QUrl::fromLocalFile(fileName));
+  //         m_gui->labelSongName->setText(fileName);
+  //     }
+  // });
 
+  connect(m_playerWidget->pushButtonNext, &QPushButton::clicked, m_player,
+          &Player::nextMusic);
 
-    connect(m_player, &Player::playStatusChanged, this, &MainWindow::setPlayButtonIcon);
-    connect(m_player, &Player::currentMusicChanged, this, &MainWindow::changeMusicLabelName);
-    connect(m_gui->volumeSlider, &QSlider::valueChanged, m_player, &Player::setVolume);
-    connect(m_player, &Player::volumeChanged, this, [this](const int v) {
-        if (v != 0) {
-            this->m_gui->volumeCtrlButton->setIcon(QIcon(TrayUI::volumeSVG));
-        }
-        else {
-            this->m_gui->volumeCtrlButton->setIcon(QIcon(TrayUI::volumeMuteSVG));
-        }
-    });
-    connect(m_gui->volumeCtrlButton, &QPushButton::clicked, this, [this]() {
-        if (m_player->getVolume() == 0) {
-            m_player->setVolume(m_gui->volumeSlider->value());
-        }
-        else {
-            m_player->setVolume(0);
-        }
-    });
+  connect(m_playerWidget->pushButtonPre, &QPushButton::clicked, m_player,
+          &Player::previousMusic);
 
-    connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
-        QPoint pos = m_gui->volumeCtrlButton->pos() + QPoint(m_gui->volumeCtrlButton->width(), 0);
-        m_gui->volumeControlWidget->move(pos);
-        m_gui->volumeControlWidget->show();
-        // 不可信，控件不能随着主窗口移动
-    });
+  connect(m_playerWidget->pushButtonPlay, &QPushButton::clicked, m_player, &Player::playToggle);
+
+  connect(m_player, &Player::playStatusChanged, m_playerWidget, &PlayerWidget::setPlayButtonIcon);
+
+  connect(m_player, &Player::currentMusicChanged, this, &MainWindow::changeMusicLabelName);
+
+  connect(m_playerWidget->volumeSlider, &QSlider::valueChanged, m_player, &Player::setVolume);
+
+  connect(m_player, &Player::volumeChanged, m_playerWidget , &PlayerWidget::setVolumeCtrlButtonIcon);
+
+  connect(m_playerWidget->volumeCtrlButton, &QPushButton::clicked, this, [this]() {
+    if (m_player->getVolume() == 0) {
+      m_player->setVolume(m_playerWidget->volumeSlider->value());
+    } else {
+      m_player->setVolume(0);
+    }
+  });
+
+  // connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
+  //   QPoint pos = m_gui->volumeCtrlButton->pos() +
+  //                QPoint(m_gui->volumeCtrlButton->width(), 0)
+  //   m_gui->volumeControlWidget->move(pos);
+  //   m_gui->volumeControlWidget->show();
+  // });
 }
 
-
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if (!event->spontaneous() || !isVisible())
-        return;
-    if (m_gui->systemTrayIcon->isVisible()) {
-        QMessageBox::information(this, tr("Tray"), tr(
-                                     "The program will keep running in the "
-                                     "system tray. To terminate the program, "
-                                     "choose <b>Quit</b> in the context menu "
-                                     "of the system tray entry."));
-        this->hide();
-        event->ignore();
-    }
+  if (!event->spontaneous() || !isVisible())
+    return;
+  if (systemTrayIcon->isVisible()) {
+    QMessageBox::information(this, tr("Tray"),
+                             tr("The program will keep running in the "
+                                "system tray. To terminate the program, "
+                                "choose <b>Quit</b> in the context menu "
+                                "of the system tray entry."));
+    this->hide();
+    event->ignore();
+  }
 }
 
 void MainWindow::setVisible(const bool visible) {
-    m_gui->restoreAction->setEnabled(isMaximized() || !visible);
-    m_gui->minimizeAction->setEnabled(visible);
-    m_gui->maximizeAction->setEnabled(!isMaximized());
-    QMainWindow::setVisible(visible);
+  restoreAction->setEnabled(isMaximized() || !visible);
+  minimizeAction->setEnabled(visible);
+  maximizeAction->setEnabled(!isMaximized());
+  QMainWindow::setVisible(visible);
 }
 
-void MainWindow::setPlayButtonIcon(const bool play) {
-    if (play) {
-        m_gui->pushButtonPlay->setIcon(QIcon(TrayUI::pauseIconSVG));
-    }
-    else {
-        m_gui->pushButtonPlay->setIcon(QIcon(TrayUI::playIconSVG));
-    }
+
+void MainWindow::changeMusicLabelName(const QString &name) {
+  if (!name.isEmpty()) {
+    const auto label = name.right(name.size() - name.lastIndexOf('/') - 1);
+    m_playerWidget->labelMusicFileName->setText(label);
+  }
 }
 
-void MainWindow::changeMusicLabelName(const QString& name) {
-    if (!name.isEmpty()) {
-        const auto label = name.right(name.size() - name.lastIndexOf('/') - 1);
-        m_gui->labelMusicFileName->setText(label);
-    }
+void MainWindow::initTray() {
+  trayIconMenu = new QMenu(this);
+  systemTrayIcon = new QSystemTrayIcon(this);
+  minimizeAction = new QAction(QCoreApplication::translate("TrayUI", "Minimize"), this);
+  maximizeAction = new QAction(QCoreApplication::translate("TrayUI", "Maximize"), this);
+  restoreAction = new QAction(QCoreApplication::translate("TrayUI", "Restore"), this);
+  quitAction = new QAction(QCoreApplication::translate("TrayUI", "Quit"), this);
+  trayIconMenu->addAction(minimizeAction);
+  trayIconMenu->addAction(maximizeAction);
+  trayIconMenu->addAction(restoreAction);
+  trayIconMenu->addSeparator();
+  trayIconMenu->addAction(quitAction);
+  systemTrayIcon->setContextMenu(trayIconMenu);
+  const auto icon = QIcon(Res::trayIconSVG);
+  systemTrayIcon->setIcon(icon);
+  this->setWindowIcon(icon);
+  systemTrayIcon->setToolTip("Tray Music");
+  systemTrayIcon->show();
 }
 
-// void MainWindow::mouseMoveEvent(QMouseEvent *event) {
-//     if (m_gui->volumeCtrlButton->geometry().contains(event->pos())) {
-//         QPoint pos = m_gui->volumeCtrlButton->pos() + QPoint(m_gui->volumeCtrlButton->width(), 0);
-//         m_gui->volumeControlWidget->move(pos);
-//         m_gui->volumeControlWidget->show();
-//     }
-// }
-//
-// void MainWindow::mouseLeaveEvent(QMouseEvent *event) {
-//     if (!m_gui->volumeCtrlButton->geometry().contains(event->pos())) {
-//         m_gui->volumeControlWidget->hide();
-//     }
-// }
 

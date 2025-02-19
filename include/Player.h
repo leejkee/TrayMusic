@@ -24,8 +24,6 @@ public:
     void setVolume(int volume);
     [[nodiscard]] float getVolume() const;
 
-    void playToggle();
-
 
     [[nodiscard]] QString currentMusic() const {
         return m_currentMusicIt->right(
@@ -56,6 +54,7 @@ public Q_SLOTS:
 
     void previousMusic();
 
+    void playToggle();
     // void muteToggle();
 };
 #endif //PLAYER_H

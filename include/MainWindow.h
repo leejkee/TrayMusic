@@ -5,9 +5,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
-#include "Player.h"
-class TrayUI;
 
+class Player;
+class IconWidget;
+class PlayerWidget;
+class QSystemTrayIcon;
+class TrayUI;
 class MainWindow final : public QMainWindow {
 Q_OBJECT
 public:
@@ -25,14 +28,22 @@ private:
     void createConnect();
     void setVisible(bool visible) override;
 
+    QAction* minimizeAction;
+    QAction* maximizeAction;
+    QAction* restoreAction;
+    QAction* quitAction;
+    QSystemTrayIcon *systemTrayIcon;
+    QMenu *trayIconMenu;
 
-void loadSettings();
+    void initTray();
+    void loadSettings();
     QWidget *m_centralWidget;
     TrayUI *m_gui;
     Player *m_player;
+    IconWidget *m_iconWidget;
+    PlayerWidget *m_playerWidget;
 
 public Q_SLOTS:
-    void setPlayButtonIcon(bool play);
     void changeMusicLabelName(const QString& name);
 
 };
