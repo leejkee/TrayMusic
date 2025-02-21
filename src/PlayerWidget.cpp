@@ -6,8 +6,12 @@
 #include <QCoreApplication>
 #include <QPushButton>
 #include <QLabel>
+#include <QMenu>
 #include <QVBoxLayout>
 #include <QSlider>
+#include <QStackedLayout>
+#include <QWidgetAction>
+#include <QToolButton>
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
@@ -20,28 +24,37 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     pushButtonPlay->setEnabled(false);
     pushButtonNext->setEnabled(false);
     pushButtonPre->setEnabled(false);
-    volumeCtrlButton = new QPushButton(QIcon(Res::volumeSVG), "");
-    volumeCtrlButton->setFixedSize(30, 30);
 
-    volumeSlider = new QSlider(Qt::Vertical);
-    volumeSlider->setRange(0, 100);
-    volumeSlider->setValue(30);
+    // VolumeCtrl Section Begin
+    volumeWidget = new VolumeWidget(this);
+    pushButtonVolume = new QPushButton(this);
+    pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
+    pushButtonVolume->setFixedSize(30, 30);
+    menuVolume = new QMenu(this);
+    QWidgetAction *action = new QWidgetAction(this);
+    action->setDefaultWidget(volumeWidget);
+    menuVolume->addAction(action);
+    pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");
+    connect(pushButtonVolume, &QPushButton::clicked, this, [this]() {
+        show();
+    });
+    // VolumeCtrl Section End
 
     QVBoxLayout *Layout = new QVBoxLayout;
     QSpacerItem *spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
-    QSpacerItem *spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    Layout->addItem(spaceV);
+    // QSpacerItem *spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    // Layout->addItem(spaceV);
     Layout->addWidget(labelMusicFileName);
     const auto buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(pushButtonPre);
     buttonLayout->addWidget(pushButtonPlay);
     buttonLayout->addWidget(pushButtonNext);
     buttonLayout->addItem(spaceH);
-    buttonLayout->addWidget(volumeCtrlButton);
-    // buttonLayout->addWidget(volumeSlider);
+    buttonLayout->addWidget(pushButtonVolume);
     Layout->addLayout(buttonLayout);
     this->setLayout(Layout);
 }
+
 
 void PlayerWidget::setPlayButtonIcon(const bool playStatus) {
     if (playStatus) {
@@ -53,10 +66,11 @@ void PlayerWidget::setPlayButtonIcon(const bool playStatus) {
 
 void PlayerWidget::setVolumeCtrlButtonIcon(const int volume) {
     if (volume != 0) {
-        volumeCtrlButton->setIcon(QIcon(Res::volumeSVG));
-    }
-    else {
-        volumeCtrlButton->setIcon(QIcon(Res::volumeMuteSVG));
+        pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
+        volumeWidget->buttonMute->setIcon(QIcon(Res::volumeSVG));
+    } else {
+        pushButtonVolume->setIcon(QIcon(Res::volumeMuteSVG));
+        volumeWidget->buttonMute->setIcon(QIcon(Res::volumeMuteSVG));
     }
 }
 
@@ -71,3 +85,38 @@ void PlayerWidget::setButtonVisible(const bool b) {
 }
 
 
+VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
+    sliderV = new QSlider(this);
+    sliderV->setRange(0, 100);
+    sliderV->setValue(30);
+    labelVolume = new QLabel(this);
+    labelVolume->setText("30%");
+    labelVolume->setStyleSheet("font-size: 7pt;");
+    labelVolume->setAlignment(Qt::AlignCenter);
+    connect(sliderV, &QSlider::valueChanged, labelVolume, [=]() {
+        labelVolume->setText(QString("%1%").arg(sliderV->value()));
+    });
+    buttonMute = new QPushButton(QIcon(Res::volumeSVG), "", this);
+    buttonMute->setIconSize(QSize(10, 10));
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(sliderV);
+    layout->addWidget(labelVolume);
+    layout->addWidget(buttonMute);
+    layout->setContentsMargins(5, 5, 0, 0);
+    setLayout(layout);
+    this->setFixedSize(30, 100);
+}
+
+void PlayerWidget::show() {
+    if (menuVolume->isVisible()) {
+        menuVolume->hide();
+        qDebug() << "Menu hide";
+    } else {
+        QPoint pos = pushButtonVolume->mapToGlobal(QPoint(0, 0));
+        pos.setY(pos.y() - menuVolume->sizeHint().height());
+        pos.setX(pos.x() - 5);
+        menuVolume->popup(pos);
+        qDebug() << "Menu show";
+    }
+}
