@@ -6,8 +6,6 @@
 #define PLAYERUI_H
 #include <QWidget>
 
-#include "MainWindow.h"
-
 class QGroupBox;
 class QLabel;
 class QSlider;
@@ -17,9 +15,9 @@ class QToolButton;
 class VolumeWidget final : public QWidget {
 public:
     explicit VolumeWidget(QWidget *parent = nullptr);
-    QSlider *sliderV;
-    QLabel *labelVolume;
-    QPushButton *buttonMute;
+    QSlider *m_sliderV;
+    QLabel *m_labelVolume;
+    QPushButton *m_buttonMute;
 };
 
 class PlayerWidget final : public QWidget {
@@ -31,13 +29,13 @@ public:
     void setButtonVisible(bool b);
     void show();
 
-    QPushButton *pushButtonPlay;
-    QLabel *labelMusicFileName;
-    QPushButton *pushButtonPre;
-    QPushButton *pushButtonNext;
-    VolumeWidget *volumeWidget;
-    QPushButton *pushButtonVolume;
-    QMenu *menuVolume;
+    QPushButton *m_pushButtonPlay;
+    QLabel *m_labelMusicFileName;
+    QPushButton *m_pushButtonPre;
+    QPushButton *m_pushButtonNext;
+    VolumeWidget *m_volumeWidget;
+    QPushButton *m_pushButtonVolume;
+    QMenu *m_menuVolume;
 
 public Q_SLOTS:
     void setPlayButtonIcon(bool playStatus);

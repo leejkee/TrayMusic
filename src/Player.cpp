@@ -84,7 +84,6 @@ float Player::getVolume() const {
 }
 
 
-
 void Player::playToggle() {
     if (m_isPlay != true) {
         m_player->play();
