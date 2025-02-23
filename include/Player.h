@@ -33,12 +33,13 @@ public:
     [[nodiscard]] bool playStatus() const { return m_isPlay; };
 
     void setPlayStatus(bool playStatus);
+    [[nodiscard]] QStringList getMusicList() const;
 
 private:
     QMediaPlayer *m_player;
     QAudioOutput *m_audioOut;
     QStringList::iterator m_currentMusicIt;
-    QStringList m_musicList;
+    QStringList m_musicPathList;
     bool m_isPlay;
     float m_volume;
 

@@ -8,7 +8,7 @@
 
 
 class Player;
-class IconWidget;
+class ViewWidget;
 class PlayerWidget;
 class QSystemTrayIcon;
 class TrayUI;
@@ -40,9 +40,8 @@ private:
     void initTray();
     void loadSettings();
     QWidget *m_centralWidget;
-    TrayUI *m_gui;
     Player *m_player;
-    IconWidget *m_iconWidget;
+    ViewWidget *m_iconWidget;
     PlayerWidget *m_playerWidget;
     WindowManager *m_windowManager;
 

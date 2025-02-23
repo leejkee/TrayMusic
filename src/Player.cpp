@@ -19,10 +19,10 @@ Player::Player(const QStringList& list)
             QDir dir(it);
             QStringList files = dir.entryList(QDir::Files);
             for (const auto& file : files) {
-                m_musicList.append(dir.absoluteFilePath(file));
+                m_musicPathList.append(dir.absoluteFilePath(file));
             }
         }
-        m_currentMusicIt = m_musicList.begin();
+        m_currentMusicIt = m_musicPathList.begin();
         loadMusic(QUrl::fromLocalFile(*m_currentMusicIt));
     }
 }
@@ -40,8 +40,8 @@ Player::~Player() {
 }
 
 void Player::nextMusic() {
-    if (m_currentMusicIt == m_musicList.end()) {
-        m_currentMusicIt = m_musicList.begin();
+    if (m_currentMusicIt == m_musicPathList.end()) {
+        m_currentMusicIt = m_musicPathList.begin();
     }
     ++m_currentMusicIt;
     emit currentMusicChanged(*m_currentMusicIt);
@@ -51,8 +51,8 @@ void Player::nextMusic() {
 }
 
 void Player::previousMusic() {
-    if (m_currentMusicIt == m_musicList.begin()) {
-        m_currentMusicIt = m_musicList.end();
+    if (m_currentMusicIt == m_musicPathList.begin()) {
+        m_currentMusicIt = m_musicPathList.end();
     }
     --m_currentMusicIt;
     emit currentMusicChanged(*m_currentMusicIt);
@@ -92,6 +92,14 @@ void Player::playToggle() {
         m_player->pause();
         setPlayStatus(false);
     }
+}
+
+QStringList Player::getMusicList() const {
+    QStringList musicList;
+    for (const auto& it : m_musicPathList) {
+         musicList.append(it.right(it.size() - it.lastIndexOf("/") - 1));
+    }
+    return musicList;
 }
 
 // void Player::muteToggle() {

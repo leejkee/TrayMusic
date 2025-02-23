@@ -15,7 +15,7 @@
 #include <QPushButton>
 #include "Player.h"
 #include "Assets.h"
-#include "IconWidget.h"
+#include "ViewWidget.h"
 #include "PlayerWidget.h"
 #include <WindowManager.h>
 
@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-    delete m_player;
 }
 
 void MainWindow::loadSettings() {
@@ -38,14 +37,14 @@ void MainWindow::initMainApplication() {
     loadSettings();
     initTray();
 
-    m_centralWidget = new QWidget(this);
-    m_iconWidget = new IconWidget(m_centralWidget);
-    m_playerWidget = new PlayerWidget(m_centralWidget);
+    m_iconWidget = new ViewWidget(this);
+    m_playerWidget = new PlayerWidget(this);
+    m_iconWidget->initModel(m_player->getMusicList());
     m_playerWidget->changeMusicName(m_player->currentMusic());
     m_playerWidget->setButtonVisible(true);
+
     m_windowManager = new WindowManager(m_iconWidget);
     m_windowManager->setBottomWidget(m_playerWidget);
-
     createConnect();
     setCentralWidget(m_windowManager);
 }
@@ -60,8 +59,6 @@ void MainWindow::createConnect() {
     connect(m_minimizeAction, &QAction::triggered, this, &MainWindow::hide);
 
     connect(m_restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
-
-    connect(m_iconWidget->showIconCheckBox, &QCheckBox::toggled, m_systemTrayIcon, &QSystemTrayIcon::setVisible);
 
     // play music
     // connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
