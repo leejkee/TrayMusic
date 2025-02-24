@@ -11,6 +11,7 @@ class QPushButton;
 class QCheckBox;
 class QListView;
 class QStringListModel;
+class QAbstractItemModel;
 
 class ViewWidget final : public QWidget {
 
@@ -19,8 +20,7 @@ public:
     void initModel(const QStringList& list);
 
     QListView *m_playListView;
-    QStringListModel *m_playListModel;
-
+    QAbstractItemModel *m_playListModel;
 
 };
 
