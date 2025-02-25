@@ -24,6 +24,10 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+
+    QModelIndex parent(const QModelIndex &child) const;
+
     // db
     // db
 
@@ -50,6 +54,7 @@ public:
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
     void setCurrentMusic(int index);
+    [[nodiscard]] QList<Song> getMusicList() const;
 
 
 private:

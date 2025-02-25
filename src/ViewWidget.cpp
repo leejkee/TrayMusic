@@ -2,13 +2,13 @@
 // Created by cww on 25-2-19.
 //
 #include <QHBoxLayout>
-#include <QStringListModel>
-#include <QListView>
 #include "ViewWidget.h"
+#include "PlayList.h"
+#include <QTableView>
 
-ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
-    m_playListModel = new QStringListModel(this);
-    m_playListView = new QListView(this);
+ViewWidget::ViewWidget(const QString& list, QWidget *parent): QWidget(parent) {
+    initModel(list);
+    m_playListView = new QTableView(this);
     m_playListView->setModel(m_playListModel);
 
     QHBoxLayout *iconLayout = new QHBoxLayout;
@@ -16,6 +16,7 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     this->setLayout(iconLayout);
 }
 
-void ViewWidget::initModel(const QStringList& list) {
-    m_playListModel->setStringList(list);
+void ViewWidget::initModel(const QString& list) {
+    PlayList::instance()->loadMusicFromDirectory(list);
+    m_playListModel = new PlayListModel(PlayList::instance()->getMusicList(), this);
 }

@@ -4,7 +4,6 @@
 
 #include <QApplication>
 #include <QAudioOutput>
-#include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QMenu>
@@ -37,9 +36,8 @@ void MainWindow::initMainApplication() {
     loadSettings();
     initTray();
 
-    m_iconWidget = new ViewWidget(this);
+    m_iconWidget = new ViewWidget("C:/Users/cww/Music/lostgrace", this);
     m_playerWidget = new PlayerWidget(this);
-    m_iconWidget->initModel(m_player->getMusicList());
     m_playerWidget->changeMusicName(m_player->currentMusic());
     m_playerWidget->setButtonVisible(true);
 
