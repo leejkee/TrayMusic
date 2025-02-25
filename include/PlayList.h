@@ -11,22 +11,26 @@ struct Song{
     QString name;
     QString artist;
     QString album;
-    QString duration;
+    QString path;
 };
 
 class PlayListModel : public QAbstractItemModel {
     Q_OBJECT
 public:
-    PlayListModel(QObject *parent = nullptr);
-
+    explicit PlayListModel(const QList<Song>& musicList, QObject *parent = nullptr);
+    void setMusicList(const QList<Song> &musicList);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+    // db
+    // db
 
 private:
-    int rowCount;
-    int columnCount;
-    QVector<Song> rows;
+    int m_row;
+    int m_column;
+    QList<Song> m_musicList;
 };
 
 
@@ -36,27 +40,22 @@ public:
         static PlayList playListInstance;
         return &playListInstance;
     }
+    PlayList(const PlayList& playList) = delete;
+    PlayList& operator=(const PlayList& playList) = delete;
 
-    void getCurrentMusicName();
-    void getCurrentMusicPath();
-    // void loadMusicFromDirectories(const QStringList& filelist);
+    static QString getMusicNameWithoutPath(const QString& path);
+    [[nodiscard]] QString getCurrentMusicName() const;
+    QString getCurrentMusicPath();
+
+    void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
     void setCurrentMusic(int index);
 
-    // db operate; only functions about "User Music List" call these functions
-    void initDB(const QString& dbname);
-    QStringList readListFromDB(const QString& listName);
-    void saveListToDB(const QStringList& list, const QString& tableName);
-    // db operate
-
-
 
 private:
-    QSqlDatabase m_db;
-
+    PlayList(){}
     int m_currentIndex{0};
-    QStringList m_musicList;
-    QString m_currentMusic;
+    QList<Song> m_musicList{};
 };
 
 

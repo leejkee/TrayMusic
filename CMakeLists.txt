@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia Sql)
+find_package(TagLib REQUIRED)
 
 file(GLOB_RECURSE PROJECT_SOURCES
         "src/*.cpp"
@@ -16,7 +17,7 @@ file(GLOB_RECURSE PROJECT_SOURCES
         "res/*.qrc"
 )
 
-include_directories("include")
+include_directories("include" "3rdparty/TagLib_lib/include")
 
 qt_add_executable(TrayMusic
         MANUAL_FINALIZATION
@@ -27,6 +28,7 @@ target_link_libraries(TrayMusic PRIVATE
         Qt6::Widgets
         Qt6::Multimedia
         Qt6::Sql
+        TagLib::tag
 )
 
 set_target_properties(TrayMusic PROPERTIES
