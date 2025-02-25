@@ -2,8 +2,11 @@
 // Created by cww on 25-2-23.
 //
 #include "PlayList.h"
-#include "taglib/tag.h"
+#include "taglib/tstring.h"
 #include "taglib/fileref.h"
+#include <iostream>
+#include <iomanip>
+#include "tag.h"
 #include <QDir>
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
@@ -11,12 +14,21 @@ void PlayList::loadMusicFromDirectory(const QString &path) {
     const QDir dir(path);
     QStringList files = dir.entryList(QDir::Files);
     for (const auto &file: files) {
-        const TagLib::FileName fileTagLib{file.toStdString().c_str()};
-        TagLib::FileRef f(fileTagLib);
         Song song;
         song.path = dir.absoluteFilePath(file);
         song.name = getMusicNameWithoutPath(song.path);
-        // song.artist = QString::fromStdString(f.tag()->artist().to8Bit());
+        auto filepath = dir.absoluteFilePath(file).toStdWString();
+        if(TagLib::FileRef f(filepath.c_str()); !f.isNull() && f.audioProperties()) {
+            TagLib::AudioProperties *properties = f.audioProperties();
+            const int seconds = properties->lengthInSeconds() % 60;
+            const int minutes = (properties->lengthInSeconds() - seconds) / 60;
+            song.duration = QString::number(minutes) + ":" + QString::number(seconds);
+        }
+
+        // ToDo
+        // TagLib::String s = f.tag()->artist();
+        // std::string s = f.tag()->artist().to8Bit();
+        // song.artist = QString::fromStdString(s);
         // song.album = QString::fromStdString(f.tag()->album().to8Bit());
         m_musicList.append(song);
     }
@@ -60,7 +72,7 @@ QList<Song> PlayList::getMusicList() const {
 // PlayListModel
 PlayListModel::PlayListModel(const QList<Song>&musicList, QObject *parent) : QAbstractItemModel(parent), m_musicList(musicList) {
     m_row = static_cast<int>(musicList.count());
-    m_column = 3;
+    m_column = 4;
 }
 
 int PlayListModel::rowCount(const QModelIndex &parent) const {
@@ -85,6 +97,7 @@ QVariant PlayListModel::data(const QModelIndex &index, int role) const {
                 case 0: return song.name;
                 case 1: return song.artist;
                 case 2: return song.album;
+                case 3: return song.duration;
                 default: return QVariant();
             }
         default:
@@ -99,6 +112,7 @@ QVariant PlayListModel::headerData(int section, Qt::Orientation orientation, int
                 case 0: return tr("Name");
                 case 1: return tr("Artist");
                 case 2: return tr("Album");
+                case 3: return tr("Length");
                 default: return QVariant();
             }
         }

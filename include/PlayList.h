@@ -12,6 +12,7 @@ struct Song{
     QString artist;
     QString album;
     QString path;
+    QString duration;
 };
 
 class PlayListModel : public QAbstractItemModel {
