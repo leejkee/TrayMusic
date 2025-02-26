@@ -5,6 +5,7 @@
 #include <QAudioOutput>
 #include <QDir>
 #include "Player.h"
+#include "PlayList.h"
 
 
 Player::Player(const QStringList& list)

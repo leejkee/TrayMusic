@@ -4,10 +4,34 @@
 #include "PlayList.h"
 #include "taglib/tstring.h"
 #include "taglib/fileref.h"
-#include <iostream>
-#include <iomanip>
-#include "tag.h"
 #include <QDir>
+
+QString PlayList::convertIntToTime(const int minutes, const int seconds) {
+    QString m;
+    QString s;
+    if (minutes >= 0 && minutes < 10) {
+        m = QString("0") + QString::number(minutes);
+    } else if (minutes >= 10) {
+        m = QString::number(minutes);
+    }
+
+    if (seconds >= 0 && seconds < 10) {
+        s = QString("0") + QString::number(seconds);
+    } else if (seconds >= 10) {
+        s = QString::number(seconds);
+    }
+    return m + ":" + s;
+}
+
+QString PlayList::musicLength(const std::wstring &path) {
+    if (const TagLib::FileRef f(path.c_str()); !f.isNull() && f.audioProperties()) {
+        const TagLib::AudioProperties *properties = f.audioProperties();
+        const int seconds = properties->lengthInSeconds() % 60;
+        const int minutes = (properties->lengthInSeconds() - seconds) / 60;
+        return convertIntToTime(minutes, seconds);
+    }
+    return {};
+}
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();
@@ -16,20 +40,11 @@ void PlayList::loadMusicFromDirectory(const QString &path) {
     for (const auto &file: files) {
         Song song;
         song.path = dir.absoluteFilePath(file);
-        song.name = getMusicNameWithoutPath(song.path);
-        auto filepath = dir.absoluteFilePath(file).toStdWString();
-        if(TagLib::FileRef f(filepath.c_str()); !f.isNull() && f.audioProperties()) {
-            TagLib::AudioProperties *properties = f.audioProperties();
-            const int seconds = properties->lengthInSeconds() % 60;
-            const int minutes = (properties->lengthInSeconds() - seconds) / 60;
-            song.duration = QString::number(minutes) + ":" + QString::number(seconds);
-        }
+        song.name = getMusicNameWithoutSuffix(song.path);
+        song.duration = musicLength(song.path.toStdWString());
 
-        // ToDo
-        // TagLib::String s = f.tag()->artist();
-        // std::string s = f.tag()->artist().to8Bit();
-        // song.artist = QString::fromStdString(s);
-        // song.album = QString::fromStdString(f.tag()->album().to8Bit());
+        // ToDo use QListView? resize the view to full the widget
+
         m_musicList.append(song);
     }
     m_currentIndex = 0;
@@ -51,15 +66,16 @@ void PlayList::setCurrentMusic(const int index) {
     m_currentIndex = index;
 }
 
-QString PlayList::getMusicNameWithoutPath(const QString &path) {
-    return path.right(path.size() - path.lastIndexOf("/") - 1);
+QString PlayList::getMusicNameWithoutSuffix(const QString &path) {
+    const auto s = path.right(path.size() - path.lastIndexOf("/") - 1);
+    return s.left(s.indexOf("."));
 }
 
 QString PlayList::getCurrentMusicName() const {
-    return getMusicNameWithoutPath(m_musicList.at(m_currentIndex).name);
+    return getMusicNameWithoutSuffix(m_musicList.at(m_currentIndex).name);
 }
 
-QString PlayList::getCurrentMusicPath() {
+QString PlayList::getCurrentMusicPath() const {
     return m_musicList.at(m_currentIndex).path;
 }
 
@@ -67,66 +83,13 @@ QList<Song> PlayList::getMusicList() const {
     return m_musicList;
 }
 
-
-
-// PlayListModel
-PlayListModel::PlayListModel(const QList<Song>&musicList, QObject *parent) : QAbstractItemModel(parent), m_musicList(musicList) {
-    m_row = static_cast<int>(musicList.count());
-    m_column = 4;
-}
-
-int PlayListModel::rowCount(const QModelIndex &parent) const {
-    Q_UNUSED(parent);
-    return m_row;
-}
-
-int PlayListModel::columnCount(const QModelIndex &parent) const {
-    Q_UNUSED(parent);
-    return m_column;
-}
-
-QVariant PlayListModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid()) {
-        return QVariant();
+QStringList PlayList::getMusicNameWithoutSuffixList() const {
+    QStringList musicNames;
+    for (const auto &it: m_musicList) {
+        musicNames.append(it.name);
     }
-
-    const Song &song = m_musicList.at(index.row());
-    switch (role) {
-        case Qt::DisplayRole:
-            switch (index.column()) {
-                case 0: return song.name;
-                case 1: return song.artist;
-                case 2: return song.album;
-                case 3: return song.duration;
-                default: return QVariant();
-            }
-        default:
-            return QVariant();
-    }
+    return musicNames;
 }
 
-QVariant PlayListModel::headerData(int section, Qt::Orientation orientation, int role) const {
-    if (role == Qt::DisplayRole) {
-        if (orientation == Qt::Horizontal) {
-            switch (section) {
-                case 0: return tr("Name");
-                case 1: return tr("Artist");
-                case 2: return tr("Album");
-                case 3: return tr("Length");
-                default: return QVariant();
-            }
-        }
-    }
-    return QVariant();
-}
 
-QModelIndex PlayListModel::index(const int row, const int column, const QModelIndex &parent) const {
-    if (!hasIndex(row, column, parent)) {
-        return QModelIndex();
-    }
 
-    return createIndex(row, column);
-}
-QModelIndex PlayListModel::parent(const QModelIndex &child) const {
-    return {};
-}

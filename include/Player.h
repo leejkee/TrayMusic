@@ -38,14 +38,18 @@ public:
 private:
     QMediaPlayer *m_player;
     QAudioOutput *m_audioOut;
+
+    // d
     QStringList::iterator m_currentMusicIt;
     QStringList m_musicPathList;
+
     bool m_isPlay;
     float m_volume;
 
 Q_SIGNALS:
     void playStatusChanged(bool isPlay);
 
+    // d
     void currentMusicChanged(QString currentMusic);
 
     void volumeChanged(int volume);

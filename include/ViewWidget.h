@@ -24,8 +24,8 @@ public:
     void initModel(const QString &list);
 
 
-    QTableView *m_playListView;
-    PlayListModel *m_playListModel;
+    QListView *m_playListView;
+    QStringListModel *m_playListModel;
 };
 
 
