@@ -21,8 +21,6 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-    // void mouseMoveEvent(QMouseEvent *event) override;
-    // void mouseLeaveEvent(QMouseEvent *event) override;
 
 
 private:
@@ -38,7 +36,7 @@ private:
     QMenu *m_trayIconMenu;
 
     void initTray();
-    void loadSettings();
+    // void loadSettings();
     QWidget *m_centralWidget;
     Player *m_player;
     ViewWidget *m_iconWidget;

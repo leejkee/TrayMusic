@@ -31,7 +31,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
     m_pushButtonVolume->setFixedSize(30, 30);
     m_menuVolume = new QMenu(this);
-    QWidgetAction *action = new QWidgetAction(this);
+    auto *action = new QWidgetAction(this);
     action->setDefaultWidget(m_volumeWidget);
     m_menuVolume->addAction(action);
     m_pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");

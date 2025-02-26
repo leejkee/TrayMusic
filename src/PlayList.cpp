@@ -42,9 +42,6 @@ void PlayList::loadMusicFromDirectory(const QString &path) {
         song.path = dir.absoluteFilePath(file);
         song.name = getMusicNameWithoutSuffix(song.path);
         song.duration = musicLength(song.path.toStdWString());
-
-        // ToDo use QListView? resize the view to full the widget
-
         m_musicList.append(song);
     }
     m_currentIndex = 0;
@@ -92,4 +89,37 @@ QStringList PlayList::getMusicNameWithoutSuffixList() const {
 }
 
 
+int PlayList::getCurrentMusicIndex() const {
+    return m_currentIndex;
+}
+
+void PlayList::setCurrentMusicIndex(const int index) {
+    if (index != m_currentIndex) {
+        m_currentIndex = index;
+        emit currentMusicIndexChanged(index);
+        emit currentMusicNameChanged(getCurrentMusicName());
+    }
+}
+
+void PlayList::nextMusic() {
+    int index = m_currentIndex;
+    if (index == m_musicList.size() - 1) {
+        index = 0;
+    }
+    else {
+        index++;
+    }
+    setCurrentMusicIndex(index);
+}
+
+void PlayList::previousMusic() {
+    int index = m_currentIndex;
+    if (index == 0) {
+        index = static_cast<int>(m_musicList.size()) - 1;
+    }
+    else {
+        index--;
+    }
+    setCurrentMusicIndex(index);
+}
 

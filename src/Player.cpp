@@ -8,24 +8,14 @@
 #include "PlayList.h"
 
 
-Player::Player(const QStringList& list)
+Player::Player()
     : m_player(new QMediaPlayer)
       , m_audioOut(new QAudioOutput)
       , m_isPlay(false)
       , m_volume(0.3) {
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
-    if (!list.isEmpty()) {
-        for (const auto& it : list) {
-            QDir dir(it);
-            QStringList files = dir.entryList(QDir::Files);
-            for (const auto& file : files) {
-                m_musicPathList.append(dir.absoluteFilePath(file));
-            }
-        }
-        m_currentMusicIt = m_musicPathList.begin();
-        loadMusic(QUrl::fromLocalFile(*m_currentMusicIt));
-    }
+    loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));
 }
 
 void Player::setPlayStatus(const bool playStatus) {
@@ -40,27 +30,7 @@ Player::~Player() {
     delete m_audioOut;
 }
 
-void Player::nextMusic() {
-    if (m_currentMusicIt == m_musicPathList.end()) {
-        m_currentMusicIt = m_musicPathList.begin();
-    }
-    ++m_currentMusicIt;
-    emit currentMusicChanged(*m_currentMusicIt);
-    loadMusic(*m_currentMusicIt);
-    m_player->play();
-    setPlayStatus(true);
-}
 
-void Player::previousMusic() {
-    if (m_currentMusicIt == m_musicPathList.begin()) {
-        m_currentMusicIt = m_musicPathList.end();
-    }
-    --m_currentMusicIt;
-    emit currentMusicChanged(*m_currentMusicIt);
-    loadMusic(*m_currentMusicIt);
-    m_player->play();
-    setPlayStatus(true);
-}
 
 void Player::loadMusic(const QUrl &mp3Url) {
     m_player->setSource(mp3Url);
@@ -84,7 +54,6 @@ float Player::getVolume() const {
     return m_volume;
 }
 
-
 void Player::playToggle() {
     if (m_isPlay != true) {
         m_player->play();
@@ -95,19 +64,10 @@ void Player::playToggle() {
     }
 }
 
-QStringList Player::getMusicList() const {
-    QStringList musicList;
-    for (const auto& it : m_musicPathList) {
-         musicList.append(it.right(it.size() - it.lastIndexOf("/") - 1));
-    }
-    return musicList;
-}
 
-// void Player::muteToggle() {
-//     if (m_volume == 0) {
-//         setVolume(30);
-//     }
-//     else {
-//         setVolume(0);
-//     }
-// }
+void Player::changeSource() {
+    const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath());
+    m_player->setSource(mp3Url);
+    m_player->play();
+    setPlayStatus(true);
+}

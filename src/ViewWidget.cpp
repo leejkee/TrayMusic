@@ -19,5 +19,3 @@ ViewWidget::ViewWidget(const QString& list, QWidget *parent): QWidget(parent) {
     this->setLayout(iconLayout);
 }
 
-void ViewWidget::initModel(const QString& list) {
-}

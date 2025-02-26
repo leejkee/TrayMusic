@@ -15,51 +15,32 @@ class Player final : public QObject {
 
 
 public:
-    explicit Player(const QStringList &list);
+    explicit Player();
 
     ~Player() override;
 
-    void loadMusic(const QUrl &mp3Url);
-
-    void setVolume(int volume);
     [[nodiscard]] float getVolume() const;
 
-
-    [[nodiscard]] QString currentMusic() const {
-        return m_currentMusicIt->right(
-            m_currentMusicIt->size() - m_currentMusicIt->lastIndexOf("/") - 1);
-    };
-
     [[nodiscard]] bool playStatus() const { return m_isPlay; };
-
-    void setPlayStatus(bool playStatus);
-    [[nodiscard]] QStringList getMusicList() const;
 
 private:
     QMediaPlayer *m_player;
     QAudioOutput *m_audioOut;
 
-    // d
-    QStringList::iterator m_currentMusicIt;
-    QStringList m_musicPathList;
-
     bool m_isPlay;
     float m_volume;
+    void loadMusic(const QUrl &mp3Url);
+    void setPlayStatus(bool playStatus);
 
 Q_SIGNALS:
     void playStatusChanged(bool isPlay);
 
-    // d
-    void currentMusicChanged(QString currentMusic);
-
     void volumeChanged(int volume);
 
 public Q_SLOTS:
-    void nextMusic();
 
-    void previousMusic();
-
+    void setVolume(int volume);
     void playToggle();
-    // void muteToggle();
+    void changeSource();
 };
 #endif //PLAYER_H

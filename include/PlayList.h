@@ -17,7 +17,9 @@ struct Song{
 
 
 
-class PlayList {
+class PlayList final: public QObject {
+    Q_OBJECT
+    Q_PROPERTY(int currentMusicIndex READ getCurrentMusicIndex WRITE setCurrentMusicIndex NOTIFY currentMusicIndexChanged)
 public:
     static PlayList *instance() {
         static PlayList playListInstance;
@@ -35,10 +37,26 @@ public:
     void setCurrentMusic(int index);
     [[nodiscard]] QList<Song> getMusicList() const;
 
-    QStringList getMusicNameWithoutSuffixList() const;
+    /// 
+    /// @return return the list which contain the music name with no suffix(eg: ".mp3")
+    [[nodiscard]] QStringList getMusicNameWithoutSuffixList() const;
 
     static QString convertIntToTime(int minutes, int seconds);
     static QString musicLength(const std::wstring &path);
+
+    [[nodiscard]] int getCurrentMusicIndex() const;
+    void setCurrentMusicIndex(int index);
+
+
+
+Q_SIGNALS:
+    void currentMusicIndexChanged(int index);
+    void currentMusicNameChanged(const QString& name);
+
+
+public Q_SLOTS:
+    void nextMusic();
+    void previousMusic();
 
 
 private:

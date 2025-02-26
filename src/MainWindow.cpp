@@ -16,7 +16,9 @@
 #include "Assets.h"
 #include "ViewWidget.h"
 #include "PlayerWidget.h"
-#include <WindowManager.h>
+#include "WindowManager.h"
+
+#include "PlayList.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -26,19 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
 }
 
-void MainWindow::loadSettings() {
-    QStringList musicPathList;
-    musicPathList.append("C:/Users/cww/Music/lostgrace");
-    m_player = new Player(musicPathList);
-}
-
 void MainWindow::initMainApplication() {
-    loadSettings();
     initTray();
 
     m_iconWidget = new ViewWidget("C:/Users/cww/Music/lostgrace", this);
+    m_player = new Player();
     m_playerWidget = new PlayerWidget(this);
-    m_playerWidget->changeMusicName(m_player->currentMusic());
+    m_playerWidget->changeMusicName(PlayList::instance()->getCurrentMusicName());
     m_playerWidget->setButtonVisible(true);
 
     m_windowManager = new WindowManager(m_iconWidget);
@@ -58,29 +54,17 @@ void MainWindow::createConnect() {
 
     connect(m_restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
 
-    // play music
-    // connect(m_gui->pushButtonLoadFile, &QPushButton::clicked, this, [this]() {
-    //     if (const QString fileName = QFileDialog::getOpenFileName(this,
-    //     tr("Open Mp3"),"", tr("Mp3 Files (*.mp3)")); fileName.isEmpty()) {
-    //         return;
-    //     }
-    //     else {
-    //         m_player->loadMusic(QUrl::fromLocalFile(fileName));
-    //         m_gui->labelSongName->setText(fileName);
-    //     }
-    // });
+    connect(m_playerWidget->m_pushButtonNext, &QPushButton::clicked, PlayList::instance(), &PlayList::nextMusic);
 
-    connect(m_playerWidget->m_pushButtonNext, &QPushButton::clicked, m_player,
-            &Player::nextMusic);
-
-    connect(m_playerWidget->m_pushButtonPre, &QPushButton::clicked, m_player,
-            &Player::previousMusic);
+    connect(m_playerWidget->m_pushButtonPre, &QPushButton::clicked, PlayList::instance(), &PlayList::previousMusic);
 
     connect(m_playerWidget->m_pushButtonPlay, &QPushButton::clicked, m_player, &Player::playToggle);
 
     connect(m_player, &Player::playStatusChanged, m_playerWidget, &PlayerWidget::setPlayButtonIcon);
 
-    connect(m_player, &Player::currentMusicChanged, this, &MainWindow::changeMusicLabelName);
+    connect(PlayList::instance(), &PlayList::currentMusicNameChanged, this, &MainWindow::changeMusicLabelName);
+
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_player, &Player::changeSource);
 
     connect(m_playerWidget->m_volumeWidget->m_sliderV, &QSlider::valueChanged, m_player, &Player::setVolume);
 

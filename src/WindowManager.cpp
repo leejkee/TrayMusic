@@ -32,7 +32,6 @@ WindowManager::WindowManager(QWidget *mainWidget, QWidget *parent)
     QVBoxLayout *Layout = new QVBoxLayout(this);
     Layout->addWidget(mainGroup);
     Layout->addWidget(bottomGroup);
-    setLayout(m_mainLayout);
 }
 
 WindowManager::~WindowManager() {
