@@ -34,8 +34,6 @@ public:
 
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
-    void setCurrentMusic(int index);
-    [[nodiscard]] QList<Song> getMusicList() const;
 
     /// 
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
@@ -60,7 +58,7 @@ public Q_SLOTS:
 
 
 private:
-    PlayList(){}
+    PlayList() {}
     int m_currentIndex{0};
     QList<Song> m_musicList{};
 };

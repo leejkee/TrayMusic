@@ -6,8 +6,7 @@
 
 #include <QGroupBox>
 #include <QLabel>
-
-#include "QGridLayout"
+#include <QGridLayout>
 
 WindowManager::WindowManager(QWidget *mainWidget, QWidget *parent)
     : QWidget(parent)

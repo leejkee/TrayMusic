@@ -59,9 +59,7 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
 }
 
 
-void PlayList::setCurrentMusic(const int index) {
-    m_currentIndex = index;
-}
+
 
 QString PlayList::getMusicNameWithoutSuffix(const QString &path) {
     const auto s = path.right(path.size() - path.lastIndexOf("/") - 1);
@@ -76,9 +74,7 @@ QString PlayList::getCurrentMusicPath() const {
     return m_musicList.at(m_currentIndex).path;
 }
 
-QList<Song> PlayList::getMusicList() const {
-    return m_musicList;
-}
+
 
 QStringList PlayList::getMusicNameWithoutSuffixList() const {
     QStringList musicNames;

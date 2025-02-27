@@ -11,13 +11,13 @@
 #include <QSystemTrayIcon>
 #include "MainWindow.h"
 #include <QLabel>
+#include <QListView>
 #include <QPushButton>
 #include "Player.h"
 #include "Assets.h"
 #include "ViewWidget.h"
 #include "PlayerWidget.h"
 #include "WindowManager.h"
-
 #include "PlayList.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -29,8 +29,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::initMainApplication() {
-    initTray();
-
+    createTrayIcon();
     m_iconWidget = new ViewWidget("C:/Users/cww/Music/lostgrace", this);
     m_player = new Player();
     m_playerWidget = new PlayerWidget(this);
@@ -78,7 +77,7 @@ void MainWindow::createConnect() {
         }
     });
 
-}
+ }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (!event->spontaneous() || !isVisible())
@@ -109,7 +108,7 @@ void MainWindow::changeMusicLabelName(const QString &name) {
     }
 }
 
-void MainWindow::initTray() {
+void MainWindow::createTrayIcon() {
     m_trayIconMenu = new QMenu(this);
     m_systemTrayIcon = new QSystemTrayIcon(this);
     m_minimizeAction = new QAction(QCoreApplication::translate("TrayUI", "Minimize"), this);

@@ -8,14 +8,27 @@
 #include <QStringListModel>
 
 ViewWidget::ViewWidget(const QString& list, QWidget *parent): QWidget(parent) {
+
     PlayList::instance()->loadMusicFromDirectory(list);
     m_playListModel = new QStringListModel(this);
     m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
     m_playListView = new QListView(this);
     m_playListView->setModel(m_playListModel);
-
-    QHBoxLayout *iconLayout = new QHBoxLayout;
-    iconLayout->addWidget(m_playListView);
-    this->setLayout(iconLayout);
+    m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ViewWidget::updateCurrentIndex);
+    QHBoxLayout *Layout = new QHBoxLayout;
+    Layout->addWidget(m_playListView);
+    this->setLayout(Layout);
 }
 
+
+void ViewWidget::viewDoubleClick(const QModelIndex &index) {
+    qDebug() << "ViewWidget::viewDoubleClick";
+    PlayList::instance()->setCurrentMusicIndex(index.row());
+}
+
+void ViewWidget::updateCurrentIndex(const int index) {
+    qDebug() << "ViewWidget::updateCurrentIndex";
+    m_playListView->selectionModel()->select(m_playListModel->index(index, 0), QItemSelectionModel::ClearAndSelect);
+}

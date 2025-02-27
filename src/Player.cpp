@@ -31,7 +31,6 @@ Player::~Player() {
 }
 
 
-
 void Player::loadMusic(const QUrl &mp3Url) {
     m_player->setSource(mp3Url);
 }
@@ -64,9 +63,10 @@ void Player::playToggle() {
     }
 }
 
-
 void Player::changeSource() {
     const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath());
+    qDebug() << "change source" << mp3Url;
+    m_player->stop();
     m_player->setSource(mp3Url);
     m_player->play();
     setPlayStatus(true);

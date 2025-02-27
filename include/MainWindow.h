@@ -35,7 +35,7 @@ private:
     QSystemTrayIcon *m_systemTrayIcon;
     QMenu *m_trayIconMenu;
 
-    void initTray();
+    void createTrayIcon();
     // void loadSettings();
     QWidget *m_centralWidget;
     Player *m_player;
