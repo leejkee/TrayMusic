@@ -13,6 +13,7 @@ class PlayerWidget;
 class QSystemTrayIcon;
 class TrayUI;
 class WindowManager;
+
 class MainWindow final : public QMainWindow {
 Q_OBJECT
 public:

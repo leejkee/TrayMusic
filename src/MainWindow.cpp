@@ -61,8 +61,10 @@ void MainWindow::createConnect() {
 
     connect(m_player, &Player::playStatusChanged, m_playerWidget, &PlayerWidget::setPlayButtonIcon);
 
+    // update the music name label
     connect(PlayList::instance(), &PlayList::currentMusicNameChanged, this, &MainWindow::changeMusicLabelName);
 
+    // update the source of player when the current music changed
     connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_player, &Player::changeSource);
 
     connect(m_playerWidget->m_volumeWidget->m_sliderV, &QSlider::valueChanged, m_player, &Player::setVolume);
@@ -76,6 +78,21 @@ void MainWindow::createConnect() {
             m_player->setVolume(0);
         }
     });
+
+    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateSliderPosition);
+    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
+    connect(m_playerWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
+        if (m_playerWidget->m_progressWidget->m_isUpdatingSlider) {
+            return;
+        }
+        m_player->setPlayPosition(value);
+    });
+
+    // auto check music
+    connect(m_player, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
+
+
+    // connect(m_player, &Player)
 
  }
 

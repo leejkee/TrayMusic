@@ -6,32 +6,20 @@
 #include "taglib/fileref.h"
 #include <QDir>
 
-QString PlayList::convertIntToTime(const int minutes, const int seconds) {
-    QString m;
-    QString s;
-    if (minutes >= 0 && minutes < 10) {
-        m = QString("0") + QString::number(minutes);
-    } else if (minutes >= 10) {
-        m = QString::number(minutes);
-    }
-
-    if (seconds >= 0 && seconds < 10) {
-        s = QString("0") + QString::number(seconds);
-    } else if (seconds >= 10) {
-        s = QString::number(seconds);
-    }
-    return m + ":" + s;
+QString PlayList::convertSecondsToTime(const int seconds) {
+    const int m = seconds / 60;
+    const int s = seconds % 60;
+    return QString::asprintf("%02d:%02d", m, s);
 }
 
-QString PlayList::musicLength(const std::wstring &path) {
+int PlayList::musicLength(const std::wstring &path) {
     if (const TagLib::FileRef f(path.c_str()); !f.isNull() && f.audioProperties()) {
         const TagLib::AudioProperties *properties = f.audioProperties();
-        const int seconds = properties->lengthInSeconds() % 60;
-        const int minutes = (properties->lengthInSeconds() - seconds) / 60;
-        return convertIntToTime(minutes, seconds);
+        return properties->lengthInSeconds();
     }
     return {};
 }
+
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();
@@ -59,8 +47,6 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
 }
 
 
-
-
 QString PlayList::getMusicNameWithoutSuffix(const QString &path) {
     const auto s = path.right(path.size() - path.lastIndexOf("/") - 1);
     return s.left(s.indexOf("."));
@@ -74,7 +60,9 @@ QString PlayList::getCurrentMusicPath() const {
     return m_musicList.at(m_currentIndex).path;
 }
 
-
+int PlayList::getCurrentMusicDuration() const {
+    return m_musicList.at(m_currentIndex).duration;
+}
 
 QStringList PlayList::getMusicNameWithoutSuffixList() const {
     QStringList musicNames;
@@ -118,4 +106,5 @@ void PlayList::previousMusic() {
     }
     setCurrentMusicIndex(index);
 }
+
 

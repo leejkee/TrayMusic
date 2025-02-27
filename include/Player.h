@@ -37,10 +37,15 @@ Q_SIGNALS:
 
     void volumeChanged(int volume);
 
+    void playPositionChanged(qint64 position);
+
+    void playMusicEnd();
+
 public Q_SLOTS:
 
     void setVolume(int volume);
     void playToggle();
     void changeSource();
+    void setPlayPosition(qint64 position);
 };
 #endif //PLAYER_H

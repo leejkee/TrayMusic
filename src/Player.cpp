@@ -16,6 +16,14 @@ Player::Player()
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
     loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));
+    connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 position) {
+        emit playPositionChanged(position);
+    });
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, [this](const QMediaPlayer::MediaStatus status) {
+        if (status == QMediaPlayer::EndOfMedia) {
+            emit playMusicEnd();
+        }
+    });
 }
 
 void Player::setPlayStatus(const bool playStatus) {
@@ -68,6 +76,12 @@ void Player::changeSource() {
     qDebug() << "change source" << mp3Url;
     m_player->stop();
     m_player->setSource(mp3Url);
+    qDebug() << "Duration: " << m_player->duration();
+
     m_player->play();
     setPlayStatus(true);
+}
+
+void Player::setPlayPosition(const qint64 position) {
+    m_player->setPosition(position);
 }

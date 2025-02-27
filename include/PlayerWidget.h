@@ -20,6 +20,25 @@ public:
     QPushButton *m_buttonMute;
 };
 
+class ProgressBarWidget final : public QWidget {
+    Q_OBJECT
+public:
+    explicit ProgressBarWidget(QWidget *parent = nullptr);
+
+    QSlider *m_sliderP;
+    QLabel *m_labelLeft;
+    QLabel *m_labelRight;
+    bool m_isUpdatingSlider;
+
+
+public Q_SLOTS:
+    void updateLabelR();
+
+    void updateSliderPosition(qint64 position);
+
+    void updateLabelL(qint64 duration);
+};
+
 class PlayerWidget final : public QWidget {
     Q_OBJECT
 
@@ -36,6 +55,7 @@ public:
     VolumeWidget *m_volumeWidget;
     QPushButton *m_pushButtonVolume;
     QMenu *m_menuVolume;
+    ProgressBarWidget *m_progressWidget;
 
 public Q_SLOTS:
     void setPlayButtonIcon(bool playStatus);

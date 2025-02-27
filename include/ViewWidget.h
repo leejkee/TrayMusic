@@ -18,10 +18,6 @@ class ViewWidget final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit ViewWidget(QWidget *parent = nullptr) : QWidget(parent), m_playListView(nullptr),
-                                                     m_playListModel(nullptr) {
-    }
-
     explicit ViewWidget(const QString &list, QWidget *parent = nullptr);
 
     QListView *m_playListView;

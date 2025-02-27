@@ -13,6 +13,8 @@
 #include <QWidgetAction>
 #include <QToolButton>
 
+#include "PlayList.h"
+
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
     m_pushButtonPlay->setFixedSize(30, 30);
@@ -24,6 +26,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay->setEnabled(false);
     m_pushButtonNext->setEnabled(false);
     m_pushButtonPre->setEnabled(false);
+
 
     // VolumeCtrl Section Begin
     m_volumeWidget = new VolumeWidget(this);
@@ -40,9 +43,12 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     });
     // VolumeCtrl Section End
 
+    m_progressWidget = new ProgressBarWidget(this);
+
     QVBoxLayout *Layout = new QVBoxLayout;
     QSpacerItem *spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
     Layout->addWidget(m_labelMusicFileName);
+    Layout->addWidget(m_progressWidget);
     const auto buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(m_pushButtonPre);
     buttonLayout->addWidget(m_pushButtonPlay);
@@ -103,7 +109,7 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     layout->addWidget(m_buttonMute);
     layout->setContentsMargins(5, 5, 0, 0);
     setLayout(layout);
-    this->setFixedSize(30, 100);
+    this->setFixedSize(30, 110);
 }
 
 void PlayerWidget::show() {
@@ -117,4 +123,47 @@ void PlayerWidget::show() {
         m_menuVolume->popup(pos);
         qDebug() << "Menu show";
     }
+}
+
+ProgressBarWidget::ProgressBarWidget(QWidget *parent)
+        : QWidget(parent)
+        , m_sliderP(new QSlider(Qt::Horizontal, this))
+        , m_labelLeft(new QLabel(this))
+        , m_labelRight(new QLabel(this))
+        , m_isUpdatingSlider(false)
+{
+    m_labelLeft->setText("00:00");
+    m_labelRight->setText("00:00");
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(m_labelLeft);
+    layout->addWidget(m_sliderP);
+    layout->addWidget(m_labelRight);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(2);
+    setLayout(layout);
+    // refresh firstly
+    updateLabelR();
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ProgressBarWidget::updateLabelR);
+}
+
+/// 
+/// @param position ms
+void ProgressBarWidget::updateSliderPosition(const qint64 position) {
+    // secure this function dismiss the signal @valueChanged
+    m_isUpdatingSlider = true;
+    m_sliderP->setValue(static_cast<int>(position));
+    m_isUpdatingSlider = false;
+}
+
+void ProgressBarWidget::updateLabelL(const qint64 duration) {
+    const int s = duration / 1000;
+    const QString t = PlayList::convertSecondsToTime(s);
+    m_labelLeft->setText(t);
+}
+
+// update when music changed
+void ProgressBarWidget::updateLabelR() {
+    const int s = PlayList::instance()->getCurrentMusicDuration();
+    m_sliderP->setMaximum(s * 1000);
+    m_labelRight->setText(PlayList::convertSecondsToTime(s));
 }

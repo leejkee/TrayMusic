@@ -12,7 +12,7 @@ struct Song{
     // QString artist;
     // QString album;
     QString path;
-    QString duration;
+    int duration;
 };
 
 
@@ -32,6 +32,8 @@ public:
     [[nodiscard]] QString getCurrentMusicName() const;
     [[nodiscard]] QString getCurrentMusicPath() const;
 
+    [[nodiscard]] int getCurrentMusicDuration() const;
+
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
 
@@ -39,8 +41,8 @@ public:
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
     [[nodiscard]] QStringList getMusicNameWithoutSuffixList() const;
 
-    static QString convertIntToTime(int minutes, int seconds);
-    static QString musicLength(const std::wstring &path);
+    static QString convertSecondsToTime(int seconds);
+    static int musicLength(const std::wstring &path);
 
     [[nodiscard]] int getCurrentMusicIndex() const;
     void setCurrentMusicIndex(int index);
