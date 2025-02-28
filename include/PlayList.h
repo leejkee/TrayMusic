@@ -16,7 +16,6 @@ struct Song{
 };
 
 
-
 class PlayList final: public QObject {
     Q_OBJECT
     Q_PROPERTY(int currentMusicIndex READ getCurrentMusicIndex WRITE setCurrentMusicIndex NOTIFY currentMusicIndexChanged)
@@ -47,6 +46,8 @@ public:
     [[nodiscard]] int getCurrentMusicIndex() const;
     void setCurrentMusicIndex(int index);
 
+    [[nodiscard]] bool isEmpty() const;
+
 
 
 Q_SIGNALS:
@@ -60,7 +61,7 @@ public Q_SLOTS:
 
 
 private:
-    PlayList() {}
+    PlayList(){}
     int m_currentIndex{0};
     QList<Song> m_musicList{};
 };

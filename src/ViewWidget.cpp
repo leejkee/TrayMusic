@@ -7,9 +7,7 @@
 #include <QListView>
 #include <QStringListModel>
 
-ViewWidget::ViewWidget(const QString& list, QWidget *parent): QWidget(parent) {
-
-    PlayList::instance()->loadMusicFromDirectory(list);
+ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListModel = new QStringListModel(this);
     m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
     m_playListView = new QListView(this);

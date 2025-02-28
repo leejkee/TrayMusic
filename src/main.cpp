@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QSystemTrayIcon>
 #include "MainWindow.h"
+#include "Settings.h"
 
 int main(int argc, char** argv)
 {

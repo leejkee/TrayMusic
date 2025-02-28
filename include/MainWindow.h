@@ -6,13 +6,12 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 
-
 class Player;
 class ViewWidget;
 class PlayerWidget;
 class QSystemTrayIcon;
-class TrayUI;
 class WindowManager;
+class Settings;
 
 class MainWindow final : public QMainWindow {
 Q_OBJECT
@@ -22,12 +21,14 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void setVisible(bool visible) override;
 
 
 private:
     void initMainApplication();
     void createConnect();
-    void setVisible(bool visible) override;
+    void createTrayIcon();
+    void loadSettings();
 
     QAction* m_minimizeAction;
     QAction* m_maximizeAction;
@@ -36,13 +37,14 @@ private:
     QSystemTrayIcon *m_systemTrayIcon;
     QMenu *m_trayIconMenu;
 
-    void createTrayIcon();
-    // void loadSettings();
     QWidget *m_centralWidget;
     Player *m_player;
-    ViewWidget *m_iconWidget;
+    ViewWidget *m_viewWidget;
     PlayerWidget *m_playerWidget;
     WindowManager *m_windowManager;
+
+    Settings *m_settings;
+
 
 public Q_SLOTS:
     void changeMusicLabelName(const QString& name);

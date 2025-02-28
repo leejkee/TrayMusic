@@ -5,7 +5,6 @@
 #include <QApplication>
 #include <QAudioOutput>
 #include <QCloseEvent>
-#include <QComboBox>
 #include <QMenu>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
@@ -19,24 +18,28 @@
 #include "PlayerWidget.h"
 #include "WindowManager.h"
 #include "PlayList.h"
+#include "Settings.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent) {
+    : QMainWindow(parent)
+    , m_settings(new Settings){
     initMainApplication();
 }
 
 MainWindow::~MainWindow() {
+    delete m_settings;
 }
 
+void MainWindow::loadSettings() {
+    PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
+}
 void MainWindow::initMainApplication() {
+    loadSettings();
     createTrayIcon();
-    m_iconWidget = new ViewWidget("C:/Users/cww/Music/lostgrace", this);
+    m_viewWidget = new ViewWidget(this);
     m_player = new Player();
     m_playerWidget = new PlayerWidget(this);
-    m_playerWidget->changeMusicName(PlayList::instance()->getCurrentMusicName());
-    m_playerWidget->setButtonVisible(true);
-
-    m_windowManager = new WindowManager(m_iconWidget);
+    m_windowManager = new WindowManager(m_viewWidget, this);
     m_windowManager->setBottomWidget(m_playerWidget);
     createConnect();
     setCentralWidget(m_windowManager);
@@ -48,29 +51,18 @@ void MainWindow::createConnect() {
 
     // resize the main window
     connect(m_maximizeAction, &QAction::triggered, this, &MainWindow::showMaximized);
-
     connect(m_minimizeAction, &QAction::triggered, this, &MainWindow::hide);
-
     connect(m_restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
 
-    connect(m_playerWidget->m_pushButtonNext, &QPushButton::clicked, PlayList::instance(), &PlayList::nextMusic);
-
-    connect(m_playerWidget->m_pushButtonPre, &QPushButton::clicked, PlayList::instance(), &PlayList::previousMusic);
-
+    // play or pause
     connect(m_playerWidget->m_pushButtonPlay, &QPushButton::clicked, m_player, &Player::playToggle);
 
+    // update the icon of playButton
     connect(m_player, &Player::playStatusChanged, m_playerWidget, &PlayerWidget::setPlayButtonIcon);
 
-    // update the music name label
-    connect(PlayList::instance(), &PlayList::currentMusicNameChanged, this, &MainWindow::changeMusicLabelName);
-
-    // update the source of player when the current music changed
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_player, &Player::changeSource);
-
+    // set volume
     connect(m_playerWidget->m_volumeWidget->m_sliderV, &QSlider::valueChanged, m_player, &Player::setVolume);
-
     connect(m_player, &Player::volumeChanged, m_playerWidget, &PlayerWidget::setVolumeCtrlButtonIcon);
-
     connect(m_playerWidget->m_volumeWidget->m_buttonMute, &QPushButton::clicked, this, [this]() {
         if (m_player->getVolume() == 0) {
             m_player->setVolume(m_playerWidget->m_volumeWidget->m_sliderV->value());
@@ -79,8 +71,11 @@ void MainWindow::createConnect() {
         }
     });
 
+    // progressbar and set position
     connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateSliderPosition);
     connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelR);
+
     connect(m_playerWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
         if (m_playerWidget->m_progressWidget->m_isUpdatingSlider) {
             return;
@@ -91,8 +86,6 @@ void MainWindow::createConnect() {
     // auto check music
     connect(m_player, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
 
-
-    // connect(m_player, &Player)
 
  }
 

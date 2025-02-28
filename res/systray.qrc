@@ -7,5 +7,6 @@
    <file>images/next.svg</file>
    <file>images/high-volume.svg</file>
    <file>images/no-volume.svg</file>
+   <file>settings/init.json</file>
 </qresource>
 </RCC>

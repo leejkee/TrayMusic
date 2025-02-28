@@ -41,7 +41,11 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
         const QDir dir(filePath);
         QStringList files = dir.entryList(QDir::Files);
         for (const auto &file: files) {
-            loadMusicFromDirectory(file);
+            Song song;
+            song.path = dir.absoluteFilePath(file);
+            song.name = getMusicNameWithoutSuffix(song.path);
+            song.duration = musicLength(song.path.toStdWString());
+            m_musicList.append(song);
         }
     }
 }
@@ -57,6 +61,10 @@ QString PlayList::getCurrentMusicName() const {
 }
 
 QString PlayList::getCurrentMusicPath() const {
+    if (isEmpty()) {
+        qDebug() << "PlayList::getCurrentMusicPath() is empty";
+        return {};
+    }
     return m_musicList.at(m_currentIndex).path;
 }
 
@@ -105,6 +113,10 @@ void PlayList::previousMusic() {
         index--;
     }
     setCurrentMusicIndex(index);
+}
+
+bool PlayList::isEmpty() const {
+    return m_musicList.isEmpty();
 }
 
 

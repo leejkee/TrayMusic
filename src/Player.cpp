@@ -24,6 +24,8 @@ Player::Player()
             emit playMusicEnd();
         }
     });
+    // update the source of player when the current music changed
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &Player::changeSource);
 }
 
 void Player::setPlayStatus(const bool playStatus) {
@@ -73,11 +75,8 @@ void Player::playToggle() {
 
 void Player::changeSource() {
     const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath());
-    qDebug() << "change source" << mp3Url;
     m_player->stop();
     m_player->setSource(mp3Url);
-    qDebug() << "Duration: " << m_player->duration();
-
     m_player->play();
     setPlayStatus(true);
 }

@@ -12,21 +12,18 @@
 #include <QStackedLayout>
 #include <QWidgetAction>
 #include <QToolButton>
-
 #include "PlayList.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
     m_pushButtonPlay->setFixedSize(30, 30);
-    m_labelMusicFileName = new QLabel(QCoreApplication::translate("TrayUI", "Song Name"));
+    m_labelMusicFileName = new QLabel;
+    m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
     m_pushButtonPre = new QPushButton(QIcon(Res::preIconSVG), "");
     m_pushButtonPre->setFixedSize(30, 30);
     m_pushButtonNext = new QPushButton(QIcon(Res::nextIconSVG), "");
     m_pushButtonNext->setFixedSize(30, 30);
-    m_pushButtonPlay->setEnabled(false);
-    m_pushButtonNext->setEnabled(false);
-    m_pushButtonPre->setEnabled(false);
-
+    setButtonVisible(true);
 
     // VolumeCtrl Section Begin
     m_volumeWidget = new VolumeWidget(this);
@@ -38,18 +35,14 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     action->setDefaultWidget(m_volumeWidget);
     m_menuVolume->addAction(action);
     m_pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");
-    connect(m_pushButtonVolume, &QPushButton::clicked, this, [this]() {
-        show();
-    });
     // VolumeCtrl Section End
 
     m_progressWidget = new ProgressBarWidget(this);
-
-    QVBoxLayout *Layout = new QVBoxLayout;
-    QSpacerItem *spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
+    auto *Layout = new QVBoxLayout;
+    auto *spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
     Layout->addWidget(m_labelMusicFileName);
     Layout->addWidget(m_progressWidget);
-    const auto buttonLayout = new QHBoxLayout;
+    auto *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(m_pushButtonPre);
     buttonLayout->addWidget(m_pushButtonPlay);
     buttonLayout->addWidget(m_pushButtonNext);
@@ -57,8 +50,19 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     buttonLayout->addWidget(m_pushButtonVolume);
     Layout->addLayout(buttonLayout);
     this->setLayout(Layout);
+    createConnections();
 }
+void PlayerWidget::createConnections() {
+    // update the music name label
+    connect(PlayList::instance(), &PlayList::currentMusicNameChanged, m_labelMusicFileName, &QLabel::setText);
 
+    // show the volume widget
+    connect(m_pushButtonVolume, &QPushButton::clicked, this, &PlayerWidget::show);
+
+    // check music
+    connect(m_pushButtonNext, &QPushButton::clicked, PlayList::instance(), &PlayList::nextMusic);
+    connect(m_pushButtonPre, &QPushButton::clicked, PlayList::instance(), &PlayList::previousMusic);
+}
 
 void PlayerWidget::setPlayButtonIcon(const bool playStatus) {
     if (playStatus) {
@@ -78,9 +82,6 @@ void PlayerWidget::setVolumeCtrlButtonIcon(const int volume) {
     }
 }
 
-void PlayerWidget::changeMusicName(const QString &name) {
-    m_labelMusicFileName->setText(name);
-}
 
 void PlayerWidget::setButtonVisible(const bool b) {
     m_pushButtonPlay->setEnabled(b);
@@ -143,7 +144,6 @@ ProgressBarWidget::ProgressBarWidget(QWidget *parent)
     setLayout(layout);
     // refresh firstly
     updateLabelR();
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ProgressBarWidget::updateLabelR);
 }
 
 /// 

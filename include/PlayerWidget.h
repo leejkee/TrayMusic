@@ -10,7 +10,6 @@ class QGroupBox;
 class QLabel;
 class QSlider;
 class QPushButton;
-class QToolButton;
 
 class VolumeWidget final : public QWidget {
 public:
@@ -30,7 +29,6 @@ public:
     QLabel *m_labelRight;
     bool m_isUpdatingSlider;
 
-
 public Q_SLOTS:
     void updateLabelR();
 
@@ -44,9 +42,6 @@ class PlayerWidget final : public QWidget {
 
 public:
     explicit PlayerWidget(QWidget *parent = nullptr);
-    void changeMusicName(const QString& name);
-    void setButtonVisible(bool b);
-    void show();
 
     QPushButton *m_pushButtonPlay;
     QLabel *m_labelMusicFileName;
@@ -56,6 +51,11 @@ public:
     QPushButton *m_pushButtonVolume;
     QMenu *m_menuVolume;
     ProgressBarWidget *m_progressWidget;
+
+private:
+    void createConnections();
+    void show();
+    void setButtonVisible(bool b);
 
 public Q_SLOTS:
     void setPlayButtonIcon(bool playStatus);
