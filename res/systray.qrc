@@ -7,6 +7,11 @@
    <file>images/next.svg</file>
    <file>images/high-volume.svg</file>
    <file>images/no-volume.svg</file>
+   <file>images/up.svg</file>
+   <file>images/down.svg</file>
+   <file>images/add.svg</file>
+   <file>images/addd.svg</file>
+   <file>images/remove.svg</file>
    <file>settings/init.json</file>
 </qresource>
 </RCC>

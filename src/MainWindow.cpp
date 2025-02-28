@@ -36,6 +36,7 @@ void MainWindow::loadSettings() {
 
 void MainWindow::initMainApplication() {
     loadSettings();
+    createTrayIcon();
     m_viewWidget = new ViewWidget(this);
     m_player = new Player(m_settings->getDefaultVolume());
     m_playerWidget = new PlayerWidget(this);
@@ -44,7 +45,6 @@ void MainWindow::initMainApplication() {
     m_windowManager->setBottomWidget(m_playerWidget);
     createConnections();
     setCentralWidget(m_windowManager);
-    createTrayIcon();
 }
 
 void MainWindow::createConnections() {

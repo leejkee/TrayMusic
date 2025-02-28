@@ -3,7 +3,7 @@
 //
 
 #include "WindowManager.h"
-
+#include "MusicListManager.h"
 #include <QGroupBox>
 #include <QLabel>
 #include <QGridLayout>
@@ -19,11 +19,17 @@ WindowManager::WindowManager(QWidget *mainWidget, QWidget *parent)
         qDebug() << "mainWidget is null";
         return;
     }
+
     QGroupBox *mainGroup = new QGroupBox;
     QGroupBox *bottomGroup = new QGroupBox;
+
+    MusicListManager *mlm = new MusicListManager(this);
+
     m_bottomLayout = new QHBoxLayout;
+
     m_mainLayout = new QGridLayout;
-    m_mainLayout->addWidget(m_mainWidget, 0, 0, 1, 1);
+    m_mainLayout->addWidget(m_mainWidget, 0, 1, 1, 4);
+    m_mainLayout->addWidget(mlm, 0, 0, 1, 1);
 
     mainGroup->setLayout(m_mainLayout);
     bottomGroup->setLayout(m_bottomLayout);
