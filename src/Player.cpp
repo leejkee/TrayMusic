@@ -8,11 +8,11 @@
 #include "PlayList.h"
 
 
-Player::Player()
+Player::Player(const float volume)
     : m_player(new QMediaPlayer)
       , m_audioOut(new QAudioOutput)
       , m_isPlay(false)
-      , m_volume(0.3) {
+      , m_volume(volume) {
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
     loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));
@@ -48,8 +48,7 @@ void Player::loadMusic(const QUrl &mp3Url) {
 void Player::setVolume(int volume) {
     if (volume > 100) {
         volume = 100;
-    }
-    else if (volume < 0) {
+    } else if (volume < 0) {
         volume = 0;
     }
     if (const float v = static_cast<float>(volume) / 100.0f; v != m_volume) {

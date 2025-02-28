@@ -14,6 +14,9 @@ class QPushButton;
 class VolumeWidget final : public QWidget {
 public:
     explicit VolumeWidget(QWidget *parent = nullptr);
+
+    void loadDefaultSetting(float volume);
+
     QSlider *m_sliderV;
     QLabel *m_labelVolume;
     QPushButton *m_buttonMute;
@@ -54,8 +57,8 @@ public:
 
 private:
     void createConnections();
-    void show();
     void setButtonVisible(bool b);
+    void showVolumeSlider();
 
 public Q_SLOTS:
     void setPlayButtonIcon(bool playStatus);

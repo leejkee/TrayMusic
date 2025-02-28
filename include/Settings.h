@@ -19,10 +19,12 @@ public:
 
     [[nodiscard]] QStringList getMusicDirectories() const { return m_mp3Paths; }
     [[nodiscard]] QString getDatabaseDirectory() const { return m_dbPath; }
+    [[nodiscard]] float getDefaultVolume() const{return m_volume;}
 
 private:
     QString m_dbPath;
     QStringList m_mp3Paths;
+    float m_volume;
 };
 
 

@@ -26,7 +26,7 @@ protected:
 
 private:
     void initMainApplication();
-    void createConnect();
+    void createConnections();
     void createTrayIcon();
     void loadSettings();
 

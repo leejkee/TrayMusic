@@ -15,7 +15,7 @@ class Player final : public QObject {
 
 
 public:
-    explicit Player();
+    explicit Player(float volume);
 
     ~Player() override;
 

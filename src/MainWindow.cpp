@@ -22,7 +22,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , m_settings(new Settings){
+      , m_settings(new Settings) {
     initMainApplication();
 }
 
@@ -33,19 +33,21 @@ MainWindow::~MainWindow() {
 void MainWindow::loadSettings() {
     PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
 }
+
 void MainWindow::initMainApplication() {
     loadSettings();
-    createTrayIcon();
     m_viewWidget = new ViewWidget(this);
-    m_player = new Player();
+    m_player = new Player(m_settings->getDefaultVolume());
     m_playerWidget = new PlayerWidget(this);
+    m_playerWidget->m_volumeWidget->loadDefaultSetting(m_settings->getDefaultVolume());
     m_windowManager = new WindowManager(m_viewWidget, this);
     m_windowManager->setBottomWidget(m_playerWidget);
-    createConnect();
+    createConnections();
     setCentralWidget(m_windowManager);
+    createTrayIcon();
 }
 
-void MainWindow::createConnect() {
+void MainWindow::createConnections() {
     // quit the application
     connect(m_quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
@@ -72,9 +74,11 @@ void MainWindow::createConnect() {
     });
 
     // progressbar and set position
-    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateSliderPosition);
+    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget,
+            &ProgressBarWidget::updateSliderPosition);
     connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelR);
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_playerWidget->m_progressWidget,
+            &ProgressBarWidget::updateLabelR);
 
     connect(m_playerWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
         if (m_playerWidget->m_progressWidget->m_isUpdatingSlider) {
@@ -85,9 +89,7 @@ void MainWindow::createConnect() {
 
     // auto check music
     connect(m_player, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
-
-
- }
+}
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (!event->spontaneous() || !isVisible())

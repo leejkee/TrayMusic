@@ -2,6 +2,7 @@
   "MusicDirectory": [
     "C:/Users/cww/Music/lostgrace"
   ],
-  "DatabaseDirectory": "DB/music.db"
+  "DatabaseDirectory": "DB/music.db",
+  "DefaultVolume": 0.2
 }
 

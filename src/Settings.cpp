@@ -27,12 +27,14 @@ void Settings::loadFromJson() {
     QJsonObject json = jsonDoc.object();
     m_mp3Paths = json["MusicDirectory"].toVariant().toStringList();
     m_dbPath = json["DatabaseDirectory"].toString();
+    m_volume = static_cast<float>(json["DefaultVolume"].toDouble());
 };
 
 void Settings::saveToJson() {
     QJsonObject jsonObj;
     jsonObj["MusicDirectory"] = QJsonArray::fromStringList(m_mp3Paths);
     jsonObj["DatabaseDirectory"] = QJsonValue(m_dbPath);
+    jsonObj["DefaultVolume"] = QJsonValue(m_volume);
     const QJsonDocument doc(jsonObj);
     QFile file(m_settingsPath);
     if (!file.open(QIODevice::WriteOnly)) {

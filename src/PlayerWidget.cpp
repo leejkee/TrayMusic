@@ -57,7 +57,7 @@ void PlayerWidget::createConnections() {
     connect(PlayList::instance(), &PlayList::currentMusicNameChanged, m_labelMusicFileName, &QLabel::setText);
 
     // show the volume widget
-    connect(m_pushButtonVolume, &QPushButton::clicked, this, &PlayerWidget::show);
+    connect(m_pushButtonVolume, &QPushButton::clicked, this, &PlayerWidget::showVolumeSlider);
 
     // check music
     connect(m_pushButtonNext, &QPushButton::clicked, PlayList::instance(), &PlayList::nextMusic);
@@ -82,18 +82,15 @@ void PlayerWidget::setVolumeCtrlButtonIcon(const int volume) {
     }
 }
 
-
 void PlayerWidget::setButtonVisible(const bool b) {
     m_pushButtonPlay->setEnabled(b);
     m_pushButtonNext->setEnabled(b);
     m_pushButtonPre->setEnabled(b);
 }
 
-
 VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     m_sliderV = new QSlider(this);
     m_sliderV->setRange(0, 100);
-    m_sliderV->setValue(30);
     m_labelVolume = new QLabel(this);
     m_labelVolume->setText("30%");
     m_labelVolume->setStyleSheet("font-size: 7pt;");
@@ -112,8 +109,12 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     setLayout(layout);
     this->setFixedSize(30, 110);
 }
+void VolumeWidget::loadDefaultSetting(const float volume) {
+    m_sliderV->setValue(static_cast<int>(volume * 100));
+    m_labelVolume->setText(QString("%1%").arg(m_sliderV->value()));
+}
 
-void PlayerWidget::show() {
+void PlayerWidget::showVolumeSlider() {
     if (m_menuVolume->isVisible()) {
         m_menuVolume->hide();
         qDebug() << "Menu hide";
