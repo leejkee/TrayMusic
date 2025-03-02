@@ -1,7 +1,6 @@
 //
 // Created by cww on 25-2-28.
 //
-
 #include "MusicListManager.h"
 #include "Assets.h"
 #include <QPushButton>
@@ -11,7 +10,7 @@
 #include <QInputDialog>
 
 MusicListManager::MusicListManager(QWidget *parent)
-    : QWidget(parent), m_isExpanded(true) {
+    : QWidget(parent) {
     m_expandButton = new QPushButton(QIcon(Res::downSVG), "Lists", this);
     m_expandButton->setFixedWidth(60);
     m_expandButton->setStyleSheet(R"(
@@ -77,9 +76,8 @@ MusicListManager::MusicListManager(QWidget *parent)
 }
 
 
-//  **展开/收起按钮区域**
 void MusicListManager::toggleExpand() {
-    bool isV = m_buttonContainerWidget->isVisible();
+    const bool isV = m_buttonContainerWidget->isVisible();
     m_buttonContainerWidget->setVisible(!isV);
     if (!isV) {
         m_expandButton->setIcon(QIcon(Res::upSVG));
@@ -89,21 +87,26 @@ void MusicListManager::toggleExpand() {
 }
 
 
-//  **创建歌单**
 void MusicListManager::createPlaylist() {
     bool ok;
     QString playlistName = QInputDialog::getText(this, "New a music list", "Music list name:", QLineEdit::Normal, "",
                                                  &ok);
-
     if (ok && !playlistName.isEmpty()) {
         addPlaylistButton(playlistName);
         emit playlistCreated(playlistName);
     }
 }
 
-
-//  **添加歌单按钮**
 void MusicListManager::addPlaylistButton(const QString &name) {
     QPushButton *playlistButton = new QPushButton(name, this);
+    m_buttonsVector.append(playlistButton);
     m_buttonLayout->addWidget(playlistButton);
+}
+
+
+void MusicListManager::removePlaylistButton(const int index) {
+    const auto button = m_buttonsVector.at(index);
+    m_buttonsVector.removeAt(index);
+    m_buttonLayout->removeWidget(button);
+    delete button;
 }

@@ -22,15 +22,16 @@ private slots:
     void toggleExpand();                         // 展开/收起
     void createPlaylist();                       // 新建歌单
     void addPlaylistButton(const QString &name); // 添加按钮到界面
+    void removePlaylistButton(int index);
 
 private:
     QVBoxLayout *m_mainLayout;       // 主布局
     QPushButton *m_expandButton;     // 伸缩按钮
     QPushButton *m_addButton;        // 新建歌单按钮
     QWidget *m_buttonContainerWidget;      // 按钮容器
+    QVector<QPushButton *> m_buttonsVector;
     QVBoxLayout *m_buttonLayout;     // 存放按钮
     QScrollArea *m_scrollArea;       // 滚动区域
-    bool m_isExpanded;               // 是否展开
 };
 
 
