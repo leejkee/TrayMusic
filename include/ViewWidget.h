@@ -25,6 +25,11 @@ public:
 Q_SIGNALS:
     void viewDoubleClicked(int index);
 
+private Q_SLOTS:
+    void showContextMenu(const QPoint &pos);
+
+    void handleAction(int index);
+
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);
 

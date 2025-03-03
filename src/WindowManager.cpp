@@ -5,79 +5,86 @@
 #include "WindowManager.h"
 #include "MusicListManager.h"
 #include <QGroupBox>
-#include <QLabel>
-#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QSlider>
+#include "PlayerWidget.h"
+#include "PlayList.h"
+#include "Settings.h"
+#include "ViewWidget.h"
 
-WindowManager::WindowManager(QWidget *mainWidget, QWidget *parent)
+WindowManager::WindowManager(const Settings *settings, QWidget *parent)
     : QWidget(parent)
-, m_mainWidget(mainWidget)
-, m_bottomWidget(nullptr)
-, m_otherWidget(nullptr)
-, m_mainLayout(nullptr)
 {
-    if (mainWidget == nullptr) {
-        qDebug() << "mainWidget is null";
-        return;
-    }
+    this->m_player = new Player(settings->getDefaultVolume());
+    this->m_mainWidget = new ViewWidget(this);
+    this->m_buttonWidget = new PlayerWidget(this);
+    m_buttonWidget->m_volumeWidget->loadDefaultSetting(settings->getDefaultVolume());
+    this->m_leftWidget = new MusicListManager(this);
+    this->m_switchWidget = nullptr;
 
-    QGroupBox *mainGroup = new QGroupBox;
+    m_viewLayout = new QHBoxLayout;
+    m_viewLayout->setSpacing(0);
+    m_viewLayout->setContentsMargins(0, 0, 0, 0);
+    m_viewLayout->addWidget(m_leftWidget);
+    m_viewLayout->addWidget(m_mainWidget);
+
+    auto m_bottomLayout = new QHBoxLayout;
+    m_bottomLayout->setSpacing(0);
+    m_bottomLayout->setContentsMargins(0, 0, 0, 0);
+    m_bottomLayout->addWidget(m_buttonWidget);
+
     QGroupBox *bottomGroup = new QGroupBox;
-
-    MusicListManager *mlm = new MusicListManager(this);
-
-    m_bottomLayout = new QHBoxLayout;
-
-    m_mainLayout = new QGridLayout;
-    m_mainLayout->addWidget(m_mainWidget, 0, 1, 1, 4);
-    m_mainLayout->addWidget(mlm, 0, 0, 1, 1);
-
-    mainGroup->setLayout(m_mainLayout);
     bottomGroup->setLayout(m_bottomLayout);
 
     QVBoxLayout *Layout = new QVBoxLayout(this);
-    Layout->addWidget(mainGroup);
+    Layout->addItem(m_viewLayout);
     Layout->addWidget(bottomGroup);
+    createConnections();
+}
+
+void WindowManager::createConnections() {
+    // play or pause
+    connect(m_buttonWidget->m_pushButtonPlay, &QPushButton::clicked, m_player, &Player::playToggle);
+
+    // update the icon of playButton
+    connect(m_player, &Player::playStatusChanged, m_buttonWidget, &PlayerWidget::setPlayButtonIcon);
+
+    // set volume
+    connect(m_buttonWidget->m_volumeWidget->m_sliderV, &QSlider::valueChanged, m_player, &Player::setVolume);
+    connect(m_player, &Player::volumeChanged, m_buttonWidget, &PlayerWidget::setVolumeCtrlButtonIcon);
+    connect(m_buttonWidget->m_volumeWidget->m_buttonMute, &QPushButton::clicked, this, [this]() {
+        if (m_player->getVolume() == 0) {
+            m_player->setVolume(m_buttonWidget->m_volumeWidget->m_sliderV->value());
+        } else {
+            m_player->setVolume(0);
+        }
+    });
+
+    // progressbar and set position
+    connect(m_player, &Player::playPositionChanged, m_buttonWidget->m_progressWidget, &ProgressBarWidget::updateSliderPosition);
+    connect(m_player, &Player::playPositionChanged, m_buttonWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
+    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_buttonWidget->m_progressWidget, &ProgressBarWidget::updateLabelR);
+    connect(m_buttonWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
+        if (m_buttonWidget->m_progressWidget->m_isUpdatingSlider) {
+            return;
+        }
+        m_player->setPlayPosition(value);
+    });
 }
 
 WindowManager::~WindowManager() {
-    delete m_mainWidget;
-    delete m_otherWidget;
-    delete m_bottomWidget;
+
 }
 
 void WindowManager::showMainWidget() {
-    if (m_otherWidget != nullptr) {
-        m_mainLayout->removeWidget(m_otherWidget);
-        delete m_otherWidget;
-    }
-    m_mainLayout->addWidget(m_mainWidget);
 }
 
 
 void WindowManager::showOtherWidget(QWidget *widget) {
-    if (widget == nullptr) {
-        qDebug() << "other widget is null";
-        return;
-    }
-    if (m_mainLayout->indexOf(m_mainWidget) != -1) {
-        m_mainLayout->removeWidget(m_mainWidget);
-    }
-
-    m_otherWidget = widget;
-    m_mainLayout->addWidget(m_otherWidget, 0, 0, 1, 1);
 }
 
 void WindowManager::setBottomWidget(QWidget *widget) {
-    if (widget == nullptr) {
-        qDebug() << "bottom widget is null";
-        return;
-    }
-    if (m_bottomWidget != nullptr) {
-        m_bottomLayout->removeWidget(m_bottomWidget);
-        delete m_bottomWidget;
-    }
-    m_bottomWidget = widget;
-    m_bottomLayout->addWidget(m_bottomWidget);
 }
 
 

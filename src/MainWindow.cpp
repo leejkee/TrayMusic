@@ -3,19 +3,12 @@
 //
 
 #include <QApplication>
-#include <QAudioOutput>
 #include <QCloseEvent>
 #include <QMenu>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
 #include "MainWindow.h"
-#include <QLabel>
-#include <QListView>
-#include <QPushButton>
-#include "Player.h"
 #include "Assets.h"
-#include "ViewWidget.h"
-#include "PlayerWidget.h"
 #include "WindowManager.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -37,12 +30,7 @@ void MainWindow::loadSettings() {
 void MainWindow::initMainApplication() {
     loadSettings();
     createTrayIcon();
-    m_viewWidget = new ViewWidget(this);
-    m_player = new Player(m_settings->getDefaultVolume());
-    m_playerWidget = new PlayerWidget(this);
-    m_playerWidget->m_volumeWidget->loadDefaultSetting(m_settings->getDefaultVolume());
-    m_windowManager = new WindowManager(m_viewWidget, this);
-    m_windowManager->setBottomWidget(m_playerWidget);
+    m_windowManager = new WindowManager(m_settings, this);
     createConnections();
     setCentralWidget(m_windowManager);
 }
@@ -55,40 +43,6 @@ void MainWindow::createConnections() {
     connect(m_maximizeAction, &QAction::triggered, this, &MainWindow::showMaximized);
     connect(m_minimizeAction, &QAction::triggered, this, &MainWindow::hide);
     connect(m_restoreAction, &QAction::triggered, this, &MainWindow::showNormal);
-
-    // play or pause
-    connect(m_playerWidget->m_pushButtonPlay, &QPushButton::clicked, m_player, &Player::playToggle);
-
-    // update the icon of playButton
-    connect(m_player, &Player::playStatusChanged, m_playerWidget, &PlayerWidget::setPlayButtonIcon);
-
-    // set volume
-    connect(m_playerWidget->m_volumeWidget->m_sliderV, &QSlider::valueChanged, m_player, &Player::setVolume);
-    connect(m_player, &Player::volumeChanged, m_playerWidget, &PlayerWidget::setVolumeCtrlButtonIcon);
-    connect(m_playerWidget->m_volumeWidget->m_buttonMute, &QPushButton::clicked, this, [this]() {
-        if (m_player->getVolume() == 0) {
-            m_player->setVolume(m_playerWidget->m_volumeWidget->m_sliderV->value());
-        } else {
-            m_player->setVolume(0);
-        }
-    });
-
-    // progressbar and set position
-    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget,
-            &ProgressBarWidget::updateSliderPosition);
-    connect(m_player, &Player::playPositionChanged, m_playerWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_playerWidget->m_progressWidget,
-            &ProgressBarWidget::updateLabelR);
-
-    connect(m_playerWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
-        if (m_playerWidget->m_progressWidget->m_isUpdatingSlider) {
-            return;
-        }
-        m_player->setPlayPosition(value);
-    });
-
-    // auto check music
-    connect(m_player, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -113,12 +67,6 @@ void MainWindow::setVisible(const bool visible) {
 }
 
 
-void MainWindow::changeMusicLabelName(const QString &name) {
-    if (!name.isEmpty()) {
-        const auto label = name.right(name.size() - name.lastIndexOf('/') - 1);
-        m_playerWidget->m_labelMusicFileName->setText(label);
-    }
-}
 
 void MainWindow::createTrayIcon() {
     m_trayIconMenu = new QMenu(this);

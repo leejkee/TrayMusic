@@ -26,6 +26,8 @@ Player::Player(const float volume)
     });
     // update the source of player when the current music changed
     connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &Player::changeSource);
+    // auto check music
+    connect(this, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
 }
 
 void Player::setPlayStatus(const bool playStatus) {

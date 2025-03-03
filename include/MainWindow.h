@@ -6,9 +6,6 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 
-class Player;
-class ViewWidget;
-class PlayerWidget;
 class QSystemTrayIcon;
 class WindowManager;
 class Settings;
@@ -37,18 +34,8 @@ private:
     QSystemTrayIcon *m_systemTrayIcon;
     QMenu *m_trayIconMenu;
 
-    QWidget *m_centralWidget;
-    Player *m_player;
-    ViewWidget *m_viewWidget;
-    PlayerWidget *m_playerWidget;
     WindowManager *m_windowManager;
-
     Settings *m_settings;
-
-
-public Q_SLOTS:
-    void changeMusicLabelName(const QString& name);
-
 };
 
 
