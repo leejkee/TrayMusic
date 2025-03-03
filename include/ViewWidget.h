@@ -6,6 +6,8 @@
 #define ICONWIDGET_H
 #include <QWidget>
 
+#include "Settings.h"
+
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
@@ -13,6 +15,7 @@ class QListView;
 class QTableView;
 class QStringListModel;
 class PlayListModel;
+
 
 class ViewWidget final : public QWidget {
     Q_OBJECT
@@ -22,6 +25,7 @@ public:
 
     QListView *m_playListView;
     QStringListModel *m_playListModel;
+    QWidget *m_topWidget;
 Q_SIGNALS:
     void viewDoubleClicked(int index);
 

@@ -14,24 +14,25 @@ class MusicListManager final : public QWidget {
 
 public:
     explicit MusicListManager(QWidget *parent = nullptr);
+    QPushButton *m_musicListManagerButton;
 
 signals:
-    void playlistCreated(const QString &name); // 发送新歌单名
+    void playlistCreated(const QString &name);
 
 private slots:
-    void toggleExpand();                         // 展开/收起
-    void createPlaylist();                       // 新建歌单
-    void addPlaylistButton(const QString &name); // 添加按钮到界面
+    void toggleExpand();
+    void createPlaylist();
+    void addPlaylistButton(const QString &name);
     void removePlaylistButton(int index);
 
 private:
-    QVBoxLayout *m_mainLayout;       // 主布局
-    QPushButton *m_expandButton;     // 伸缩按钮
-    QPushButton *m_addButton;        // 新建歌单按钮
-    QWidget *m_buttonContainerWidget;      // 按钮容器
+    QVBoxLayout *m_mainLayout;
+    QPushButton *m_expandButton;
+    QPushButton *m_addButton;
+    QWidget *m_buttonContainerWidget;
     QVector<QPushButton *> m_buttonsVector;
-    QVBoxLayout *m_buttonLayout;     // 存放按钮
-    QScrollArea *m_scrollArea;       // 滚动区域
+    QVBoxLayout *m_buttonLayout;
+    QScrollArea *m_scrollArea;
 };
 
 

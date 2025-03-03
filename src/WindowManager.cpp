@@ -29,15 +29,15 @@ WindowManager::WindowManager(const Settings *settings, QWidget *parent)
     m_viewLayout->addWidget(m_leftWidget);
     m_viewLayout->addWidget(m_mainWidget);
 
-    auto m_bottomLayout = new QHBoxLayout;
+    const auto m_bottomLayout = new QHBoxLayout;
     m_bottomLayout->setSpacing(0);
     m_bottomLayout->setContentsMargins(0, 0, 0, 0);
     m_bottomLayout->addWidget(m_buttonWidget);
 
-    QGroupBox *bottomGroup = new QGroupBox;
+    const auto bottomGroup = new QGroupBox;
     bottomGroup->setLayout(m_bottomLayout);
 
-    QVBoxLayout *Layout = new QVBoxLayout(this);
+    const auto Layout = new QVBoxLayout(this);
     Layout->addItem(m_viewLayout);
     Layout->addWidget(bottomGroup);
     createConnections();

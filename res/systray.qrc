@@ -12,6 +12,7 @@
    <file>images/add.svg</file>
    <file>images/addd.svg</file>
    <file>images/remove.svg</file>
+   <file>images/setting.svg</file>
    <file>settings/init.json</file>
 </qresource>
 </RCC>

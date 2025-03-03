@@ -5,6 +5,7 @@
 #ifndef WINDOWMANAGER_H
 #define WINDOWMANAGER_H
 
+#include <QPushButton>
 #include <QWidget>
 
 #include "Player.h"
@@ -14,9 +15,21 @@ class MusicListManager;
 class QGridLayout;
 class QHBoxLayout;
 class PlayerWidget;
+class QListWidget;
+
+
+class SettingsWidget final: public QWidget {
+
+public:
+    explicit SettingsWidget(QWidget *parent = nullptr);
+
+private:
+    QPushButton *addBtn;
+    QPushButton *removeBtn;
+    QListWidget *listWidget;
+};
 
 class WindowManager final : public QWidget{
-
 public:
     explicit WindowManager(const Settings *settings, QWidget *parent);
 

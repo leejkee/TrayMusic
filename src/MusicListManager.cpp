@@ -34,14 +34,23 @@ MusicListManager::MusicListManager(QWidget *parent)
     })");
     connect(m_addButton, &QPushButton::clicked, this, &MusicListManager::createPlaylist);
 
-    QHBoxLayout *btnlayout = new QHBoxLayout(this);
+    m_musicListManagerButton = new QPushButton(QIcon(Res::settingSVG), "Location", this);
+    m_musicListManagerButton->setStyleSheet(R"(
+    QPushButton {
+        height: 25px;
+        background-color: #ffffff;
+        icon-size: 10px;
+        padding: 0;
+    })");
+
+    auto btnlayout = new QHBoxLayout(this);
     btnlayout->setSpacing(0);
     btnlayout->setContentsMargins(0, 0, 0, 0);
     btnlayout->addWidget(m_expandButton);
-    auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    btnlayout->addItem(spaceH);
+    // const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    // btnlayout->addItem(spaceH);
     btnlayout->addWidget(m_addButton);
-    QWidget *btnWidget = new QWidget(this);
+    const auto btnWidget = new QWidget(this);
     btnWidget->setLayout(btnlayout);
 
     m_buttonContainerWidget = new QWidget(this);
@@ -55,19 +64,20 @@ MusicListManager::MusicListManager(QWidget *parent)
     m_scrollArea->setFrameShape(QFrame::NoFrame);
 
     m_mainLayout = new QVBoxLayout;
-    auto spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    const auto spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
     m_mainLayout->setSpacing(0);
+    m_mainLayout->addWidget(m_musicListManagerButton);
     m_mainLayout->addWidget(btnWidget);
     m_mainLayout->addWidget(m_buttonContainerWidget);
     m_mainLayout->addItem(spaceV);
 
-    QWidget *mainWidget = new QWidget(this);
+    const auto mainWidget = new QWidget(this);
     mainWidget->setLayout(m_mainLayout);
     m_scrollArea->setWidget(mainWidget);
     m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    const auto layout = new QVBoxLayout(this);
     layout->addWidget(m_scrollArea);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -89,8 +99,12 @@ void MusicListManager::toggleExpand() {
 
 void MusicListManager::createPlaylist() {
     bool ok;
-    QString playlistName = QInputDialog::getText(this, "New a music list", "Music list name:", QLineEdit::Normal, "",
-                                                 &ok);
+    const QString playlistName = QInputDialog::getText(this,
+                                                        "New a music list",
+                                                        "Music list name:",
+                                                        QLineEdit::Normal,
+                                                        "",
+                                                        &ok);
     if (ok && !playlistName.isEmpty()) {
         addPlaylistButton(playlistName);
         emit playlistCreated(playlistName);
@@ -98,7 +112,7 @@ void MusicListManager::createPlaylist() {
 }
 
 void MusicListManager::addPlaylistButton(const QString &name) {
-    QPushButton *playlistButton = new QPushButton(name, this);
+    const auto playlistButton = new QPushButton(name, this);
     m_buttonsVector.append(playlistButton);
     m_buttonLayout->addWidget(playlistButton);
 }

@@ -18,6 +18,7 @@ const QString downSVG(":/images/down.svg");
 const QString addSVG(":/images/add.svg");
 const QString adddSVG(":/images/addd.svg");
 const QString removeSVG(":/images/remove.svg");
+const QString settingSVG(":/images/setting.svg");
 
 
 
