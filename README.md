@@ -1,6 +1,6 @@
 ### A Lightweight Music Player Using Qt Widget 6.8.2
 
-[简体中文](doc/README_cn.md)  
+[简体中文](README_cn.md)  
 If you are looking for a reference project for the following purposes, this project may be useful:
 
 - Learning **Qt Widget** development
