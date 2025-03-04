@@ -34,14 +34,14 @@ MusicListManager::MusicListManager(QWidget *parent)
     })");
     connect(m_addButton, &QPushButton::clicked, this, &MusicListManager::createPlaylist);
 
-    m_musicListManagerButton = new QPushButton(QIcon(Res::settingSVG), "Location", this);
-    m_musicListManagerButton->setStyleSheet(R"(
-    QPushButton {
-        height: 25px;
-        background-color: #ffffff;
-        icon-size: 10px;
-        padding: 0;
-    })");
+    // m_musicListManagerButton = new QPushButton(QIcon(Res::settingSVG), "Location", this);
+    // m_musicListManagerButton->setStyleSheet(R"(
+    // QPushButton {
+    //     height: 25px;
+    //     background-color: #ffffff;
+    //     icon-size: 10px;
+    //     padding: 0;
+    // })");
 
     auto btnlayout = new QHBoxLayout(this);
     btnlayout->setSpacing(0);
@@ -67,7 +67,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     const auto spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
     m_mainLayout->setSpacing(0);
-    m_mainLayout->addWidget(m_musicListManagerButton);
+    // m_mainLayout->addWidget(m_musicListManagerButton);
     m_mainLayout->addWidget(btnWidget);
     m_mainLayout->addWidget(m_buttonContainerWidget);
     m_mainLayout->addItem(spaceV);

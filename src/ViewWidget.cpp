@@ -16,6 +16,7 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListView->setModel(m_playListModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_playListView->setStyleSheet("QListView { font-size: 15px; }");
     connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
     connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
     connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ViewWidget::updateCurrentIndex);
@@ -37,7 +38,7 @@ void ViewWidget::updateCurrentIndex(const int index) {
 
 void ViewWidget::showContextMenu(const QPoint &pos) {
     qDebug() << "ViewWidget::showContextMenu";
-    QModelIndex index = m_playListView->indexAt(pos);
+    const QModelIndex index = m_playListView->indexAt(pos);
     if (!index.isValid()) {
         return;
     }

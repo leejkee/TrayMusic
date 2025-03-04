@@ -4,19 +4,20 @@
 
 #ifndef WINDOWMANAGER_H
 #define WINDOWMANAGER_H
-
-#include <QPushButton>
 #include <QWidget>
 
-#include "Player.h"
-#include "Settings.h"
 
 class MusicListManager;
 class QGridLayout;
 class QHBoxLayout;
 class PlayerWidget;
 class QListWidget;
-
+class ViewWidget;
+class QStackedWidget;
+class Player;
+class Settings;
+class QPushButton;
+class TopBarWidget;
 
 class SettingsWidget final: public QWidget {
 
@@ -32,22 +33,26 @@ private:
 class WindowManager final : public QWidget{
 public:
     explicit WindowManager(const Settings *settings, QWidget *parent);
-
     ~WindowManager() override;
 
 
 private:
-    QWidget* m_mainWidget;
-    PlayerWidget* m_buttonWidget;
+
+    QStackedWidget *m_stackedWidget;
+    ViewWidget* m_viewWidget;
+    PlayerWidget* m_bottomWidget;
     MusicListManager* m_leftWidget;
-    QWidget *m_switchWidget;
+    SettingsWidget *m_settingsWidget;
+    TopBarWidget *m_topBarWidget;
+    Player *m_player;
 
     QHBoxLayout *m_viewLayout;
-    Player *m_player;
     void createConnections();
+
+public slots:
     void showMainWidget();
-    void showOtherWidget(QWidget *widget);
-    void setBottomWidget(QWidget *widget);
+
+    void showSettingsWidget();
 };
 
 

@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
    <file>images/icon.svg</file>
+   <file>images/logo.svg</file>
    <file>images/play.svg</file>
    <file>images/pause.svg</file>
    <file>images/pre.svg</file>
@@ -11,6 +12,8 @@
    <file>images/down.svg</file>
    <file>images/add.svg</file>
    <file>images/addd.svg</file>
+   <file>images/nextpage.svg</file>
+   <file>images/backpage.svg</file>
    <file>images/remove.svg</file>
    <file>images/setting.svg</file>
    <file>settings/init.json</file>

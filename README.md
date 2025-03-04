@@ -1,32 +1,46 @@
-## A Lightweight Music Player Using Qt Widget 6.8.2
-[简体中文](README_cn.md)  
-This project can serve as a reference if you:
+### A Lightweight Music Player Using Qt Widget 6.8.2
 
-* Are simply learning Qt Widget.
-* Are looking for a lightweight offline music player, even for deployment on embedded devices.
+If you are looking for a reference project for the following purposes, this project may be useful:
 
-## Dependencies
+- Learning **Qt Widget** development
+- Finding a lightweight offline music player, even for deployment on **embedded devices**
 
-`TagLib`: A C++ library used to parse ID3 tag information from MP3 files and to obtain music file durations.
+### Screenshot
 
-* [TagLib](https://github.com/taglib/taglib)
+![Run](/doc/img/Running.png)
 
-## Project Structure and Features
+### Dependencies
 
-* **WindowManager**
-    * [x] Manages the overall window layout.
-* **Player**
-    * [x] Manages the playback of individual music files.
-* **PlayerWidget**
-    * [x] Provides the UI for basic music player functions.
-* **PlayList**
-    * [x] Manages playlists, including user-defined playlists and local directory reading.
-    * [x] Uses the TagLib API to read music durations.
-* **ViewWidget**
-    * [x] Displays the song list UI.
-* **MusicListManager**
-    * [x] Settings page UI.
-* **Settings**
-    * [x] Copies and reads configuration files.
-* **DBManager**
-    * [ ] Database CRUD operations (To be implemented).
+**TagLib** – A C++ library for parsing MP3 **ID3 tag** information and retrieving music file durations.
+
+- [TagLib](https://github.com/taglib/taglib)
+
+### Project Structure & Features
+
+- **WindowManager**
+  - [x] Manages the overall window layout, window switching, and signal-slot connections
+
+- **Player**
+  - [x] Handles playback of individual music files
+
+- **PlayerWidget**
+  - [x] UI for basic music player functionalities
+
+- **PlayList**
+  - [x] Manages playlists, including **user-defined playlists** and **local directory scanning**
+  - [x] Uses **TagLib API** to read music durations
+
+- **ViewWidget**
+  - [x] UI for displaying the song list
+
+- **TopBarWidget**
+  - [x] Manages the top bar, displaying the **logo**, **settings button**, and **back button**
+
+- **MusicListManager**
+  - [x] UI for the settings page
+
+- **Settings**
+  - [x] Reads and writes configuration files
+
+- **DBManager**
+  - [ ] Handles database operations (**CRUD**)  

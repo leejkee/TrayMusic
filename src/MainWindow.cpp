@@ -33,6 +33,7 @@ void MainWindow::initMainApplication() {
     m_windowManager = new WindowManager(m_settings, this);
     createConnections();
     setCentralWidget(m_windowManager);
+    resize(600, 400);
 }
 
 void MainWindow::createConnections() {

@@ -14,7 +14,7 @@ class MusicListManager final : public QWidget {
 
 public:
     explicit MusicListManager(QWidget *parent = nullptr);
-    QPushButton *m_musicListManagerButton;
+    // QPushButton *m_musicListManagerButton;
 
 signals:
     void playlistCreated(const QString &name);
