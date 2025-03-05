@@ -7,7 +7,7 @@
   },
   "configurePresets": [
     {
-      "name": "vscode",
+      "name": "windows-default",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
@@ -19,12 +19,26 @@
       "environment": {
         "PATH": "C:/Qt/6.8.2/mingw_64/bin;${sourceDir}/3rdparty/TagLib_lib/bin;C:/Qt/6.8.2/mingw_64/lib;"
       }
+    },
+    {
+      "name": "linux-default",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
   "buildPresets": [
     {
       "name": "Clion-Debug",
-      "configurePreset": "vscode",
+      "configurePreset": "windows-default",
+      "description": "Build the project with Ninja in Debug mode",
+      "configuration": "Debug"
+    },
+    {
+      "name": "vscode-Debug",
+      "configurePreset": "linux-default",
       "description": "Build the project with Ninja in Debug mode",
       "configuration": "Debug"
     }

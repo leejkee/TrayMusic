@@ -85,8 +85,8 @@ void WindowManager::createConnections() {
         m_player->setPlayPosition(value);
     });
 
-    connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &showSettingsWidget);
-    connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &showMainWidget);
+    connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
+    connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
 }
 
 WindowManager::~WindowManager() {
@@ -117,4 +117,5 @@ SettingsWidget::SettingsWidget(QWidget *parent) {
     const auto layout = new QVBoxLayout(this);
     layout->addItem(hlayout);
     layout->addWidget(listWidget);
+
 }
