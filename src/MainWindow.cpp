@@ -10,27 +10,21 @@
 #include "MainWindow.h"
 #include "Assets.h"
 #include "WindowManager.h"
-#include "PlayList.h"
-#include "Settings.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-      , m_settings(new Settings) {
+    : QMainWindow(parent) {
     initMainApplication();
 }
 
-MainWindow::~MainWindow() {
-    delete m_settings;
-}
+MainWindow::~MainWindow() = default;
 
 void MainWindow::loadSettings() {
-    PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
 }
 
 void MainWindow::initMainApplication() {
     loadSettings();
     createTrayIcon();
-    m_windowManager = new WindowManager(m_settings, this);
+    m_windowManager = new WindowManager(this);
     createConnections();
     setCentralWidget(m_windowManager);
     resize(600, 400);

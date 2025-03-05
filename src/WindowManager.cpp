@@ -6,28 +6,31 @@
 #include "MusicListManager.h"
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QPushButton>
 #include <QListWidget>
 #include <QSlider>
 #include <QStackedWidget>
 
-#include "Assets.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
 #include "PlayList.h"
 #include "Settings.h"
 #include "ViewWidget.h"
+#include "SettingsWidget.h"
 
-WindowManager::WindowManager(const Settings *settings, QWidget *parent)
+WindowManager::WindowManager(QWidget *parent)
     : QWidget(parent)
 {
-    this->m_player = new Player(settings->getDefaultVolume());
+    this->m_settings = new Settings;
+    PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
+    this->m_player = new Player(m_settings->getDefaultVolume());
     this->m_viewWidget = new ViewWidget(this);
     this->m_bottomWidget = new PlayerWidget(this);
-    m_bottomWidget->m_volumeWidget->loadDefaultSetting(settings->getDefaultVolume());
+    m_bottomWidget->m_volumeWidget->loadDefaultSetting(m_settings->getDefaultVolume());
     this->m_leftWidget = new MusicListManager(this);
-    this->m_settingsWidget = new SettingsWidget(this);
+    this->m_settingsWidget = new SettingsWidget(m_settings, this);
     this->m_topBarWidget = new TopBarWidget(this);
     this->m_stackedWidget = new QStackedWidget(this);
     m_stackedWidget->addWidget(m_viewWidget);
@@ -87,10 +90,13 @@ void WindowManager::createConnections() {
 
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
+
+
+    connect(m_settingsWidget, &SettingsWidget::musicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
 }
 
 WindowManager::~WindowManager() {
-
+    delete m_settings;
 }
 
 void WindowManager::showMainWidget() {
@@ -103,19 +109,3 @@ void WindowManager::showSettingsWidget() {
     m_stackedWidget->setCurrentIndex(1);
 }
 
-SettingsWidget::SettingsWidget(QWidget *parent) {
-    this->addBtn = new QPushButton(QIcon(Res::addSVG), "", this);
-    this->listWidget = new QListWidget(this);
-    this->removeBtn = new QPushButton(QIcon(Res::removeSVG), "", this);
-
-    const auto hlayout = new QHBoxLayout;
-    const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
-    hlayout->addWidget(addBtn);
-    hlayout->addItem(spaceH);
-    hlayout->addWidget(removeBtn);
-
-    const auto layout = new QVBoxLayout(this);
-    layout->addItem(hlayout);
-    layout->addWidget(listWidget);
-
-}

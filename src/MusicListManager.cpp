@@ -25,8 +25,8 @@ MusicListManager::MusicListManager(QWidget *parent)
     m_addButton = new QPushButton(QIcon(Res::adddSVG), "", this);
     m_addButton->setStyleSheet(R"(
     QPushButton {
-        width: 10px;
-        height: 10px;
+        width: 20px;
+        height: 20px;
         border-radius: 5px;
         background-color: #f5f5f5;
         border: none;
@@ -34,24 +34,15 @@ MusicListManager::MusicListManager(QWidget *parent)
     })");
     connect(m_addButton, &QPushButton::clicked, this, &MusicListManager::createPlaylist);
 
-    // m_musicListManagerButton = new QPushButton(QIcon(Res::settingSVG), "Location", this);
-    // m_musicListManagerButton->setStyleSheet(R"(
-    // QPushButton {
-    //     height: 25px;
-    //     background-color: #ffffff;
-    //     icon-size: 10px;
-    //     padding: 0;
-    // })");
 
-    auto btnlayout = new QHBoxLayout(this);
+    auto btnlayout = new QHBoxLayout;
     btnlayout->setSpacing(0);
     btnlayout->setContentsMargins(0, 0, 0, 0);
     btnlayout->addWidget(m_expandButton);
     // const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     // btnlayout->addItem(spaceH);
     btnlayout->addWidget(m_addButton);
-    const auto btnWidget = new QWidget(this);
-    btnWidget->setLayout(btnlayout);
+
 
     m_buttonContainerWidget = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_buttonContainerWidget);
@@ -68,7 +59,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
     m_mainLayout->setSpacing(0);
     // m_mainLayout->addWidget(m_musicListManagerButton);
-    m_mainLayout->addWidget(btnWidget);
+    m_mainLayout->addItem(btnlayout);
     m_mainLayout->addWidget(m_buttonContainerWidget);
     m_mainLayout->addItem(spaceV);
 

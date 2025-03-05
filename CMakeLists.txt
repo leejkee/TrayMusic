@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia Sql Svg)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia Sql SvgWidgets)
 find_package(TagLib REQUIRED)
 
 file(GLOB_RECURSE PROJECT_SOURCES
@@ -28,7 +28,7 @@ target_link_libraries(TrayMusic PRIVATE
         Qt6::Widgets
         Qt6::Multimedia
         Qt6::Sql
-        Qt6::Svg
+        Qt6::SvgWidgets
         TagLib::tag
 )
 

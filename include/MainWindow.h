@@ -35,7 +35,6 @@ private:
     QMenu *m_trayIconMenu;
 
     WindowManager *m_windowManager;
-    Settings *m_settings;
 };
 
 

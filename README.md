@@ -9,7 +9,7 @@ If you are looking for a reference project for the following purposes, this proj
 
 ### Screenshot(Windows 11)
 
-![Run](/doc/img/Running.png)
+![Run](/doc/img/run.png)
 
 ### Dependencies
 
@@ -46,5 +46,8 @@ If you are looking for a reference project for the following purposes, this proj
 - **Settings**
   - [x] Reads and writes configuration files
 
+- **SettingsWidget**
+  - [x] Adds and removes the paths of local music, updates the playlist
+   
 - **DBManager**
   - [ ] Handles database operations (**CRUD**)  

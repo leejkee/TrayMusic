@@ -55,3 +55,8 @@ void ViewWidget::showContextMenu(const QPoint &pos) {
 void ViewWidget::handleAction(const int index) {
     qDebug() << "ViewWidget::handleAction" << index;
 }
+
+void ViewWidget::reloadModel() {
+    qDebug() << "ViewWidget::reloadModel";
+    this->m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
+}

@@ -8,6 +8,7 @@
 #include <QWidget>
 
 class QPushButton;
+class QSvgWidget;
 
 class TopBarWidget final : public QWidget {
 public:
@@ -15,7 +16,7 @@ public:
 
     void setPreBtnShow(bool b);
 
-    QLabel *m_logoLabel;
+    QSvgWidget *m_svgWidget;
     QPushButton *m_preButton;
     QPushButton *m_settingsButton;
 

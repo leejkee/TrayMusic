@@ -3,7 +3,7 @@
 - 仅仅学习Qt Widget
 - 希望寻找一款轻量级的离线音乐播放器，甚至将其部署到嵌入式设备
 ## 运行截图(Windows 11)
-![Run](/doc/img/Running.png)
+![Run](/doc/img/run.png)
 ## 依赖
 `TabLig` 一个用来解析Mp3文件的ID3标签信息，以及获取音乐文件时长的C++库
 - [TagLib](https://github.com/taglib/taglib)
@@ -28,5 +28,7 @@
 - [x] 设置页面UI
 - Settings
 - [x] 复制读取配置文件
+- SettingsWidget
+- [x] 复制添加本地音乐目录，跟随添加和删除操作更新播放列表
 - DBManager
 - [ ] 增删查改数据库

@@ -34,10 +34,13 @@ private Q_SLOTS:
 
     void handleAction(int index);
 
+
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);
 
     void updateCurrentIndex(int index);
+
+    void reloadModel();
 };
 
 

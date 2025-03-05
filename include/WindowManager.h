@@ -18,23 +18,13 @@ class Player;
 class Settings;
 class QPushButton;
 class TopBarWidget;
+class SettingsWidget;
 
-class SettingsWidget final: public QWidget {
-
-public:
-    explicit SettingsWidget(QWidget *parent = nullptr);
-
-private:
-    QPushButton *addBtn;
-    QPushButton *removeBtn;
-    QListWidget *listWidget;
-};
 
 class WindowManager final : public QWidget{
 public:
-    explicit WindowManager(const Settings *settings, QWidget *parent);
+    explicit WindowManager(QWidget *parent);
     ~WindowManager() override;
-
 
 private:
 
@@ -45,6 +35,7 @@ private:
     SettingsWidget *m_settingsWidget;
     TopBarWidget *m_topBarWidget;
     Player *m_player;
+    Settings *m_settings;
 
     QHBoxLayout *m_viewLayout;
     void createConnections();
@@ -54,7 +45,6 @@ public slots:
 
     void showSettingsWidget();
 };
-
 
 
 
