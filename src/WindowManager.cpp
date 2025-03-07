@@ -12,6 +12,7 @@
 #include <QSlider>
 #include <QStackedWidget>
 
+#include "DBManager.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
@@ -91,8 +92,8 @@ void WindowManager::createConnections() {
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
 
-
     connect(m_settingsWidget, &SettingsWidget::musicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
+    connect(m_leftWidget->m_buttonWidget, &ButtonWidget::playlistCreated, this, &WindowManager::createdTable);
 }
 
 WindowManager::~WindowManager() {
@@ -107,5 +108,11 @@ void WindowManager::showMainWidget() {
 void WindowManager::showSettingsWidget() {
     qDebug() << "showSettingsWidget";
     m_stackedWidget->setCurrentIndex(1);
+}
+
+void WindowManager::createdTable(const QString &name)
+{
+    DBManager dbManager(m_settings->getDatabaseDirectory());
+    dbManager.createTable(name);
 }
 

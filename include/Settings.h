@@ -33,6 +33,7 @@ public:
 private:
     QString m_dbPath;
     QStringList m_mp3Paths;
+    QStringList m_userMusicList;
     float m_volume;
 };
 

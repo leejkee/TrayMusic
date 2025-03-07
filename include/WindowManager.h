@@ -44,6 +44,8 @@ public slots:
     void showMainWidget();
 
     void showSettingsWidget();
+
+    void createdTable(const QString &name);
 };
 
 

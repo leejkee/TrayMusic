@@ -12,7 +12,6 @@
 #include <QPushButton>
 #include <QListWidget>
 #include <QSpacerItem>
-
 #include "PlayList.h"
 
 SettingsWidget::SettingsWidget(Settings *settings, QWidget *parent) : QWidget(parent) {

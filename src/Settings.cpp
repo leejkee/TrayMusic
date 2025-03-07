@@ -27,6 +27,7 @@ void Settings::loadFromJson() {
     QJsonObject json = jsonDoc.object();
     m_mp3Paths = json["MusicDirectory"].toVariant().toStringList();
     m_dbPath = json["DatabaseDirectory"].toString();
+    m_userMusicList = json["UserLists"].toVariant().toStringList();
     m_volume = static_cast<float>(json["DefaultVolume"].toDouble());
 };
 

@@ -36,12 +36,15 @@ public:
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
 
+    void loadMusicFromDB(const QStringList &fileAbsolutePathList);
+
+
     /// 
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
     [[nodiscard]] QStringList getMusicNameWithoutSuffixList() const;
 
     static QString convertSecondsToTime(int seconds);
-    static int musicLength(const std::wstring &path);
+    static int musicLength(const QString &path);
 
     [[nodiscard]] int getCurrentMusicIndex() const;
     void setCurrentMusicIndex(int index);

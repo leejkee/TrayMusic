@@ -15,6 +15,8 @@
    <file>images/nextpage.svg</file>
    <file>images/backpage.svg</file>
    <file>images/remove.svg</file>
+   <file>images/local.svg</file>
+   <file>images/list.svg</file>
    <file>images/setting.svg</file>
    <file>settings/init.json</file>
 </qresource>

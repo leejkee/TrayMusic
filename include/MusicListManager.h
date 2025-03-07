@@ -5,34 +5,44 @@
 #ifndef MUSICLISTMANAGER_H
 #define MUSICLISTMANAGER_H
 #include <QWidget>
+class MusicListButton;
 class QVBoxLayout;
 class QPushButton;
 class QScrollArea;
+
+class ButtonWidget final : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit ButtonWidget(QWidget *parent = nullptr);
+    void addButton();
+
+Q_SIGNALS:
+    void playlistCreated(const QString &name);
+
+private:
+    QList<MusicListButton *> m_buttonList{};
+    QVBoxLayout *m_layout;
+};
 
 class MusicListManager final : public QWidget {
     Q_OBJECT
 
 public:
     explicit MusicListManager(QWidget *parent = nullptr);
-    // QPushButton *m_musicListManagerButton;
+    ButtonWidget *m_buttonWidget;
 
-signals:
-    void playlistCreated(const QString &name);
-
-private slots:
+private Q_SLOTS:
     void toggleExpand();
-    void createPlaylist();
-    void addPlaylistButton(const QString &name);
-    void removePlaylistButton(int index);
+
 
 private:
-    QVBoxLayout *m_mainLayout;
+    MusicListButton *m_buttonLocalMusic;
     QPushButton *m_expandButton;
     QPushButton *m_addButton;
-    QWidget *m_buttonContainerWidget;
-    QVector<QPushButton *> m_buttonsVector;
-    QVBoxLayout *m_buttonLayout;
     QScrollArea *m_scrollArea;
+
+    void createConnections();
 };
 
 

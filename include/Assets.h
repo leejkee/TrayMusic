@@ -21,6 +21,8 @@ const QString adddSVG(":/images/addd.svg");
 const QString nextPageSVG(":/images/nextpage.svg");
 const QString backPageSVG(":/images/backpage.svg");
 const QString removeSVG(":/images/remove.svg");
+const QString localSVG(":/images/local.svg");
+const QString musicListSVG(":/images/list.svg");
 const QString settingSVG(":/images/setting.svg");
 
 
