@@ -112,7 +112,7 @@ void WindowManager::showSettingsWidget() {
 
 void WindowManager::createdTable(const QString &name)
 {
-    DBManager dbManager(m_settings->getDatabaseDirectory());
-    dbManager.createTable(name);
+    DBManager::instance().initDB(m_settings->getDatabaseDirectory());
+    DBManager::instance().createTable(name);
 }
 

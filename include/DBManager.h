@@ -8,32 +8,37 @@
 #include <QSqlDatabase>
 
 class DBManager {
-
-
 public:
     static DBManager &instance() {
         static DBManager instance;
         return instance;
     }
-    void initDB(const QString& dbName);
-    void createTable(const QString& tableName);
+
+    void initDB(const QString &dbName);
+
+    void createTable(const QString &tableName);
+
     // db operate; only functions about "User Music List" call these functions
     // QStringList readListFromDB(const QString& listName);
     // void saveListToDB(const QStringList& list, const QString& tableName);
     // db operate
 
 private:
-      DBManager(){}
-    DBManager(const DBManager&) = delete;
-    DBManager& operator=(const DBManager&) = delete;
-    ~DBManager() {
-      if (m_db.isOpen()) {
-        m_db.close();
-      }
+    DBManager() {
     }
-      QSqlDatabase m_db;
-};
 
+    DBManager(const DBManager &) = delete;
+
+    DBManager &operator=(const DBManager &) = delete;
+
+    ~DBManager() {
+        if (m_db.isOpen()) {
+            m_db.close();
+        }
+    }
+
+    QSqlDatabase m_db;
+};
 
 
 #endif //DBMANAGER_H

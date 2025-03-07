@@ -7,12 +7,12 @@
 #include <QSqlQuery>
 
 
-
 void DBManager::initDB(const QString &dbName) {
     if (m_db.isOpen()) {
         return;
     }
-    m_db = QSqlDatabase::addDatabase("QSQLITE", dbName);
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName(dbName);
     if (!m_db.open()) {
         qDebug() << "Failed to open database" << m_db.lastError().text();
         return;
@@ -43,10 +43,9 @@ void DBManager::createTable(const QString &tableName) {
         .arg(tableName, COLUMN_ID, COLUMN_PATH, COLUMN_NAME, COLUMN_DURATION)
     };
     QSqlQuery query(m_db);
-if (!query.exec(queryCreateTable)) {
-    qDebug() << "Failed to create table:" << query.lastError().text();
-} else {
-    qDebug() << "Table created successfully!";
-}
-    query.exec(queryCreateTable);
+    if (!query.exec(queryCreateTable)) {
+        qDebug() << "Failed to create table:" << query.lastError().text();
+    } else {
+        qDebug() << "Table created successfully!";
+    }
 }
