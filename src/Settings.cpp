@@ -36,6 +36,7 @@ void Settings::saveToJson() {
     jsonObj["MusicDirectory"] = QJsonArray::fromStringList(m_mp3Paths);
     jsonObj["DatabaseDirectory"] = QJsonValue(m_dbPath);
     jsonObj["DefaultVolume"] = QJsonValue(m_volume);
+    jsonObj["UserLists"] = QJsonArray::fromStringList(m_userMusicList);
     const QJsonDocument doc(jsonObj);
     QFile file(m_settingsPath);
     if (!file.open(QIODevice::WriteOnly)) {

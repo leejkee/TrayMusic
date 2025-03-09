@@ -13,6 +13,8 @@ struct Song{
     // QString album;
     QString path;
     int duration;
+
+    Song(const QString &name, const QString &path, const int duration) : name(name), path(path), duration(duration) {}
 };
 
 

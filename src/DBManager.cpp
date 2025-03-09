@@ -19,7 +19,7 @@ void DBManager::initDB(const QString &dbName) {
     }
 }
 
-void DBManager::createTable(const QString &tableName) {
+void DBManager::createTable(const QString &tableName) const {
     if (!m_db.isOpen()) {
         qDebug() << "Database is not open" << m_db.lastError().text();
         return;
@@ -42,10 +42,58 @@ void DBManager::createTable(const QString &tableName) {
             "%5 INTEGER)")
         .arg(tableName, COLUMN_ID, COLUMN_PATH, COLUMN_NAME, COLUMN_DURATION)
     };
-    QSqlQuery query(m_db);
-    if (!query.exec(queryCreateTable)) {
+    if (QSqlQuery query(m_db); !query.exec(queryCreateTable)) {
         qDebug() << "Failed to create table:" << query.lastError().text();
     } else {
         qDebug() << "Table created successfully!";
     }
+}
+
+QList<Song> DBManager::getMusicList(const QString &tableName) const {
+        QList<Song> songList{};
+
+        if (!m_db.isOpen()) {
+            qDebug() << "Database is not open" << m_db.lastError().text();
+            return songList;
+        }
+
+        QSqlQuery query(m_db);
+        const QString queryString = QString("SELECT path, name, duration FROM %1").arg(tableName);
+
+        if (!query.exec(queryString)) {
+            qDebug() << "Failed to query table:" << query.lastError().text();
+            return songList;
+        }
+        while (query.next()) {
+            QString path = query.value(1).toString();
+            QString name = query.value(2).toString();
+            const int duration = query.value(3).toInt();
+            songList.append(Song(name, path, duration));
+        }
+        return songList;
+    }
+
+
+void DBManager::saveSongToTable(const QString &tableName, const Song &song) {
+    if (!m_db.isOpen()) {
+        qDebug() << "Database is not open" << m_db.lastError().text();
+        return;
+    }
+
+    QSqlQuery query(m_db);
+    const QString insertQuery = QString(
+        "INSERT INTO %1 (path, name, duration) VALUES (:path, :name, :duration)"
+    ).arg(tableName);
+
+    query.prepare(insertQuery);
+    query.bindValue(":path", song.path);
+    query.bindValue(":name", song.name);
+    query.bindValue(":duration", song.duration);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to insert song into table:" << query.lastError().text();
+    } else {
+        qDebug() << "Song inserted successfully!";
+    }
+
 }

@@ -101,7 +101,6 @@ void MusicListManager::toggleExpand() {
 ButtonWidget::ButtonWidget(QWidget *parent) : QWidget(parent) {
     m_layout = new QVBoxLayout(this);
     MusicListButton *button = new MusicListButton(this);
-    m_buttonList.append(button);
     m_layout->addWidget(button);
     hide();
 }
@@ -118,7 +117,6 @@ void ButtonWidget::addButton() {
     if (ok && !playlistName.isEmpty()) {
         MusicListButton *button = new MusicListButton(this);
         button->setText(playlistName);
-        m_buttonList.append(button);
         m_layout->addWidget(button);
         Q_EMIT playlistCreated(playlistName);
     }

@@ -15,13 +15,13 @@ class ButtonWidget final : public QWidget {
 
 public:
     explicit ButtonWidget(QWidget *parent = nullptr);
+
     void addButton();
 
 Q_SIGNALS:
     void playlistCreated(const QString &name);
 
 private:
-    QList<MusicListButton *> m_buttonList{};
     QVBoxLayout *m_layout;
 };
 

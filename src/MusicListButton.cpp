@@ -3,20 +3,33 @@
 //
 
 #include "MusicListButton.h"
+
 #include "Assets.h"
 #include <QPushButton>
 #include <QStringList>
 
+QList<MusicListButton *> buttons{};
+
 MusicListButton::MusicListButton(QWidget *parent) : QPushButton(parent) {
-    m_list = new QStringList;
     setIcon(QIcon(Res::musicListSVG));
+    setFixedHeight(25);
+    buttons.append(this);
 }
 
-QStringList MusicListButton::getMusicList() const {
-    return *m_list;
+QList<Song>& MusicListButton::getMusicList(){
+    return songs;
 }
 
-void MusicListButton::setMusicList(const QStringList &list) {
-    m_list->clear();
-    m_list->append(list);
+void MusicListButton::setMusicList(const QList<Song> &list) {
+    if (list.isEmpty()) {
+        qDebug() << "Init list for btn, List is empty";
+        return;
+    }
+    for (auto song : list) {
+        songs.append(song);
+    }
+}
+
+void MusicListButton::initListFromDB(const QList<Song> &list) {
+    setMusicList(list);
 }

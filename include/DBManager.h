@@ -5,7 +5,8 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
 
-#include <QSqlDatabase>
+
+#include "PlayList.h"
 
 class DBManager {
 public:
@@ -16,7 +17,11 @@ public:
 
     void initDB(const QString &dbName);
 
-    void createTable(const QString &tableName);
+    void createTable(const QString &tableName) const;
+
+    QList<Song> getMusicList(const QString &tableName) const;
+
+    void saveSongToTable(const QString &tableName, const Song &song);
 
     // db operate; only functions about "User Music List" call these functions
     // QStringList readListFromDB(const QString& listName);
