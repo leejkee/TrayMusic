@@ -9,7 +9,12 @@
 
 class Settings {
 public:
+
+#if defined (__linux__)
+    const QString m_settingsPath{"../res/settings/init_linux.json"};
+#elif defined (_WIN32)
     const QString m_settingsPath{"../res/settings/init.json"};
+#endif
 
     Settings();
 

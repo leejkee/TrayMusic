@@ -1,6 +1,4 @@
-//
 // Created by cww on 25-2-25.
-//
 
 #include "DBManager.h"
 #include <QSqlError>
