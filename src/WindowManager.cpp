@@ -30,7 +30,7 @@ WindowManager::WindowManager(QWidget *parent)
     this->m_viewWidget = new ViewWidget(this);
     this->m_bottomWidget = new PlayerWidget(this);
     m_bottomWidget->m_volumeWidget->loadDefaultSetting(m_settings->getDefaultVolume());
-    this->m_leftWidget = new MusicListManager(this);
+    this->m_leftWidget = new MusicListManager(m_settings->getMusicDirectories(), this);
     this->m_settingsWidget = new SettingsWidget(m_settings, this);
     this->m_topBarWidget = new TopBarWidget(this);
     this->m_stackedWidget = new QStackedWidget(this);
@@ -110,8 +110,7 @@ void WindowManager::showSettingsWidget() {
     m_stackedWidget->setCurrentIndex(1);
 }
 
-void WindowManager::createdTable(const QString &name)
-{
+void WindowManager::createdTable(const QString &name) const {
     DBManager::instance().initDB(m_settings->getDatabaseDirectory());
     DBManager::instance().createTable(name);
 }

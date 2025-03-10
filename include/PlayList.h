@@ -6,15 +6,17 @@
 #define PLAYLIST_H
 #include <QSqlDatabase>
 #include <QAbstractItemModel>
+#include <utility>
 
 struct Song{
     QString name;
     // QString artist;
     // QString album;
     QString path;
-    int duration;
+    int duration{};
 
-    Song(const QString &name, const QString &path, const int duration) : name(name), path(path), duration(duration) {}
+    Song() = default;
+    Song(QString name, QString path, const int duration) : name(std::move(name)), path(std::move(path)), duration(duration) {}
 };
 
 
@@ -37,15 +39,25 @@ public:
 
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
-
     void loadMusicFromDB(const QStringList &fileAbsolutePathList);
 
+    ///
+    /// @param path lcoal music paths in settings
+    /// @return Song structure
+    static QList<Song> loadSongsFromDirectories(const QStringList& path);
 
-    /// 
+    ///
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
     [[nodiscard]] QStringList getMusicNameWithoutSuffixList() const;
 
+    /// 
+    /// @param seconds the length of mp3
+    /// @return <QString> "00:00" style
     static QString convertSecondsToTime(int seconds);
+
+    ///
+    /// @param path mp3 file path
+    /// @return <int> the length of mp3
     static int musicLength(const QString &path);
 
     [[nodiscard]] int getCurrentMusicIndex() const;

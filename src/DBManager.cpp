@@ -50,28 +50,28 @@ void DBManager::createTable(const QString &tableName) const {
 }
 
 QList<Song> DBManager::getMusicList(const QString &tableName) const {
-        QList<Song> songList{};
+    QList<Song> songList{};
 
-        if (!m_db.isOpen()) {
-            qDebug() << "Database is not open" << m_db.lastError().text();
-            return songList;
-        }
-
-        QSqlQuery query(m_db);
-        const QString queryString = QString("SELECT path, name, duration FROM %1").arg(tableName);
-
-        if (!query.exec(queryString)) {
-            qDebug() << "Failed to query table:" << query.lastError().text();
-            return songList;
-        }
-        while (query.next()) {
-            QString path = query.value(1).toString();
-            QString name = query.value(2).toString();
-            const int duration = query.value(3).toInt();
-            songList.append(Song(name, path, duration));
-        }
+    if (!m_db.isOpen()) {
+        qDebug() << "Database is not open" << m_db.lastError().text();
         return songList;
     }
+
+    QSqlQuery query(m_db);
+    const QString queryString = QString("SELECT path, name, duration FROM %1").arg(tableName);
+
+    if (!query.exec(queryString)) {
+        qDebug() << "Failed to query table:" << query.lastError().text();
+        return songList;
+    }
+    while (query.next()) {
+        const QString path = query.value(1).toString();
+        const QString name = query.value(2).toString();
+        const int duration = query.value(3).toInt();
+        songList.append(Song(name, path, duration));
+    }
+    return songList;
+}
 
 
 void DBManager::saveSongToTable(const QString &tableName, const Song &song) {
@@ -95,5 +95,4 @@ void DBManager::saveSongToTable(const QString &tableName, const Song &song) {
     } else {
         qDebug() << "Song inserted successfully!";
     }
-
 }

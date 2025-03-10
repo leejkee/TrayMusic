@@ -70,6 +70,22 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
     m_currentIndex = 0;
 }
 
+QList<Song> PlayList::loadSongsFromDirectories(const QStringList& path) {
+    QList<Song> musicList;
+    for (const auto &filePath: path) {
+        const QDir dir(filePath);
+        QStringList files = dir.entryList(QDir::Files);
+        for (const auto &file: files) {
+            Song song;
+            song.path = dir.absoluteFilePath(file);
+            song.name = getMusicNameWithoutSuffix(song.path);
+            song.duration = musicLength(song.path);
+            musicList.append(song);
+        }
+    }
+    return musicList;
+}
+
 
 QString PlayList::getMusicNameWithoutSuffix(const QString &path) {
     const auto s = path.right(path.size() - path.lastIndexOf("/") - 1);

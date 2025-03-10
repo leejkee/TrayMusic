@@ -12,22 +12,21 @@
 
 class MusicListButton final : public QPushButton {
 public:
-    explicit MusicListButton(QWidget *parent = nullptr);
+    static QMap<QString, MusicListButton *> buttonMap;
+
+    explicit MusicListButton(const QString &name, QWidget *parent = nullptr);
 
     [[nodiscard]] QList<Song> &getMusicList();
 
     void setMusicList(const QList<Song> &list);
 
-    void initListFromDB(const QList<Song> &list);
-
-    static QList<MusicListButton *> &getMusicListButtons() {
-        return buttons;
-    }
+    // static QList<MusicListButton *> &getMusicListButtons() {
+    //     return {};
+    // }
 
 private:
     // songs from DB
     QList<Song> songs;
-    static QList<MusicListButton *> buttons;
 };
 
 

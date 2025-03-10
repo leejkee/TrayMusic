@@ -8,12 +8,13 @@
 #include <QPushButton>
 #include <QStringList>
 
-QList<MusicListButton *> buttons{};
+QMap<QString, MusicListButton *> MusicListButton::buttonMap;
 
-MusicListButton::MusicListButton(QWidget *parent) : QPushButton(parent) {
+MusicListButton::MusicListButton(const QString &name, QWidget *parent) : QPushButton(parent) {
     setIcon(QIcon(Res::musicListSVG));
     setFixedHeight(25);
-    buttons.append(this);
+    setText(name);
+    buttonMap.insert(name, this);
 }
 
 QList<Song>& MusicListButton::getMusicList(){
@@ -25,11 +26,7 @@ void MusicListButton::setMusicList(const QList<Song> &list) {
         qDebug() << "Init list for btn, List is empty";
         return;
     }
-    for (auto song : list) {
-        songs.append(song);
-    }
+    songs = list;
 }
 
-void MusicListButton::initListFromDB(const QList<Song> &list) {
-    setMusicList(list);
-}
+

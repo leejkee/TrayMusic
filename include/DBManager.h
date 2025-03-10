@@ -15,11 +15,14 @@ public:
         return instance;
     }
 
+    DBManager(const DBManager &) = delete;
+
+    DBManager &operator=(const DBManager &) = delete;
     void initDB(const QString &dbName);
 
     void createTable(const QString &tableName) const;
 
-    QList<Song> getMusicList(const QString &tableName) const;
+    [[nodiscard]] QList<Song> getMusicList(const QString &tableName) const;
 
     void saveSongToTable(const QString &tableName, const Song &song);
 
@@ -31,17 +34,11 @@ public:
 private:
     DBManager() {
     }
-
-    DBManager(const DBManager &) = delete;
-
-    DBManager &operator=(const DBManager &) = delete;
-
     ~DBManager() {
         if (m_db.isOpen()) {
             m_db.close();
         }
     }
-
     QSqlDatabase m_db;
 };
 
