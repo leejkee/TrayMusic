@@ -6,12 +6,9 @@
 #define PLAYLIST_H
 #include <QSqlDatabase>
 #include <QAbstractItemModel>
-#include <utility>
 
 struct Song{
     QString name;
-    // QString artist;
-    // QString album;
     QString path;
     int duration{};
 
@@ -41,6 +38,8 @@ public:
     void loadMusicFromDirectory(const QString& path);
     void loadMusicFromDB(const QStringList &fileAbsolutePathList);
 
+    void loadMusicFromSongs(const QList<Song> &songs);
+
     ///
     /// @param path lcoal music paths in settings
     /// @return Song structure
@@ -64,7 +63,6 @@ public:
     void setCurrentMusicIndex(int index);
 
     [[nodiscard]] bool isEmpty() const;
-
 
 
 Q_SIGNALS:

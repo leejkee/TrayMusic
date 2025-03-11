@@ -54,6 +54,12 @@ void PlayList::loadMusicFromDB(const QStringList &fileAbsolutePathList) {
     m_currentIndex = 0;
 }
 
+
+void PlayList::loadMusicFromSongs(const QList<Song> &songs) {
+    m_musicList.clear();
+    m_musicList = songs;
+}
+
 void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
     m_musicList.clear();
     for (const auto &filePath: filePathList) {

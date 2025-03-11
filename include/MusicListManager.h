@@ -20,15 +20,7 @@ public:
 
     void addButton();
 
-///
-/// @param paths local music paths
-/// init.json -> Settings --@loadSongsFromDirectories()-> this
-    void initLocalButtons(const QStringList &paths) const;
 
-/// @param songs default user lists saved in Database
-/// @TableName init.json -> Settings -> here
-/// music.db -> DBManager -> @getMusicList(TableName) -> this
-    void initUserButtons(const QList<Song> &songs);
 
 Q_SIGNALS:
     void playlistCreated(const QString &name);

@@ -56,7 +56,15 @@ void ViewWidget::handleAction(const int index) {
     qDebug() << "ViewWidget::handleAction" << index;
 }
 
+void ViewWidget::loadMusicStringFromData(const QList<Song> &list) {
+    qDebug() << "ViewWidget::loadStringFromData";
+    QStringList s;
+    for (const Song &song : list) {
+        s.append(song.name);
+    }
+    this->m_playListModel->setStringList(s);
+}
+
 void ViewWidget::reloadModel() {
-    qDebug() << "ViewWidget::reloadModel";
-    this->m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
+
 }

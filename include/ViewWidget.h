@@ -4,8 +4,10 @@
 
 #ifndef ICONWIDGET_H
 #define ICONWIDGET_H
+#include <QList>
 #include <QWidget>
 
+#include "PlayList.h"
 #include "Settings.h"
 
 class QGroupBox;
@@ -34,6 +36,7 @@ private Q_SLOTS:
 
     void handleAction(int index);
 
+    void loadMusicStringFromData(const QList<Song> &list);
 
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);

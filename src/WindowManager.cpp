@@ -26,6 +26,7 @@ WindowManager::WindowManager(QWidget *parent)
 {
     this->m_settings = new Settings;
     PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
+    DBManager::instance().initDB(m_settings->getDatabaseDirectory());
     this->m_player = new Player(m_settings->getDefaultVolume());
     this->m_viewWidget = new ViewWidget(this);
     this->m_bottomWidget = new PlayerWidget(this);
@@ -111,7 +112,6 @@ void WindowManager::showSettingsWidget() {
 }
 
 void WindowManager::createdTable(const QString &name) const {
-    DBManager::instance().initDB(m_settings->getDatabaseDirectory());
     DBManager::instance().createTable(name);
 }
 

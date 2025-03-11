@@ -13,8 +13,7 @@
 
 MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
     : QWidget(parent) {
-    m_buttonLocalMusic = new MusicListButton(this);
-    m_buttonLocalMusic->setText("Local Music");
+    m_buttonLocalMusic = new MusicListButton("Local Music", this);
     m_buttonLocalMusic->setMusicList(PlayList::loadSongsFromDirectories(list));
     m_expandButton = new QPushButton(QIcon(Res::downSVG), "Music List", this);
     m_expandButton->setStyleSheet(R"(
@@ -41,7 +40,6 @@ MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
     buttonLayout->addWidget(m_addButton);
 
     m_buttonWidget = new ButtonWidget(this);
-    m_buttonWidget->initLocalButtons(list);
 
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setWidgetResizable(true);
