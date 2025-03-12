@@ -15,7 +15,7 @@ class VolumeWidget final : public QWidget {
 public:
     explicit VolumeWidget(QWidget *parent = nullptr);
 
-    void loadDefaultSetting(float volume);
+    void loadDefaultSetting() const;
 
     QSlider *m_sliderV;
     QLabel *m_labelVolume;
@@ -24,6 +24,7 @@ public:
 
 class ProgressBarWidget final : public QWidget {
     Q_OBJECT
+
 public:
     explicit ProgressBarWidget(QWidget *parent = nullptr);
 
@@ -57,15 +58,16 @@ public:
 
 private:
     void createConnections();
+
     void setButtonVisible(bool b);
+
     void showVolumeSlider();
 
 public Q_SLOTS:
     void setPlayButtonIcon(bool playStatus);
+
     void setVolumeCtrlButtonIcon(int volume);
 };
-
-
 
 
 #endif //PLAYERUI_H

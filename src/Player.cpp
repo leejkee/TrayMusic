@@ -6,13 +6,14 @@
 #include <QDir>
 #include "Player.h"
 #include "PlayList.h"
+#include "Settings.h"
 
 
-Player::Player(const float volume)
+Player::Player()
     : m_player(new QMediaPlayer)
       , m_audioOut(new QAudioOutput)
       , m_isPlay(false)
-      , m_volume(volume) {
+      , m_volume(Settings::instance().getDefaultVolume()) {
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
     loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));

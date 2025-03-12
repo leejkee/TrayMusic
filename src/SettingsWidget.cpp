@@ -9,13 +9,13 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QInputDialog>
+#include <QLabel>
 #include <QPushButton>
 #include <QListWidget>
 #include <QSpacerItem>
 #include "PlayList.h"
 
-SettingsWidget::SettingsWidget(Settings *settings, QWidget *parent) : QWidget(parent) {
-    this->m_settings = settings;
+SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent) {
     this->m_addBtn = new QPushButton(QIcon(Res::addSVG), "", this);
     this->m_listWidget = new QListWidget(this);
     this->m_removeBtn = new QPushButton(QIcon(Res::removeSVG), "", this);
@@ -44,16 +44,16 @@ void SettingsWidget::addMusicPath() {
                                                                    QFileDialog::ShowDirsOnly
                                                                    | QFileDialog::DontResolveSymlinks);
     if (!newMusicPath.isEmpty()) {
-        m_settings->addMusicDirectory(newMusicPath);
+        Settings::instance().addMusicDirectory(newMusicPath);
         loadSettings();
     }
 }
 
 void SettingsWidget::loadSettings() {
     this->m_listWidget->clear();
-    this->m_listWidget->addItems(m_settings->getMusicDirectories());
-    PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
-    Q_EMIT musicPathChanged();
+    this->m_listWidget->addItems(Settings::instance().getLocalMusicDirectories());
+    // PlayList::instance()->loadMusicFromDirectories(Settings::instance().getLocalMusicDirectories());
+    Q_EMIT localMusicPathChanged();
 }
 
 void SettingsWidget::removeMusicPath() {
@@ -63,6 +63,6 @@ void SettingsWidget::removeMusicPath() {
         return;
     }
     const auto path = item->text();
-    m_settings->removeMusicDirectory(path);
+    Settings::instance().removeMusicDirectory(path);
     loadSettings();
 }

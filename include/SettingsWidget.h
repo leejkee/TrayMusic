@@ -14,7 +14,7 @@ class QListWidget;
 class SettingsWidget final: public QWidget {
     Q_OBJECT
 public:
-    explicit SettingsWidget(Settings *settings, QWidget *parent = nullptr);
+    explicit SettingsWidget(QWidget *parent = nullptr);
 
 
     void loadSettings();
@@ -25,11 +25,10 @@ public:
     QListWidget *m_listWidget;
 
 private:
-    Settings *m_settings;
     QLabel *m_messageLabel;
 
 Q_SIGNALS:
-    void musicPathChanged();
+    void localMusicPathChanged();
 
 private Q_SLOTS:
     void addMusicPath();

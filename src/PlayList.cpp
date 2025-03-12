@@ -2,6 +2,7 @@
 // Created by cww on 25-2-23.
 //
 #include "PlayList.h"
+#include "Song.h"
 #include "taglib/fileref.h"
 #include <QDir>
 #include <QString>
@@ -60,6 +61,10 @@ void PlayList::loadMusicFromSongs(const QList<Song> &songs) {
     m_musicList = songs;
 }
 
+void PlayList::switchMusicList(const QList<Song> &songs) {
+    loadMusicFromSongs(songs);
+}
+
 void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
     m_musicList.clear();
     for (const auto &filePath: filePathList) {
@@ -76,7 +81,7 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
     m_currentIndex = 0;
 }
 
-QList<Song> PlayList::loadSongsFromDirectories(const QStringList& path) {
+QList<Song> PlayList::getSongListFromDirectories(const QStringList& path) {
     QList<Song> musicList;
     for (const auto &filePath: path) {
         const QDir dir(filePath);

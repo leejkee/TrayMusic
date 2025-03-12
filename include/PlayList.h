@@ -4,17 +4,8 @@
 
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
-#include <QSqlDatabase>
-#include <QAbstractItemModel>
-
-struct Song{
-    QString name;
-    QString path;
-    int duration{};
-
-    Song() = default;
-    Song(QString name, QString path, const int duration) : name(std::move(name)), path(std::move(path)), duration(duration) {}
-};
+#include "Song.h"
+#include <QObject>
 
 
 class PlayList final: public QObject {
@@ -40,10 +31,12 @@ public:
 
     void loadMusicFromSongs(const QList<Song> &songs);
 
+    void switchMusicList(const QList<Song> &songs);
+
     ///
     /// @param path lcoal music paths in settings
     /// @return Song structure
-    static QList<Song> loadSongsFromDirectories(const QStringList& path);
+    static QList<Song> getSongListFromDirectories(const QStringList& path);
 
     ///
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")

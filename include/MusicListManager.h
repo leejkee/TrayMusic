@@ -5,8 +5,6 @@
 #ifndef MUSICLISTMANAGER_H
 #define MUSICLISTMANAGER_H
 #include <QWidget>
-
-#include "PlayList.h"
 class MusicListButton;
 class QVBoxLayout;
 class QPushButton;
@@ -20,22 +18,17 @@ public:
 
     void addButton();
 
-
-
-Q_SIGNALS:
-    void playlistCreated(const QString &name);
+    void initUserListButton();
 
 private:
     QVBoxLayout *m_layout;
-    MusicListButton *m_localMusicButton;
 };
 
 class MusicListManager final : public QWidget {
     Q_OBJECT
 
 public:
-    explicit MusicListManager(const QStringList &list, QWidget *parent = nullptr);
-    ButtonWidget *m_buttonWidget;
+    explicit MusicListManager(QWidget *parent);
 
 private Q_SLOTS:
     void toggleExpand();
@@ -46,6 +39,7 @@ private:
     QPushButton *m_expandButton;
     QPushButton *m_addButton;
     QScrollArea *m_scrollArea;
+    ButtonWidget *m_buttonWidget;
 
     void createConnections();
 };

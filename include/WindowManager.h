@@ -35,8 +35,6 @@ private:
     SettingsWidget *m_settingsWidget;
     TopBarWidget *m_topBarWidget;
     Player *m_player;
-    Settings *m_settings;
-
     QHBoxLayout *m_viewLayout;
     void createConnections();
 
@@ -45,7 +43,6 @@ public slots:
 
     void showSettingsWidget();
 
-    void createdTable(const QString &name) const;
 };
 
 

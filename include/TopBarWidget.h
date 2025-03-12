@@ -4,7 +4,6 @@
 
 #ifndef TOPBARWIDGET_H
 #define TOPBARWIDGET_H
-#include <QLabel>
 #include <QWidget>
 
 class QPushButton;

@@ -24,15 +24,14 @@
 WindowManager::WindowManager(QWidget *parent)
     : QWidget(parent)
 {
-    this->m_settings = new Settings;
-    PlayList::instance()->loadMusicFromDirectories(m_settings->getMusicDirectories());
-    DBManager::instance().initDB(m_settings->getDatabaseDirectory());
-    this->m_player = new Player(m_settings->getDefaultVolume());
+    Settings::instance().loadFromJson();
+    PlayList::instance()->loadMusicFromDirectories(Settings::instance().getLocalMusicDirectories());
+    DBManager::instance().initDB(Settings::instance().getDatabaseDirectory());
+    this->m_player = new Player();
     this->m_viewWidget = new ViewWidget(this);
     this->m_bottomWidget = new PlayerWidget(this);
-    m_bottomWidget->m_volumeWidget->loadDefaultSetting(m_settings->getDefaultVolume());
-    this->m_leftWidget = new MusicListManager(m_settings->getMusicDirectories(), this);
-    this->m_settingsWidget = new SettingsWidget(m_settings, this);
+    this->m_leftWidget = new MusicListManager(this);
+    this->m_settingsWidget = new SettingsWidget(this);
     this->m_topBarWidget = new TopBarWidget(this);
     this->m_stackedWidget = new QStackedWidget(this);
     m_stackedWidget->addWidget(m_viewWidget);
@@ -92,13 +91,10 @@ void WindowManager::createConnections() {
 
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
-
-    connect(m_settingsWidget, &SettingsWidget::musicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
-    connect(m_leftWidget->m_buttonWidget, &ButtonWidget::playlistCreated, this, &WindowManager::createdTable);
+    connect(m_settingsWidget, &SettingsWidget::localMusicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
 }
 
 WindowManager::~WindowManager() {
-    delete m_settings;
 }
 
 void WindowManager::showMainWidget() {
@@ -111,7 +107,5 @@ void WindowManager::showSettingsWidget() {
     m_stackedWidget->setCurrentIndex(1);
 }
 
-void WindowManager::createdTable(const QString &name) const {
-    DBManager::instance().createTable(name);
-}
+
 

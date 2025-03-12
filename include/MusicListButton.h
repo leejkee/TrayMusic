@@ -7,7 +7,7 @@
 #ifndef MUSICLISTBUTTON_H
 #define MUSICLISTBUTTON_H
 #include <QPushButton>
-#include "PlayList.h"
+#include "Song.h"
 
 
 class MusicListButton final : public QPushButton {
@@ -18,14 +18,13 @@ public:
 
     [[nodiscard]] QList<Song> &getMusicList();
 
-    void setMusicList(const QList<Song> &list);
+    void setMusicListFromSongs(const QList<Song> &list);
 
-    // static QList<MusicListButton *> &getMusicListButtons() {
-    //     return {};
-    // }
+    /// Read QList<Song> from Database by the specified table.
+    /// @param tableName
+    void setMusicListFromDB(const QString &tableName);
 
 private:
-    // songs from DB
     QList<Song> songs;
 };
 

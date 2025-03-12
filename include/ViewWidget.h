@@ -4,11 +4,9 @@
 
 #ifndef ICONWIDGET_H
 #define ICONWIDGET_H
-#include <QList>
-#include <QWidget>
 
-#include "PlayList.h"
-#include "Settings.h"
+#include "Song.h"
+#include <QWidget>
 
 class QGroupBox;
 class QPushButton;
@@ -27,7 +25,8 @@ public:
 
     QListView *m_playListView;
     QStringListModel *m_playListModel;
-    QWidget *m_topWidget;
+    QPushButton *m_playAllButton;
+
 Q_SIGNALS:
     void viewDoubleClicked(int index);
 

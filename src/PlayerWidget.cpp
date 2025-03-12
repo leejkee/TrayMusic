@@ -13,6 +13,7 @@
 #include <QWidgetAction>
 #include <QToolButton>
 #include "PlayList.h"
+#include "Settings.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
@@ -27,6 +28,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
 
     // VolumeCtrl Section Begin
     m_volumeWidget = new VolumeWidget(this);
+    m_volumeWidget->loadDefaultSetting();
     m_pushButtonVolume = new QPushButton(this);
     m_pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
     m_pushButtonVolume->setFixedSize(30, 30);
@@ -52,6 +54,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     this->setLayout(Layout);
     createConnections();
 }
+
 void PlayerWidget::createConnections() {
     // update the music name label
     connect(PlayList::instance(), &PlayList::currentMusicNameChanged, m_labelMusicFileName, &QLabel::setText);
@@ -109,7 +112,9 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     setLayout(layout);
     this->setFixedSize(30, 110);
 }
-void VolumeWidget::loadDefaultSetting(const float volume) {
+
+void VolumeWidget::loadDefaultSetting() const {
+    const auto volume = Settings::instance().getDefaultVolume();
     m_sliderV->setValue(static_cast<int>(volume * 100));
     m_labelVolume->setText(QString("%1%").arg(m_sliderV->value()));
 }
@@ -128,12 +133,11 @@ void PlayerWidget::showVolumeSlider() {
 }
 
 ProgressBarWidget::ProgressBarWidget(QWidget *parent)
-        : QWidget(parent)
-        , m_sliderP(new QSlider(Qt::Horizontal, this))
-        , m_labelLeft(new QLabel(this))
-        , m_labelRight(new QLabel(this))
-        , m_isUpdatingSlider(false)
-{
+    : QWidget(parent)
+      , m_sliderP(new QSlider(Qt::Horizontal, this))
+      , m_labelLeft(new QLabel(this))
+      , m_labelRight(new QLabel(this))
+      , m_isUpdatingSlider(false) {
     m_labelLeft->setText("00:00");
     m_labelRight->setText("00:00");
     QHBoxLayout *layout = new QHBoxLayout;
@@ -146,6 +150,7 @@ ProgressBarWidget::ProgressBarWidget(QWidget *parent)
     // refresh firstly
     updateLabelR();
 }
+
 
 /// 
 /// @param position ms
@@ -161,6 +166,7 @@ void ProgressBarWidget::updateLabelL(const qint64 duration) {
     const QString t = PlayList::convertSecondsToTime(s);
     m_labelLeft->setText(t);
 }
+
 
 // update when music changed
 void ProgressBarWidget::updateLabelR() {

@@ -7,19 +7,21 @@
 #include <QVBoxLayout>
 #include <QPropertyAnimation>
 #include <QInputDialog>
-
 #include "DBManager.h"
 #include "MusicListButton.h"
+#include "Settings.h"
+#include "PlayList.h"
 
-MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
+MusicListManager::MusicListManager(QWidget *parent)
     : QWidget(parent) {
-    m_buttonLocalMusic = new MusicListButton("Local Music", this);
-    m_buttonLocalMusic->setMusicList(PlayList::loadSongsFromDirectories(list));
-    m_expandButton = new QPushButton(QIcon(Res::downSVG), "Music List", this);
+    m_buttonLocalMusic = new MusicListButton("Local", this);
+    m_buttonLocalMusic->setMusicListFromSongs(
+        PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories()));
+    m_expandButton = new QPushButton(QIcon(Res::downSVG), "List", this);
     m_expandButton->setStyleSheet(R"(
     QPushButton {
-        height: 25px;
-        width: 80px;
+        height: 30px;
+        width: 60px;
         icon-size: 7px;
         padding: 0;
     })");
@@ -27,8 +29,8 @@ MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
     m_addButton = new QPushButton(QIcon(Res::addSVG), "", this);
     m_addButton->setStyleSheet(R"(
     QPushButton {
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         border: none;
         padding: 0;
     })");
@@ -36,8 +38,8 @@ MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
     const auto buttonLayout = new QHBoxLayout;
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
     buttonLayout->addWidget(m_expandButton);
-    buttonLayout->addItem(spaceH);
     buttonLayout->addWidget(m_addButton);
+    buttonLayout->addItem(spaceH);
 
     m_buttonWidget = new ButtonWidget(this);
 
@@ -60,12 +62,14 @@ MusicListManager::MusicListManager(const QStringList &list, QWidget *parent)
     m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     const auto layout = new QVBoxLayout;
+    // layout->addWidget(m_buttonLocalMusic);
     layout->addWidget(m_scrollArea);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
-    setFixedWidth(120);
+    setFixedWidth(110);
     createConnections();
+
 }
 
 
@@ -86,25 +90,12 @@ void MusicListManager::toggleExpand() {
 }
 
 
-// void MusicListManager::createPlaylist() {
-//     bool ok;
-//     const QString playlistName = QInputDialog::getText(this,
-//                                                         "New a music list",
-//                                                         "Music list name:",
-//                                                         QLineEdit::Normal,
-//                                                         "",
-//                                                         &ok);
-//     if (ok && !playlistName.isEmpty()) {
-//         addPlaylistButton(playlistName);
-//         emit playlistCreated(playlistName);
-//     }
-// }
-
 ButtonWidget::ButtonWidget(QWidget *parent) : QWidget(parent) {
     m_layout = new QVBoxLayout(this);
-    m_localMusicButton = new MusicListButton("Local Music", this);
-    m_layout->addWidget(m_localMusicButton);
+    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_layout->setSpacing(0);
     this->show();
+    initUserListButton();
 }
 
 void ButtonWidget::addButton() {
@@ -119,9 +110,17 @@ void ButtonWidget::addButton() {
     if (ok && !playlistName.isEmpty()) {
         auto *button = new MusicListButton(playlistName, this);
         m_layout->addWidget(button);
-        button->setMusicList(DBManager::instance().getMusicList(playlistName));
-        Q_EMIT playlistCreated(playlistName);
+        // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
+        DBManager::instance().createTable(playlistName);
     }
 }
 
-
+void ButtonWidget::initUserListButton() {
+    const auto userList = Settings::instance().getUserMusicList();
+    for (const auto &list : userList) {
+        auto *button = new MusicListButton(list);
+        button->setMusicListFromDB(list);
+        m_layout->addWidget(button);
+        qDebug() << "buttonWidget initUserListButton";
+    }
+}

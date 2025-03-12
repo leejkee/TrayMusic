@@ -6,9 +6,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-Settings::Settings() {
-    loadFromJson();
-}
 
 
 void Settings::loadFromJson() {
@@ -25,7 +22,7 @@ void Settings::loadFromJson() {
         return;
     }
     QJsonObject json = jsonDoc.object();
-    m_mp3Paths = json["MusicDirectory"].toVariant().toStringList();
+    m_localMusicPaths = json["MusicDirectory"].toVariant().toStringList();
     m_dbPath = json["DatabaseDirectory"].toString();
     m_userMusicList = json["UserLists"].toVariant().toStringList();
     m_volume = static_cast<float>(json["DefaultVolume"].toDouble());
@@ -33,7 +30,7 @@ void Settings::loadFromJson() {
 
 void Settings::saveToJson() {
     QJsonObject jsonObj;
-    jsonObj["MusicDirectory"] = QJsonArray::fromStringList(m_mp3Paths);
+    jsonObj["MusicDirectory"] = QJsonArray::fromStringList(m_localMusicPaths);
     jsonObj["DatabaseDirectory"] = QJsonValue(m_dbPath);
     jsonObj["DefaultVolume"] = QJsonValue(m_volume);
     jsonObj["UserLists"] = QJsonArray::fromStringList(m_userMusicList);
@@ -47,14 +44,14 @@ void Settings::saveToJson() {
     file.close();
 }
 void Settings::addMusicDirectory(const QString& path) {
-    if (!m_mp3Paths.contains(path)) {
-        m_mp3Paths.append(path);
+    if (!m_localMusicPaths.contains(path)) {
+        m_localMusicPaths.append(path);
         saveToJson();
     }
 }
 
 void Settings::removeMusicDirectory(const QString& path) {
-    if (m_mp3Paths.removeOne(path)) {
+    if (m_localMusicPaths.removeOne(path)) {
         saveToJson();
     }
 }

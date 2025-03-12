@@ -3,20 +3,23 @@
 //
 #ifndef SETTINGS_H
 #define SETTINGS_H
-#include <QLabel>
 #include <QStringList>
 #include <QString>
 
 class Settings {
 public:
+    static Settings &instance() {
+        static Settings settingsInstance;
+        return settingsInstance;
+    }
 
-#if defined (__linux__)
-    const QString m_settingsPath{"../res/settings/init_linux.json"};
-#elif defined (_WIN32)
-    const QString m_settingsPath{"../res/settings/init.json"};
-#endif
+    Settings(const Settings &) = delete;
 
-    Settings();
+    Settings &operator=(const Settings &) = delete;
+
+    Settings(Settings &&) = delete;
+
+    Settings &operator=(Settings &&) = delete;
 
     void loadFromJson();
 
@@ -27,7 +30,7 @@ public:
     void removeMusicDirectory(const QString &path);
 
 
-    [[nodiscard]] QStringList getMusicDirectories() const { return m_mp3Paths; }
+    [[nodiscard]] QStringList getLocalMusicDirectories() const { return m_localMusicPaths; }
 
 
     [[nodiscard]] QString getDatabaseDirectory() const { return m_dbPath; }
@@ -39,10 +42,21 @@ public:
     [[nodiscard]] float getDefaultVolume() const { return m_volume; }
 
 private:
+#if defined (__linux__)
+    const QString m_settingsPath{"../res/settings/init_linux.json"};
+#elif defined (_WIN32)
+    const QString m_settingsPath{"../res/settings/init.json"};
+#endif
+
     QString m_dbPath;
-    QStringList m_mp3Paths;
+    QStringList m_localMusicPaths;
     QStringList m_userMusicList;
-    float m_volume;
+    float m_volume{};
+
+    Settings() {
+    }
+
+    ~Settings() = default;
 };
 
 

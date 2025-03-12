@@ -4,9 +4,9 @@
 
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
+#include <QSqlDatabase>
+#include "Song.h"
 
-
-#include "PlayList.h"
 
 class DBManager {
 public:
