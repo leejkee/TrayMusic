@@ -11,12 +11,12 @@
 
 
 class MusicListButton final : public QPushButton {
-public:
-    static QMap<QString, MusicListButton *> buttonMap;
+    Q_OBJECT
 
+public:
     explicit MusicListButton(const QString &name, QWidget *parent = nullptr);
 
-    [[nodiscard]] QList<Song> &getMusicList();
+    [[nodiscard]] const QList<Song> &getMusicList() const;
 
     void setMusicListFromSongs(const QList<Song> &list);
 
@@ -24,8 +24,17 @@ public:
     /// @param tableName
     void setMusicListFromDB(const QString &tableName);
 
+signals:
+    void buttonClicked(const QString &listName, const QList<Song> &songs);
+
+private Q_SLOTS:
+    void onButtonClicked() {
+        emit buttonClicked(m_listName, m_songs);
+    }
+
 private:
-    QList<Song> songs;
+    QString m_listName;
+    QList<Song> m_songs;
 };
 
 

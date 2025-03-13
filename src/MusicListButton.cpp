@@ -9,17 +9,17 @@
 #include <QStringList>
 #include "DBManager.h"
 
-QMap<QString, MusicListButton *> MusicListButton::buttonMap;
 
 MusicListButton::MusicListButton(const QString &name, QWidget *parent) : QPushButton(parent) {
     setIcon(QIcon(Res::musicListSVG));
     setFixedHeight(30);
     setText(name);
-    buttonMap.insert(name, this);
+    m_listName = name;
+    connect(this, &QPushButton::clicked, this , &MusicListButton::onButtonClicked);
 }
 
-QList<Song>& MusicListButton::getMusicList(){
-    return songs;
+const QList<Song> &MusicListButton::getMusicList() const{
+    return m_songs;
 }
 
 void MusicListButton::setMusicListFromSongs(const QList<Song> &list) {
@@ -27,8 +27,8 @@ void MusicListButton::setMusicListFromSongs(const QList<Song> &list) {
         qDebug() << "Init list for btn, List is empty";
         return;
     }
-    songs.clear();
-    songs.append(list);
+    m_songs.clear();
+    m_songs.append(list);
 }
 
 void MusicListButton::setMusicListFromDB(const QString &tableName) {

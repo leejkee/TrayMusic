@@ -29,13 +29,13 @@ class MusicListManager final : public QWidget {
 
 public:
     explicit MusicListManager(QWidget *parent);
+    MusicListButton *m_buttonLocalMusic;
 
 private Q_SLOTS:
     void toggleExpand();
 
 
 private:
-    MusicListButton *m_buttonLocalMusic;
     QPushButton *m_expandButton;
     QPushButton *m_addButton;
     QScrollArea *m_scrollArea;

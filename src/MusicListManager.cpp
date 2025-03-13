@@ -17,6 +17,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     m_buttonLocalMusic = new MusicListButton("Local", this);
     m_buttonLocalMusic->setMusicListFromSongs(
         PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories()));
+
     m_expandButton = new QPushButton(QIcon(Res::downSVG), "List", this);
     m_expandButton->setStyleSheet(R"(
     QPushButton {

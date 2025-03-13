@@ -13,6 +13,7 @@
 #include <QStackedWidget>
 
 #include "DBManager.h"
+#include "MusicListButton.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
@@ -25,7 +26,7 @@ WindowManager::WindowManager(QWidget *parent)
     : QWidget(parent)
 {
     Settings::instance().loadFromJson();
-    PlayList::instance()->loadMusicFromDirectories(Settings::instance().getLocalMusicDirectories());
+    // PlayList::instance()->loadMusicFromDirectories(Settings::instance().getLocalMusicDirectories());
     DBManager::instance().initDB(Settings::instance().getDatabaseDirectory());
     this->m_player = new Player();
     this->m_viewWidget = new ViewWidget(this);
@@ -92,6 +93,8 @@ void WindowManager::createConnections() {
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
     connect(m_settingsWidget, &SettingsWidget::localMusicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
+
+    connect(m_leftWidget->m_buttonLocalMusic, &MusicListButton::buttonClicked, &ViewWidget::playAllButtonClicked);
 }
 
 WindowManager::~WindowManager() {

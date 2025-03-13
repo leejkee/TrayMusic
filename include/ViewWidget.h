@@ -15,6 +15,7 @@ class QListView;
 class QTableView;
 class QStringListModel;
 class PlayListModel;
+class QLabel;
 
 
 class ViewWidget final : public QWidget {
@@ -23,9 +24,6 @@ class ViewWidget final : public QWidget {
 public:
     explicit ViewWidget(QWidget *parent = nullptr);
 
-    QListView *m_playListView;
-    QStringListModel *m_playListModel;
-    QPushButton *m_playAllButton;
 
 Q_SIGNALS:
     void viewDoubleClicked(int index);
@@ -35,7 +33,6 @@ private Q_SLOTS:
 
     void handleAction(int index);
 
-    void loadMusicStringFromData(const QList<Song> &list);
 
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);
@@ -43,6 +40,17 @@ public Q_SLOTS:
     void updateCurrentIndex(int index);
 
     void reloadModel();
+
+    void init();
+
+    void playAllButtonClicked(const QString &name, const QList<Song> &list);
+
+private:
+    QLabel *m_labelName;
+    QListView *m_playListView;
+    QStringListModel *m_playListModel;
+    QPushButton *m_playAllButton;
+    void loadMusicStringFromData(const QList<Song> &list);
 };
 
 

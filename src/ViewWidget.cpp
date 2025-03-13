@@ -3,6 +3,8 @@
 //
 #include <QHBoxLayout>
 #include "ViewWidget.h"
+
+#include <QLabel>
 #include "PlayList.h"
 #include <QListView>
 #include <QMenu>
@@ -12,6 +14,7 @@
 
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
+    m_labelName = new QLabel(this);
     m_playAllButton = new QPushButton(QIcon(Res::playIconSVG), "Play All", this);
     m_playAllButton->setFixedWidth(80);
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -20,7 +23,8 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     layoutH->addSpacerItem(spaceH);
 
     m_playListModel = new QStringListModel(this);
-    m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
+    // init fun
+    // m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
     m_playListView = new QListView(this);
     m_playListView->setModel(m_playListModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -76,4 +80,14 @@ void ViewWidget::loadMusicStringFromData(const QList<Song> &list) {
 }
 
 void ViewWidget::reloadModel() {
+}
+
+void ViewWidget::init() {
+    // this->loadMusicStringFromData();
+}
+
+void ViewWidget::playAllButtonClicked(const QString &name, const QList<Song> &list) {
+    qDebug() << "ViewWidget::playAllButtonClicked";
+    m_labelName->setText(name);
+    loadMusicStringFromData(list);
 }

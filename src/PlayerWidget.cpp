@@ -19,7 +19,8 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
     m_pushButtonPlay->setFixedSize(30, 30);
     m_labelMusicFileName = new QLabel;
-    m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
+    // init fun
+    // m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
     m_pushButtonPre = new QPushButton(QIcon(Res::preIconSVG), "");
     m_pushButtonPre->setFixedSize(30, 30);
     m_pushButtonNext = new QPushButton(QIcon(Res::nextIconSVG), "");
@@ -147,8 +148,11 @@ ProgressBarWidget::ProgressBarWidget(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(2);
     setLayout(layout);
+
     // refresh firstly
-    updateLabelR();
+
+    // init fun
+    // updateLabelR();
 }
 
 
