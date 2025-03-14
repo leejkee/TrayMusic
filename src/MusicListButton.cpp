@@ -25,7 +25,7 @@ const QList<Song> &MusicListButton::getMusicList() const{
 void MusicListButton::setMusicListFromSongs(const QList<Song> &list) {
     if (list.isEmpty()) {
         qDebug() << "Init list for btn, List is empty";
-        return;
+        // return;
     }
     m_songs.clear();
     m_songs.append(list);

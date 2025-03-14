@@ -25,11 +25,11 @@ public:
     void setMusicListFromDB(const QString &tableName);
 
 signals:
-    void buttonClicked(const QString &listName, const QList<Song> &songs);
+    void buttonClicked(const QString &listName);
 
 private Q_SLOTS:
     void onButtonClicked() {
-        emit buttonClicked(m_listName, m_songs);
+        emit buttonClicked(m_listName);
     }
 
 private:

@@ -27,6 +27,7 @@ public:
 
 Q_SIGNALS:
     void viewDoubleClicked(int index);
+    void playAll(const QString &name);
 
 private Q_SLOTS:
     void showContextMenu(const QPoint &pos);
@@ -41,9 +42,9 @@ public Q_SLOTS:
 
     void reloadModel();
 
-    void init();
+    void localMusicButtonClicked(const QList<Song> &list);
 
-    void playAllButtonClicked(const QString &name, const QList<Song> &list);
+    void musicButtonClicked(const QString &name);
 
 private:
     QLabel *m_labelName;

@@ -11,12 +11,16 @@
 #include <QPushButton>
 #include <QStringListModel>
 #include "Assets.h"
+#include "MusicListManager.h"
 
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_labelName = new QLabel(this);
     m_playAllButton = new QPushButton(QIcon(Res::playIconSVG), "Play All", this);
     m_playAllButton->setFixedWidth(80);
+    connect(m_playAllButton, &QPushButton::clicked, this, [this]() {
+        Q_EMIT playAll(m_labelName->text());
+    });
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     const auto layoutH = new QHBoxLayout;
     layoutH->addWidget(m_playAllButton);
@@ -34,6 +38,7 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
     connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ViewWidget::updateCurrentIndex);
     QVBoxLayout *Layout = new QVBoxLayout;
+    Layout->addWidget(m_labelName);
     Layout->addItem(layoutH);
     Layout->addWidget(m_playListView);
     this->setLayout(Layout);
@@ -74,7 +79,7 @@ void ViewWidget::loadMusicStringFromData(const QList<Song> &list) {
     qDebug() << "ViewWidget::loadStringFromData";
     QStringList s;
     for (const Song &song : list) {
-        s.append(song.name);
+        s.append(song.getName());
     }
     this->m_playListModel->setStringList(s);
 }
@@ -82,12 +87,16 @@ void ViewWidget::loadMusicStringFromData(const QList<Song> &list) {
 void ViewWidget::reloadModel() {
 }
 
-void ViewWidget::init() {
-    // this->loadMusicStringFromData();
-}
-
-void ViewWidget::playAllButtonClicked(const QString &name, const QList<Song> &list) {
-    qDebug() << "ViewWidget::playAllButtonClicked";
-    m_labelName->setText(name);
+void ViewWidget::localMusicButtonClicked(const QList<Song> &list) {
+    qDebug() << "ViewWidget::localMusicButtonClicked";
+    m_labelName->setText("Local Music");
     loadMusicStringFromData(list);
 }
+
+
+void ViewWidget::musicButtonClicked(const QString &name) {
+    qDebug() << "ViewWidget::playAllButtonClicked";
+    m_labelName->setText(name);
+    loadMusicStringFromData(ButtonWidget::getSongListViaName(name));
+}
+// View存储

@@ -7,7 +7,6 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QInputDialog>
-#include <QPushButton>
 #include <QListWidget>
 #include <QSlider>
 #include <QStackedWidget>
@@ -94,7 +93,11 @@ void WindowManager::createConnections() {
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
     connect(m_settingsWidget, &SettingsWidget::localMusicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
 
-    connect(m_leftWidget->m_buttonLocalMusic, &MusicListButton::buttonClicked, &ViewWidget::playAllButtonClicked);
+    connect(m_leftWidget->m_buttonLocalMusic, &MusicListButton::buttonClicked, m_viewWidget,
+    &ViewWidget::localMusicButtonClicked);
+    connect(m_viewWidget, &ViewWidget::playAll, this, [this](const QString &name) {
+        PlayList::instance()->loadMusicFromSongs(ButtonWidget::getSongListViaName(name));
+    });
 }
 
 WindowManager::~WindowManager() {

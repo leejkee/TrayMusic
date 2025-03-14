@@ -3,7 +3,6 @@
 //
 #include <QMediaPlayer>
 #include <QAudioOutput>
-#include <QDir>
 #include "Player.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -16,7 +15,8 @@ Player::Player()
       , m_volume(Settings::instance().getDefaultVolume()) {
     m_player->setAudioOutput(m_audioOut);
     m_audioOut->setVolume(m_volume);
-    loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));
+    // TODO init state
+    // loadMusic(QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath()));
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 position) {
         emit playPositionChanged(position);
     });

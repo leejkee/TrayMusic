@@ -92,6 +92,12 @@ void PlayerWidget::setButtonVisible(const bool b) {
     m_pushButtonPre->setEnabled(b);
 }
 
+QString PlayerWidget::convertSecondsToTime(const int seconds) {
+    const int m = seconds / 60;
+    const int s = seconds % 60;
+    return QString::asprintf("%02d:%02d", m, s);
+}
+
 VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     m_sliderV = new QSlider(this);
     m_sliderV->setRange(0, 100);
@@ -167,7 +173,7 @@ void ProgressBarWidget::updateSliderPosition(const qint64 position) {
 
 void ProgressBarWidget::updateLabelL(const qint64 duration) {
     const int s = duration / 1000;
-    const QString t = PlayList::convertSecondsToTime(s);
+    const QString t = PlayerWidget::convertSecondsToTime(s);
     m_labelLeft->setText(t);
 }
 
@@ -176,5 +182,5 @@ void ProgressBarWidget::updateLabelL(const qint64 duration) {
 void ProgressBarWidget::updateLabelR() {
     const int s = PlayList::instance()->getCurrentMusicDuration();
     m_sliderP->setMaximum(s * 1000);
-    m_labelRight->setText(PlayList::convertSecondsToTime(s));
+    m_labelRight->setText(PlayerWidget::convertSecondsToTime(s));
 }

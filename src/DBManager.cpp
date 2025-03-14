@@ -72,7 +72,7 @@ QList<Song> DBManager::getMusicList(const QString &tableName) const {
 }
 
 
-void DBManager::saveSongToTable(const QString &tableName, const Song &song) {
+void DBManager::insertSongToTable(const QString &tableName, const Song &song) const {
     if (!m_db.isOpen()) {
         qDebug() << "Database is not open" << m_db.lastError().text();
         return;
@@ -84,9 +84,9 @@ void DBManager::saveSongToTable(const QString &tableName, const Song &song) {
     ).arg(tableName);
 
     query.prepare(insertQuery);
-    query.bindValue(":path", song.path);
-    query.bindValue(":name", song.name);
-    query.bindValue(":duration", song.duration);
+    query.bindValue(":path", song.getPath());
+    query.bindValue(":name", song.getName());
+    query.bindValue(":duration", song.getDuration());
 
     if (!query.exec()) {
         qDebug() << "Failed to insert song into table:" << query.lastError().text();

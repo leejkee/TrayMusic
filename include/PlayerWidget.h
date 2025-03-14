@@ -46,6 +46,7 @@ class PlayerWidget final : public QWidget {
 
 public:
     explicit PlayerWidget(QWidget *parent = nullptr);
+    static QString convertSecondsToTime(int seconds);
 
     QPushButton *m_pushButtonPlay;
     QLabel *m_labelMusicFileName;
@@ -60,6 +61,7 @@ private:
     void createConnections();
 
     void setButtonVisible(bool b);
+
 
     void showVolumeSlider();
 

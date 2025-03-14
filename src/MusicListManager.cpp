@@ -70,9 +70,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     setLayout(layout);
     setFixedWidth(110);
     createConnections();
-
 }
-
 
 void MusicListManager::createConnections() {
     connect(m_expandButton, &QPushButton::clicked, this, &MusicListManager::toggleExpand);
@@ -90,6 +88,7 @@ void MusicListManager::toggleExpand() {
     }
 }
 
+QMap<QString, MusicListButton *> ButtonWidget::m_userListMap{};
 
 ButtonWidget::ButtonWidget(QWidget *parent) : QWidget(parent) {
     m_layout = new QVBoxLayout(this);
@@ -109,16 +108,33 @@ void ButtonWidget::addButton() {
                                                        "",
                                                        &ok);
     if (ok && !playlistName.isEmpty()) {
-        auto *button = new MusicListButton(playlistName, this);
-        m_layout->addWidget(button);
-        // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
-        DBManager::instance().createTable(playlistName);
+        createButton(playlistName);
+    }
+}
+
+void ButtonWidget::createButton(const QString &playlistName) {
+    auto *button = new MusicListButton(playlistName, this);
+    m_layout->addWidget(button);
+    // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
+    DBManager::instance().createTable(playlistName);
+    m_userListMap[playlistName] = button;
+    connect(button, &MusicListButton::buttonClicked, this, &ButtonWidget::handleMusicButtonClicked);
+}
+
+const QList<Song> &MusicListManager::getSongListViaName(const QString &name) {
+    return m_userListMap[name]->getMusicList();
+}
+
+void ButtonWidget::handleMusicButtonClicked(const QString &name) {
+    qDebug() << "buttonWidget handleMusicButtonClicked";
+    if (m_userListMap.contains(name)) {
+        emit songsReady(name);
     }
 }
 
 void ButtonWidget::initUserListButton() {
     const auto userList = Settings::instance().getUserMusicList();
-    for (const auto &list : userList) {
+    for (const auto &list: userList) {
         auto *button = new MusicListButton(list);
         button->setMusicListFromDB(list);
         m_layout->addWidget(button);

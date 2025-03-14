@@ -19,7 +19,6 @@ public:
     PlayList(const PlayList& playList) = delete;
     PlayList& operator=(const PlayList& playList) = delete;
 
-    static QString getMusicNameWithoutSuffix(const QString& path);
     [[nodiscard]] QString getCurrentMusicName() const;
     [[nodiscard]] QString getCurrentMusicPath() const;
 
@@ -27,9 +26,10 @@ public:
 
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
+
     void loadMusicFromDB(const QStringList &fileAbsolutePathList);
 
-    void loadMusicFromSongs(const QList<Song> &songs);
+
 
     void switchMusicList(const QList<Song> &songs);
 
@@ -40,17 +40,7 @@ public:
 
     ///
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
-    [[nodiscard]] QStringList getMusicNameWithoutSuffixList() const;
-
-    /// 
-    /// @param seconds the length of mp3
-    /// @return <QString> "00:00" style
-    static QString convertSecondsToTime(int seconds);
-
-    ///
-    /// @param path mp3 file path
-    /// @return <int> the length of mp3
-    static int musicLength(const QString &path);
+    [[nodiscard]] QStringList getMusicNameList() const;
 
     [[nodiscard]] int getCurrentMusicIndex() const;
     void setCurrentMusicIndex(int index);
@@ -66,6 +56,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void nextMusic();
     void previousMusic();
+    void loadMusicFromSongs(const QList<Song> &songs);
 
 
 private:

@@ -24,7 +24,7 @@ public:
 
     [[nodiscard]] QList<Song> getMusicList(const QString &tableName) const;
 
-    void saveSongToTable(const QString &tableName, const Song &song);
+    void insertSongToTable(const QString &tableName, const Song &song) const;
 
     // db operate; only functions about "User Music List" call these functions
     // QStringList readListFromDB(const QString& listName);
