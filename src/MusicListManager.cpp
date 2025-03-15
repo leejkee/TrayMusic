@@ -15,6 +15,7 @@
 MusicListManager::MusicListManager(QWidget *parent)
     : QWidget(parent) {
     m_buttonLocalMusic = new MusicListButton("Local", this);
+    m_userListMap["Local"] = m_buttonLocalMusic;
     m_buttonLocalMusic->setMusicListFromSongs(
         PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories()));
 
@@ -42,7 +43,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     buttonLayout->addWidget(m_addButton);
     buttonLayout->addItem(spaceH);
 
-    m_buttonWidget = new ButtonWidget(this);
+    m_buttonWidget = new QWidget(this);
 
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setWidgetResizable(true);
@@ -74,7 +75,7 @@ MusicListManager::MusicListManager(QWidget *parent)
 
 void MusicListManager::createConnections() {
     connect(m_expandButton, &QPushButton::clicked, this, &MusicListManager::toggleExpand);
-    connect(m_addButton, &QPushButton::clicked, m_buttonWidget, &ButtonWidget::addButton);
+    connect(m_addButton, &QPushButton::clicked, this, &MusicListManager::addButton);
 }
 
 
@@ -88,17 +89,10 @@ void MusicListManager::toggleExpand() {
     }
 }
 
-QMap<QString, MusicListButton *> ButtonWidget::m_userListMap{};
+QMap<QString, MusicListButton *> MusicListManager::m_userListMap{};
 
-ButtonWidget::ButtonWidget(QWidget *parent) : QWidget(parent) {
-    m_layout = new QVBoxLayout(this);
-    m_layout->setContentsMargins(0, 0, 0, 0);
-    m_layout->setSpacing(0);
-    this->show();
-    initUserListButton();
-}
 
-void ButtonWidget::addButton() {
+void MusicListManager::addButton() {
     qDebug() << "buttonWidget addButton";
     bool ok;
     const QString playlistName = QInputDialog::getText(this,
@@ -108,27 +102,41 @@ void ButtonWidget::addButton() {
                                                        "",
                                                        &ok);
     if (ok && !playlistName.isEmpty()) {
-        createButton(playlistName);
+        newButton(playlistName);
+        createNewTable(playlistName);
     }
 }
 
-void ButtonWidget::createButton(const QString &playlistName) {
+void MusicListManager::newButton(const QString &playlistName) {
     auto *button = new MusicListButton(playlistName, this);
-    m_layout->addWidget(button);
+
+    if (playlistName == "Local") {
+        m_buttonLocalMusic = button;
+    }
+    else {
+        m_buttonLayout->addWidget(button);
+        // DBManager::instance().createTable(playlistName);
+    }
+
     // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
-    DBManager::instance().createTable(playlistName);
+    // if no key, inserts a default-constructed value into the map
     m_userListMap[playlistName] = button;
-    connect(button, &MusicListButton::buttonClicked, this, &ButtonWidget::handleMusicButtonClicked);
+    connect(button, &MusicListButton::buttonClicked, this, &MusicListManager::handleMusicButtonClicked);
 }
+
+void MusicListManager::createNewTable(const QString &playlistName) {
+    DBManager::instance().createTable(playlistName);
+}
+
 
 const QList<Song> &MusicListManager::getSongListViaName(const QString &name) {
     return m_userListMap[name]->getMusicList();
 }
 
-void ButtonWidget::handleMusicButtonClicked(const QString &name) {
+void MusicListManager::handleMusicButtonClicked(const QString &name) {
     qDebug() << "buttonWidget handleMusicButtonClicked";
     if (m_userListMap.contains(name)) {
-        emit songsReady(name);
+        // todo
     }
 }
 

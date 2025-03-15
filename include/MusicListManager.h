@@ -10,30 +10,9 @@ class MusicListButton;
 class QVBoxLayout;
 class QPushButton;
 class QScrollArea;
+class QHBoxLayout;
 
 // TODO reflector
-class ButtonWidget final : public QWidget {
-    Q_OBJECT
-
-public:
-    explicit ButtonWidget(QWidget *parent = nullptr);
-
-
-
-
-
-Q_SIGNALS:
-    // signal to viewWidget to show the List
-    void songsReady(const QString &);
-
-public Q_SLOTS:
-    void handleMusicButtonClicked(const QString &name);
-
-private:
-    QVBoxLayout *m_layout;
-    void createButton(const QString &playlistName);
-
-};
 
 class MusicListManager final : public QWidget {
     Q_OBJECT
@@ -41,15 +20,22 @@ class MusicListManager final : public QWidget {
 public:
     explicit MusicListManager(QWidget *parent);
 
+    static QMap<QString, MusicListButton *> m_userListMap;
+
     [[nodiscard]]static const QList<Song> &getSongListViaName(const QString &name) ;
+
+    void handleMusicButtonClicked(const QString &name);
+
     void addButton();
 
-    void initUserListButton();
+    void newButton(const QString &playlistName);
+
+    static void createNewTable(const QString &playlistName);
 
     MusicListButton *m_buttonLocalMusic;
-    ButtonWidget *m_buttonWidget;
 
 private Q_SLOTS:
+    // expand icon change
     void toggleExpand();
 
 private:
@@ -57,7 +43,9 @@ private:
     QPushButton *m_addButton;
     QScrollArea *m_scrollArea;
 
-    static QMap<QString, MusicListButton *> m_userListMap;
+    QWidget *m_buttonWidget;
+    QHBoxLayout *m_buttonLayout;
+
     void createConnections();
 };
 
