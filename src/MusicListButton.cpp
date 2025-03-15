@@ -3,11 +3,9 @@
 //
 
 #include "MusicListButton.h"
-
 #include "Assets.h"
 #include <QPushButton>
 #include <QStringList>
-#include "DBManager.h"
 
 
 MusicListButton::MusicListButton(const QString &name, QWidget *parent) : QPushButton(parent) {
@@ -29,10 +27,6 @@ void MusicListButton::setMusicListFromSongs(const QList<Song> &list) {
     }
     m_songs.clear();
     m_songs.append(list);
-}
-
-void MusicListButton::setMusicListFromDB(const QString &tableName) {
-    this->setMusicListFromSongs(DBManager::instance().getMusicList(tableName));
 }
 
 

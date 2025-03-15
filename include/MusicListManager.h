@@ -13,7 +13,6 @@ class QScrollArea;
 class QHBoxLayout;
 
 // TODO reflector
-
 class MusicListManager final : public QWidget {
     Q_OBJECT
 
@@ -26,13 +25,21 @@ public:
 
     void handleMusicButtonClicked(const QString &name);
 
+    // button from new
     void addButton();
 
     void newButton(const QString &playlistName);
 
     static void createNewTable(const QString &playlistName);
 
+    // buttons created by user from settings
+    void initButtonFromDB();
+
     MusicListButton *m_buttonLocalMusic;
+
+
+    Q_SIGNALS:
+    void songsReadyToView(const QString &playlistName);
 
 private Q_SLOTS:
     // expand icon change

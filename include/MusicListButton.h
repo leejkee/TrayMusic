@@ -20,9 +20,6 @@ public:
 
     void setMusicListFromSongs(const QList<Song> &list);
 
-    /// Read QList<Song> from Database by the specified table.
-    /// @param tableName
-    void setMusicListFromDB(const QString &tableName);
 
 signals:
     void buttonClicked(const QString &listName);

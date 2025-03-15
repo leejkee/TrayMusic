@@ -97,6 +97,6 @@ void ViewWidget::localMusicButtonClicked(const QList<Song> &list) {
 void ViewWidget::musicButtonClicked(const QString &name) {
     qDebug() << "ViewWidget::playAllButtonClicked";
     m_labelName->setText(name);
-    loadMusicStringFromData(ButtonWidget::getSongListViaName(name));
+    loadMusicStringFromData(MusicListManager::getSongListViaName(name));
 }
 // View存储
