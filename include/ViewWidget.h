@@ -8,13 +8,9 @@
 #include "Song.h"
 #include <QWidget>
 
-class QGroupBox;
 class QPushButton;
-class QCheckBox;
 class QListView;
-class QTableView;
 class QStringListModel;
-class PlayListModel;
 class QLabel;
 
 

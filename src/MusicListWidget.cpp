@@ -124,7 +124,6 @@ void MusicListWidget::initUserListButtons() {
 
 void MusicListWidget::handleMusicButtonClicked(const QString &name) {
     qDebug() << "buttonWidget handleMusicButtonClicked";
-        // todo
     Q_EMIT signalMusicListButtonClicked(name);
 }
 

@@ -99,7 +99,7 @@ void WindowManager::createConnections() {
 
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
-    // todo: local music path changed, refresh the viewWidget
+
     connect(m_settingsWidget, &LocalMusicSettingsWidget::signalLocalMusicPathSettingsChanged, m_viewWidget, &ViewWidget::refreshForLocalMusic);
 
     connect(m_viewWidget, &ViewWidget::signalPlayAllClicked, &PlayList::instance(), &PlayList::loadMusicByName);
@@ -115,11 +115,11 @@ void WindowManager::createConnections() {
 WindowManager::~WindowManager() = default;
 
 void WindowManager::showMainWidget() {
-    qDebug() << "WindowManager::showMainWidget()";
+    qDebug() << "Windowmanager::showMainWidget";
     m_stackedWidget->setCurrentIndex(0);
 }
 
 void WindowManager::showSettingsWidget() {
-    qDebug() << "showSettingsWidget";
+    qDebug() << "Windowmanager::showSettingsWidget";
     m_stackedWidget->setCurrentIndex(1);
 }
