@@ -43,15 +43,18 @@ void Settings::saveToJson() {
     file.write(doc.toJson(QJsonDocument::Indented));
     file.close();
 }
+
 void Settings::addMusicDirectory(const QString& path) {
     if (!m_localMusicPaths.contains(path)) {
         m_localMusicPaths.append(path);
         saveToJson();
+        Q_EMIT signalSettingsChanged();
     }
 }
 
 void Settings::removeMusicDirectory(const QString& path) {
     if (m_localMusicPaths.removeOne(path)) {
         saveToJson();
+        Q_EMIT signalSettingsChanged();
     }
 }

@@ -62,7 +62,6 @@ private:
 
     void setButtonVisible(bool b);
 
-
     void showVolumeSlider();
 
 public Q_SLOTS:

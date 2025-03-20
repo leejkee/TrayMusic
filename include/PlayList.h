@@ -12,9 +12,9 @@ class PlayList final: public QObject {
     Q_OBJECT
     Q_PROPERTY(int currentMusicIndex READ getCurrentMusicIndex WRITE setCurrentMusicIndex NOTIFY currentMusicIndexChanged)
 public:
-    static PlayList *instance() {
+    static PlayList &instance() {
         static PlayList playListInstance;
-        return &playListInstance;
+        return playListInstance;
     }
     PlayList(const PlayList& playList) = delete;
     PlayList& operator=(const PlayList& playList) = delete;
@@ -27,14 +27,12 @@ public:
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
 
-    void loadMusicFromDB(const QStringList &fileAbsolutePathList);
-
-
+    void loadMusicFromUserList(const QStringList &fileAbsolutePathList);
 
     void switchMusicList(const QList<Song> &songs);
 
     ///
-    /// @param path lcoal music paths in settings
+    /// @param path local music paths in settings
     /// @return Song structure
     static QList<Song> getSongListFromDirectories(const QStringList& path);
 
@@ -56,13 +54,14 @@ Q_SIGNALS:
 public Q_SLOTS:
     void nextMusic();
     void previousMusic();
-    void loadMusicFromSongs(const QList<Song> &songs);
+    void loadMusicByName(const QString& name);
 
 
 private:
     PlayList(){}
     int m_currentIndex{0};
     QList<Song> m_musicList{};
+    void loadMusicFromSongs(const QList<Song> &songs);
 };
 
 

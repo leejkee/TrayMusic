@@ -13,7 +13,6 @@ class Player final : public QObject {
     Q_PROPERTY(bool playStatus READ playStatus WRITE setPlayStatus NOTIFY playStatusChanged)
     Q_PROPERTY(int volume READ getVolume WRITE setVolume NOTIFY volumeChanged)
 
-
 public:
     explicit Player();
 

@@ -1,25 +1,22 @@
 //
 // Created by cww on 25-2-28.
 //
-#include "MusicListManager.h"
+#include "MusicListWidget.h"
 #include "Assets.h"
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QPropertyAnimation>
 #include <QInputDialog>
 #include "DBManager.h"
-#include "MusicListButton.h"
+#include "ListButton.h"
 #include "Settings.h"
 #include "PlayList.h"
 
-MusicListManager::MusicListManager(QWidget *parent)
+MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {
-    m_buttonLocalMusic = new MusicListButton("Local", this);
-    m_userListMap["Local"] = m_buttonLocalMusic;
-    m_buttonLocalMusic->setMusicListFromSongs(
-        PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories()));
-
-    m_expandButton = new QPushButton(QIcon(Res::downSVG), "List", this);
+    // todo
+    m_localListButton = new ListButton(User::LOCAL_LIST_KEY);
+    m_expandButton = new QPushButton(QIcon(Res::DownSVG), "List", this);
     m_expandButton->setStyleSheet(R"(
     QPushButton {
         height: 30px;
@@ -28,7 +25,7 @@ MusicListManager::MusicListManager(QWidget *parent)
         padding: 0;
     })");
 
-    m_addButton = new QPushButton(QIcon(Res::addSVG), "", this);
+    m_addButton = new QPushButton(QIcon(Res::AddSVG), "", this);
     m_addButton->setStyleSheet(R"(
     QPushButton {
         width: 30px;
@@ -44,7 +41,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     buttonLayout->addItem(spaceH);
 
     m_buttonWidget = new QWidget(this);
-    m_buttonLayout = new QHBoxLayout(m_buttonWidget);
+    m_buttonLayout = new QVBoxLayout(m_buttonWidget);
 
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setWidgetResizable(true);
@@ -54,7 +51,7 @@ MusicListManager::MusicListManager(QWidget *parent)
     const auto spaceV = new QSpacerItem(0, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
     m_mainLayout->setSpacing(0);
-    m_mainLayout->addWidget(m_buttonLocalMusic);
+    m_mainLayout->addWidget(m_localListButton);
     m_mainLayout->addItem(buttonLayout);
     m_mainLayout->addWidget(m_buttonWidget);
     m_mainLayout->addItem(spaceV);
@@ -65,38 +62,34 @@ MusicListManager::MusicListManager(QWidget *parent)
     m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     const auto layout = new QVBoxLayout;
-    // layout->addWidget(m_buttonLocalMusic);
     layout->addWidget(m_scrollArea);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
     setFixedWidth(110);
     createConnections();
+    initUserListButtons();
 }
 
-void MusicListManager::createConnections() {
-    // init local button
-    connect(m_buttonLocalMusic, &MusicListButton::buttonClicked, this, &MusicListManager::handleMusicButtonClicked);
-
-    connect(m_expandButton, &QPushButton::clicked, this, &MusicListManager::toggleExpand);
-    connect(m_addButton, &QPushButton::clicked, this, &MusicListManager::addButton);
+void MusicListWidget::createConnections() {
+    connect(m_localListButton, &ListButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
+    connect(m_expandButton, &QPushButton::clicked, this, &MusicListWidget::toggleExpand);
+    connect(m_addButton, &QPushButton::clicked, this, &MusicListWidget::addButton);
 }
 
 
-void MusicListManager::toggleExpand() {
+void MusicListWidget::toggleExpand() {
     const bool isV = m_buttonWidget->isVisible();
     m_buttonWidget->setVisible(!isV);
     if (!isV) {
-        m_expandButton->setIcon(QIcon(Res::upSVG));
+        m_expandButton->setIcon(QIcon(Res::UpSVG));
     } else {
-        m_expandButton->setIcon(QIcon(Res::downSVG));
+        m_expandButton->setIcon(QIcon(Res::DownSVG));
     }
 }
 
-QMap<QString, MusicListButton *> MusicListManager::m_userListMap{};
 
-
-void MusicListManager::addButton() {
+void MusicListWidget::addButton() {
     qDebug() << "buttonWidget addButton";
     bool ok;
     const QString playlistName = QInputDialog::getText(this,
@@ -107,51 +100,31 @@ void MusicListManager::addButton() {
                                                        &ok);
     if (ok && !playlistName.isEmpty()) {
         newButton(playlistName);
-        createNewTable(playlistName);
+        Q_EMIT signalMusicListButtonAdded(playlistName);
     }
 }
 
-void MusicListManager::newButton(const QString &playlistName) {
-    auto *button = new MusicListButton(playlistName, this);
+void MusicListWidget::newButton(const QString &playlistName) {
+    auto *button = new ListButton(playlistName, this);
     m_buttonLayout->addWidget(button);
     // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
     // if no key, inserts a default-constructed value into the map
-    m_userListMap[playlistName] = button;
-    connect(button, &MusicListButton::buttonClicked, this, &MusicListManager::handleMusicButtonClicked);
-}
-
-void MusicListManager::createNewTable(const QString &playlistName) {
-    DBManager::instance().createTable(playlistName);
+    connect(button, &ListButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
 }
 
 
-void MusicListManager::initButtonFromDB() {
+
+void MusicListWidget::initUserListButtons() {
     const auto listName = Settings::instance().getUserMusicList();
     for (const auto &name: listName) {
         newButton(name);
     }
-
-    // if name == Local
-    for (auto it = m_userListMap.begin(); it != m_userListMap.end(); ++it) {
-        const auto &name = it.key();
-        if (name == "Local") {
-            continue;
-        }
-        if (auto *button = it.value()) {
-            button->setMusicListFromSongs(DBManager::instance().getMusicList(name));
-        }
-    }
 }
 
-const QList<Song> &MusicListManager::getSongListViaName(const QString &name) {
-    return m_userListMap[name]->getMusicList();
-}
 
-void MusicListManager::handleMusicButtonClicked(const QString &name) {
+void MusicListWidget::handleMusicButtonClicked(const QString &name) {
     qDebug() << "buttonWidget handleMusicButtonClicked";
-    if (m_userListMap.contains(name)) {
         // todo
-        Q_EMIT songsReadyToView(name);
-    }
+    Q_EMIT signalMusicListButtonClicked(name);
 }
 

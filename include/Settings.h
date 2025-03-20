@@ -3,10 +3,13 @@
 //
 #ifndef SETTINGS_H
 #define SETTINGS_H
+#include <QObject>
 #include <QStringList>
-#include <QString>
+#include "Assets.h"
 
-class Settings {
+class Settings final : public QObject {
+    Q_OBJECT
+
 public:
     static Settings &instance() {
         static Settings settingsInstance;
@@ -25,10 +28,6 @@ public:
 
     void saveToJson();
 
-    void addMusicDirectory(const QString &path);
-
-    void removeMusicDirectory(const QString &path);
-
 
     [[nodiscard]] QStringList getLocalMusicDirectories() const { return m_localMusicPaths; }
 
@@ -41,11 +40,20 @@ public:
 
     [[nodiscard]] float getDefaultVolume() const { return m_volume; }
 
+
+Q_SIGNALS:
+    void signalSettingsChanged();
+
+public Q_SLOTS:
+    void addMusicDirectory(const QString &path);
+
+    void removeMusicDirectory(const QString &path);
+
 private:
 #if defined (__linux__)
-    const QString m_settingsPath{"../res/settings/init_linux.json"};
+    const QString m_settingsPath{Constants::LINUX_SETTINGS_PATH};
 #elif defined (_WIN32)
-    const QString m_settingsPath{"../res/settings/init.json"};
+    const QString m_settingsPath{User::WIN_SETTINGS_PATH};
 #endif
 
     QString m_dbPath;
@@ -56,7 +64,7 @@ private:
     Settings() {
     }
 
-    ~Settings() = default;
+    ~Settings() override = default;
 };
 
 

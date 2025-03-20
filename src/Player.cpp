@@ -26,9 +26,9 @@ Player::Player()
         }
     });
     // update the source of player when the current music changed
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &Player::changeSource);
+    connect(&PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &Player::changeSource);
     // auto check music
-    connect(this, &Player::playMusicEnd, PlayList::instance(), &PlayList::nextMusic);
+    connect(this, &Player::playMusicEnd, &PlayList::instance(), &PlayList::nextMusic);
 }
 
 void Player::setPlayStatus(const bool playStatus) {
@@ -76,7 +76,7 @@ void Player::playToggle() {
 }
 
 void Player::changeSource() {
-    const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance()->getCurrentMusicPath());
+    const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance().getCurrentMusicPath());
     m_player->stop();
     m_player->setSource(mp3Url);
     m_player->play();

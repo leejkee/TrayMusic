@@ -7,6 +7,10 @@
 #include <QSqlDatabase>
 #include "Song.h"
 
+class DatabaseInitializationError final : public std::runtime_error {
+public:
+    explicit DatabaseInitializationError(const QString& message) : std::runtime_error(message.toStdString()) {}
+};
 
 class DBManager {
 public:
@@ -26,10 +30,7 @@ public:
 
     void insertSongToTable(const QString &tableName, const Song &song) const;
 
-    // db operate; only functions about "User Music List" call these functions
-    // QStringList readListFromDB(const QString& listName);
-    // void saveListToDB(const QStringList& list, const QString& tableName);
-    // db operate
+    void delViaName(const QString &tableName, const QString &songName) const;
 
 private:
     DBManager() {

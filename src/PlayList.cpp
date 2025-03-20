@@ -7,6 +7,8 @@
 #include <QString>
 #include <QDirIterator>
 
+#include "MusicListCache.h"
+
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();
@@ -19,7 +21,7 @@ void PlayList::loadMusicFromDirectory(const QString &path) {
     m_currentIndex = 0;
 }
 
-void PlayList::loadMusicFromDB(const QStringList &fileAbsolutePathList) {
+void PlayList::loadMusicFromUserList(const QStringList &fileAbsolutePathList) {
     m_musicList.clear();
     for (const auto &file: fileAbsolutePathList) {
         Song song(file);
@@ -124,3 +126,6 @@ bool PlayList::isEmpty() const {
     return m_musicList.isEmpty();
 }
 
+void PlayList::loadMusicByName(const QString &name) {
+    loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
+}

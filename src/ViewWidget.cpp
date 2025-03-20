@@ -3,7 +3,6 @@
 //
 #include <QHBoxLayout>
 #include "ViewWidget.h"
-
 #include <QLabel>
 #include "PlayList.h"
 #include <QListView>
@@ -11,16 +10,22 @@
 #include <QPushButton>
 #include <QStringListModel>
 #include "Assets.h"
-#include "MusicListManager.h"
+#include "MusicListCache.h"
 
+
+void ViewWidget::createConnections() {
+    connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
+    connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
+    connect(&PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ViewWidget::updateCurrentIndex);
+    connect(m_playAllButton, &QPushButton::clicked, this, [this]() {
+        Q_EMIT signalPlayAllClicked(m_labelName->text());
+    });
+}
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_labelName = new QLabel(this);
-    m_playAllButton = new QPushButton(QIcon(Res::playIconSVG), "Play All", this);
+    m_playAllButton = new QPushButton(QIcon(Res::PlayIconSVG), User::PLAY_ALL_KEY, this);
     m_playAllButton->setFixedWidth(80);
-    connect(m_playAllButton, &QPushButton::clicked, this, [this]() {
-        Q_EMIT playAll(m_labelName->text());
-    });
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     const auto layoutH = new QHBoxLayout;
     layoutH->addWidget(m_playAllButton);
@@ -34,20 +39,19 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
     m_playListView->setStyleSheet("QListView { font-size: 15px; }");
-    connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
-    connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, this, &ViewWidget::updateCurrentIndex);
-    QVBoxLayout *Layout = new QVBoxLayout;
+
+    auto *Layout = new QVBoxLayout;
     Layout->addWidget(m_labelName);
     Layout->addItem(layoutH);
     Layout->addWidget(m_playListView);
     this->setLayout(Layout);
+    createConnections();
+    setDefaultList();
 }
-
 
 void ViewWidget::viewDoubleClick(const QModelIndex &index) {
     qDebug() << "ViewWidget::viewDoubleClick";
-    PlayList::instance()->setCurrentMusicIndex(index.row());
+    PlayList::instance().setCurrentMusicIndex(index.row());
 }
 
 void ViewWidget::updateCurrentIndex(const int index) {
@@ -75,28 +79,26 @@ void ViewWidget::handleAction(const int index) {
     qDebug() << "ViewWidget::handleAction" << index;
 }
 
-void ViewWidget::loadMusicStringFromData(const QList<Song> &list) {
-    qDebug() << "ViewWidget::loadStringFromData";
-    QStringList s;
-    for (const Song &song : list) {
-        s.append(song.getName());
+
+void ViewWidget::showMusicList(const QString &listName) const {
+    const auto songNameList = MusicListCache::instance().getSongNameListByName(listName);
+    if (songNameList.isEmpty()) {
+        qDebug() << "ViewWidget::showMusicList" << "MusicList is empty(MusicListCache::getSongNameListByName)";
+        return;
     }
-    this->m_playListModel->setStringList(s);
-}
-
-void ViewWidget::reloadModel() {
-}
-
-void ViewWidget::localMusicButtonClicked(const QList<Song> &list) {
-    qDebug() << "ViewWidget::localMusicButtonClicked";
-    m_labelName->setText("Local Music");
-    loadMusicStringFromData(list);
+    this->m_playListModel->setStringList(songNameList);
+    m_labelName->setText(listName);
 }
 
 
-void ViewWidget::musicButtonClicked(const QString &name) {
-    qDebug() << "ViewWidget::playAllButtonClicked";
-    m_labelName->setText(name);
-    loadMusicStringFromData(MusicListManager::getSongListViaName(name));
+void ViewWidget::setDefaultList() const {
+    showMusicList(User::LOCAL_LIST_KEY);
 }
-// View存储
+
+
+void ViewWidget::refreshForLocalMusic() const {
+    if (m_labelName->text() == User::LOCAL_LIST_KEY) {
+        showMusicList(User::LOCAL_LIST_KEY);
+        qDebug() << "ViewWidget::refreshForLocalMusic";
+    }
+}

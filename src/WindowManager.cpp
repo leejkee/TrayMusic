@@ -3,7 +3,7 @@
 //
 
 #include "WindowManager.h"
-#include "MusicListManager.h"
+#include "MusicListWidget.h"
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -12,26 +12,33 @@
 #include <QStackedWidget>
 
 #include "DBManager.h"
-#include "MusicListButton.h"
+#include "ListButton.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
 #include "PlayList.h"
 #include "Settings.h"
 #include "ViewWidget.h"
-#include "SettingsWidget.h"
+#include "LocalMusicSettingsWidget.h"
+#include "MusicListCache.h"
 
 WindowManager::WindowManager(QWidget *parent)
-    : QWidget(parent)
-{
+    : QWidget(parent) {
     Settings::instance().loadFromJson();
+
     // PlayList::instance()->loadMusicFromDirectories(Settings::instance().getLocalMusicDirectories());
-    DBManager::instance().initDB(Settings::instance().getDatabaseDirectory());
+    try {
+        DBManager::instance().initDB(Settings::instance().getDatabaseDirectory());
+    } catch (DatabaseInitializationError &e) {
+        qDebug() << "Failed to open database: " << e.what();
+    }
+    MusicListCache::instance().load();
+
     this->m_player = new Player();
     this->m_viewWidget = new ViewWidget(this);
     this->m_bottomWidget = new PlayerWidget(this);
-    this->m_leftWidget = new MusicListManager(this);
-    this->m_settingsWidget = new SettingsWidget(this);
+    this->m_leftWidget = new MusicListWidget(this);
+    this->m_settingsWidget = new LocalMusicSettingsWidget(this);
     this->m_topBarWidget = new TopBarWidget(this);
     this->m_stackedWidget = new QStackedWidget(this);
     m_stackedWidget->addWidget(m_viewWidget);
@@ -42,7 +49,6 @@ WindowManager::WindowManager(QWidget *parent)
     m_viewLayout->setContentsMargins(0, 0, 0, 0);
     m_viewLayout->addWidget(m_leftWidget);
     m_viewLayout->addWidget(m_stackedWidget);
-    // m_viewLayout->addWidget(m_stackedWidget);
 
     // bottom layout
     const auto m_bottomLayout = new QHBoxLayout;
@@ -79,9 +85,11 @@ void WindowManager::createConnections() {
     });
 
     // progressbar and set position
-    connect(m_player, &Player::playPositionChanged, m_bottomWidget->m_progressWidget, &ProgressBarWidget::updateSliderPosition);
+    connect(m_player, &Player::playPositionChanged, m_bottomWidget->m_progressWidget,
+            &ProgressBarWidget::updateSliderPosition);
     connect(m_player, &Player::playPositionChanged, m_bottomWidget->m_progressWidget, &ProgressBarWidget::updateLabelL);
-    connect(PlayList::instance(), &PlayList::currentMusicIndexChanged, m_bottomWidget->m_progressWidget, &ProgressBarWidget::updateLabelR);
+    connect(&PlayList::instance(), &PlayList::currentMusicIndexChanged, m_bottomWidget->m_progressWidget,
+            &ProgressBarWidget::updateLabelR);
     connect(m_bottomWidget->m_progressWidget->m_sliderP, &QSlider::valueChanged, this, [this](const int value) {
         if (m_bottomWidget->m_progressWidget->m_isUpdatingSlider) {
             return;
@@ -91,17 +99,20 @@ void WindowManager::createConnections() {
 
     connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
     connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
-    connect(m_settingsWidget, &SettingsWidget::localMusicPathChanged, m_viewWidget, &ViewWidget::reloadModel);
+    // todo: local music path changed, refresh the viewWidget
+    connect(m_settingsWidget, &LocalMusicSettingsWidget::signalLocalMusicPathSettingsChanged, m_viewWidget, &ViewWidget::refreshForLocalMusic);
 
-    connect(m_viewWidget, &ViewWidget::playAll, this, [this](const QString &name) {
-        PlayList::instance()->loadMusicFromSongs(MusicListManager::getSongListViaName(name));
+    connect(m_viewWidget, &ViewWidget::signalPlayAllClicked, &PlayList::instance(), &PlayList::loadMusicByName);
+
+    connect(m_leftWidget, &MusicListWidget::signalMusicListButtonClicked, m_viewWidget, &ViewWidget::showMusicList);
+
+    // connect(m_leftWidget, &MusicListWidget::signalMusicListButtonAdded, ,)
+    connect(&Settings::instance(), &Settings::signalSettingsChanged, this, [this]() {
+        MusicListCache::instance().reloadLocalMusicList();
     });
-
-    connect(m_leftWidget, &MusicListManager::songsReadyToView, m_viewWidget, &ViewWidget::musicButtonClicked);
 }
 
-WindowManager::~WindowManager() {
-}
+WindowManager::~WindowManager() = default;
 
 void WindowManager::showMainWidget() {
     qDebug() << "WindowManager::showMainWidget()";
@@ -112,6 +123,3 @@ void WindowManager::showSettingsWidget() {
     qDebug() << "showSettingsWidget";
     m_stackedWidget->setCurrentIndex(1);
 }
-
-
-

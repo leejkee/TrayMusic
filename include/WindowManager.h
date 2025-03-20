@@ -7,7 +7,7 @@
 #include <QWidget>
 
 
-class MusicListManager;
+class MusicListWidget;
 class QGridLayout;
 class QHBoxLayout;
 class PlayerWidget;
@@ -18,7 +18,7 @@ class Player;
 class Settings;
 class QPushButton;
 class TopBarWidget;
-class SettingsWidget;
+class LocalMusicSettingsWidget;
 
 
 class WindowManager final : public QWidget{
@@ -31,8 +31,8 @@ private:
     QStackedWidget *m_stackedWidget;
     ViewWidget* m_viewWidget;
     PlayerWidget* m_bottomWidget;
-    MusicListManager* m_leftWidget;
-    SettingsWidget *m_settingsWidget;
+    MusicListWidget* m_leftWidget;
+    LocalMusicSettingsWidget *m_settingsWidget;
     TopBarWidget *m_topBarWidget;
     Player *m_player;
     QHBoxLayout *m_viewLayout;

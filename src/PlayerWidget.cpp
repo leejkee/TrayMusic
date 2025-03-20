@@ -16,14 +16,14 @@
 #include "Settings.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
-    m_pushButtonPlay = new QPushButton(QIcon(Res::playIconSVG), "");
+    m_pushButtonPlay = new QPushButton(QIcon(Res::PlayIconSVG), "");
     m_pushButtonPlay->setFixedSize(30, 30);
     m_labelMusicFileName = new QLabel;
     // init fun
     // m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
-    m_pushButtonPre = new QPushButton(QIcon(Res::preIconSVG), "");
+    m_pushButtonPre = new QPushButton(QIcon(Res::PreIconSVG), "");
     m_pushButtonPre->setFixedSize(30, 30);
-    m_pushButtonNext = new QPushButton(QIcon(Res::nextIconSVG), "");
+    m_pushButtonNext = new QPushButton(QIcon(Res::NextIconSVG), "");
     m_pushButtonNext->setFixedSize(30, 30);
     setButtonVisible(true);
 
@@ -31,7 +31,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_volumeWidget = new VolumeWidget(this);
     m_volumeWidget->loadDefaultSetting();
     m_pushButtonVolume = new QPushButton(this);
-    m_pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
+    m_pushButtonVolume->setIcon(QIcon(Res::VolumeSVG));
     m_pushButtonVolume->setFixedSize(30, 30);
     m_menuVolume = new QMenu(this);
     auto *action = new QWidgetAction(this);
@@ -58,31 +58,31 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
 
 void PlayerWidget::createConnections() {
     // update the music name label
-    connect(PlayList::instance(), &PlayList::currentMusicNameChanged, m_labelMusicFileName, &QLabel::setText);
+    connect(&PlayList::instance(), &PlayList::currentMusicNameChanged, m_labelMusicFileName, &QLabel::setText);
 
     // show the volume widget
     connect(m_pushButtonVolume, &QPushButton::clicked, this, &PlayerWidget::showVolumeSlider);
 
     // check music
-    connect(m_pushButtonNext, &QPushButton::clicked, PlayList::instance(), &PlayList::nextMusic);
-    connect(m_pushButtonPre, &QPushButton::clicked, PlayList::instance(), &PlayList::previousMusic);
+    connect(m_pushButtonNext, &QPushButton::clicked, &PlayList::instance(), &PlayList::nextMusic);
+    connect(m_pushButtonPre, &QPushButton::clicked, &PlayList::instance(), &PlayList::previousMusic);
 }
 
 void PlayerWidget::setPlayButtonIcon(const bool playStatus) {
     if (playStatus) {
-        m_pushButtonPlay->setIcon(QIcon(Res::pauseIconSVG));
+        m_pushButtonPlay->setIcon(QIcon(Res::PauseIconSVG));
     } else {
-        m_pushButtonPlay->setIcon(QIcon(Res::playIconSVG));
+        m_pushButtonPlay->setIcon(QIcon(Res::PlayIconSVG));
     }
 }
 
 void PlayerWidget::setVolumeCtrlButtonIcon(const int volume) {
     if (volume != 0) {
-        m_pushButtonVolume->setIcon(QIcon(Res::volumeSVG));
-        m_volumeWidget->m_buttonMute->setIcon(QIcon(Res::volumeSVG));
+        m_pushButtonVolume->setIcon(QIcon(Res::VolumeSVG));
+        m_volumeWidget->m_buttonMute->setIcon(QIcon(Res::VolumeSVG));
     } else {
-        m_pushButtonVolume->setIcon(QIcon(Res::volumeMuteSVG));
-        m_volumeWidget->m_buttonMute->setIcon(QIcon(Res::volumeMuteSVG));
+        m_pushButtonVolume->setIcon(QIcon(Res::VolumeMuteSVG));
+        m_volumeWidget->m_buttonMute->setIcon(QIcon(Res::VolumeMuteSVG));
     }
 }
 
@@ -108,7 +108,7 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     connect(m_sliderV, &QSlider::valueChanged, m_labelVolume, [=]() {
         m_labelVolume->setText(QString("%1%").arg(m_sliderV->value()));
     });
-    m_buttonMute = new QPushButton(QIcon(Res::volumeSVG), "", this);
+    m_buttonMute = new QPushButton(QIcon(Res::VolumeSVG), "", this);
     m_buttonMute->setIconSize(QSize(10, 10));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -180,7 +180,7 @@ void ProgressBarWidget::updateLabelL(const qint64 duration) {
 
 // update when music changed
 void ProgressBarWidget::updateLabelR() {
-    const int s = PlayList::instance()->getCurrentMusicDuration();
+    const int s = PlayList::instance().getCurrentMusicDuration();
     m_sliderP->setMaximum(s * 1000);
     m_labelRight->setText(PlayerWidget::convertSecondsToTime(s));
 }

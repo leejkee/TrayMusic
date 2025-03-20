@@ -4,7 +4,6 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-
 void DBManager::initDB(const QString &dbName) {
     if (m_db.isOpen()) {
         return;
@@ -13,7 +12,7 @@ void DBManager::initDB(const QString &dbName) {
     m_db.setDatabaseName(dbName);
     if (!m_db.open()) {
         qDebug() << "Failed to open database" << m_db.lastError().text();
-        return;
+        throw DatabaseInitializationError("Failed to open database: " + m_db.lastError().text());
     }
 }
 
@@ -71,7 +70,6 @@ QList<Song> DBManager::getMusicList(const QString &tableName) const {
     return songList;
 }
 
-
 void DBManager::insertSongToTable(const QString &tableName, const Song &song) const {
     if (!m_db.isOpen()) {
         qDebug() << "Database is not open" << m_db.lastError().text();
@@ -92,5 +90,22 @@ void DBManager::insertSongToTable(const QString &tableName, const Song &song) co
         qDebug() << "Failed to insert song into table:" << query.lastError().text();
     } else {
         qDebug() << "Song inserted successfully!";
+    }
+}
+
+void DBManager::delViaName(const QString &tableName, const QString &songName) const {
+    if (!m_db.isOpen()) {
+        qDebug() << "Database is not open" << m_db.lastError().text();
+    }
+
+    QSqlQuery query(m_db);
+    auto sql = QStringLiteral("DELETE FROM %1 WHERE name = :songName");
+    sql = sql.arg(tableName);
+    query.prepare(sql);
+    query.bindValue(":songName", songName);
+    if (!query.exec()) {
+        qDebug() << "Failed to delete song from table:" << query.lastError().text();
+    } else {
+        qDebug() << "Song" << songName << "deleted successfully!";
     }
 }

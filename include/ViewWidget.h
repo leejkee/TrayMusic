@@ -22,12 +22,14 @@ class ViewWidget final : public QWidget {
     Q_OBJECT
 
 public:
+    void createConnections();
+
     explicit ViewWidget(QWidget *parent = nullptr);
 
 
 Q_SIGNALS:
-    void viewDoubleClicked(int index);
-    void playAll(const QString &name);
+    void signalViewDoubleClicked(int index);
+    void signalPlayAllClicked(const QString &name);
 
 private Q_SLOTS:
     void showContextMenu(const QPoint &pos);
@@ -35,23 +37,23 @@ private Q_SLOTS:
     void handleAction(int index);
 
 
+
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);
 
     void updateCurrentIndex(int index);
 
-    void reloadModel();
+    void showMusicList(const QString &listName) const;
 
-    void localMusicButtonClicked(const QList<Song> &list);
+    void setDefaultList() const;
 
-    void musicButtonClicked(const QString &name);
+    void refreshForLocalMusic() const;
 
 private:
     QLabel *m_labelName;
     QListView *m_playListView;
     QStringListModel *m_playListModel;
     QPushButton *m_playAllButton;
-    void loadMusicStringFromData(const QList<Song> &list);
 };
 
 
