@@ -44,17 +44,25 @@ void Settings::saveToJson() {
     file.close();
 }
 
-void Settings::addMusicDirectory(const QString& path) {
+void Settings::addLocalMusicDirectory(const QString& path) {
     if (!m_localMusicPaths.contains(path)) {
         m_localMusicPaths.append(path);
         saveToJson();
-        Q_EMIT signalSettingsChanged();
+        Q_EMIT signalLocalSettingsChanged();
+    }
+}
+
+void Settings::addUserMusicList(const QString& path) {
+    if (!m_userMusicList.contains(path)) {
+        m_userMusicList.append(path);
+        saveToJson();
+        Q_EMIT signalUserListAdded(path);
     }
 }
 
 void Settings::removeMusicDirectory(const QString& path) {
     if (m_localMusicPaths.removeOne(path)) {
         saveToJson();
-        Q_EMIT signalSettingsChanged();
+        Q_EMIT signalLocalSettingsChanged();
     }
 }

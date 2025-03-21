@@ -40,7 +40,10 @@ MusicListWidget::MusicListWidget(QWidget *parent)
     buttonLayout->addItem(spaceH);
 
     m_buttonWidget = new QWidget(this);
-    m_buttonLayout = new QVBoxLayout(m_buttonWidget);
+    m_buttonLayout = new QVBoxLayout;
+    m_buttonLayout->setSpacing(0);
+    m_buttonLayout->setContentsMargins(0, 0, 0, 0);
+    m_buttonWidget->setLayout(m_buttonLayout);
 
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setWidgetResizable(true);
@@ -74,6 +77,7 @@ void MusicListWidget::createConnections() {
     connect(m_localListButton, &ListButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
     connect(m_expandButton, &QPushButton::clicked, this, &MusicListWidget::toggleExpand);
     connect(m_addButton, &QPushButton::clicked, this, &MusicListWidget::addButton);
+    connect(this, &MusicListWidget::signalMusicListButtonAdded, &Settings::instance(), &Settings::addUserMusicList);
 }
 
 
@@ -97,7 +101,8 @@ void MusicListWidget::addButton() {
                                                        QLineEdit::Normal,
                                                        "",
                                                        &ok);
-    if (ok && !playlistName.isEmpty()) {
+    if (ok && !playlistName.isEmpty() && !playlistName.begin()->isDigit()) {
+        qDebug() << "playlist: [" << playlistName << "] added.";
         newButton(playlistName);
         Q_EMIT signalMusicListButtonAdded(playlistName);
     }

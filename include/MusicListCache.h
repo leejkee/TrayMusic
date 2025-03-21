@@ -15,7 +15,7 @@ public:
 
     /// This function must be called first
     /// This function should be called after calling function DBManager::initDB() and Settings::loadFromJson()
-    void load();
+    void loadLists();
 
     MusicListCache(const MusicListCache &other) = delete;
 
@@ -28,15 +28,15 @@ public:
     /// @return A list containing the names of all songs in the playlist. Returns an empty list if the playlist is not found or an error occurs.
     [[nodiscard]] QStringList getSongNameListByName(const QString &listName) const;
 
-    void insert(const QString &list);
-
-    void del(const QString &list);
-
-    void reloadLocalMusicList();
-
     /// @param path local music paths in settings
     /// @return Song structure
     static QList<Song> getSongListFromDirectories(const QStringList &path);
+
+    void reloadLocalMusicList();
+
+    void insertList(const QString &list);
+
+    void delList(const QString &list);
 
 private:
     MusicListCache() {

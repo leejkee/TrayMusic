@@ -84,7 +84,6 @@ void ViewWidget::showMusicList(const QString &listName) const {
     const auto songNameList = MusicListCache::instance().getSongNameListByName(listName);
     if (songNameList.isEmpty()) {
         qDebug() << "ViewWidget::showMusicList" << "MusicList is empty(MusicListCache::getSongNameListByName)";
-        return;
     }
     this->m_playListModel->setStringList(songNameList);
     m_labelName->setText(listName);

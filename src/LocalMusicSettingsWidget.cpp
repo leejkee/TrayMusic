@@ -35,7 +35,7 @@ LocalMusicSettingsWidget::LocalMusicSettingsWidget(QWidget *parent) : QWidget(pa
     loadSettings();
     connect(m_addButton, &QPushButton::clicked, this, &LocalMusicSettingsWidget::addMusicPath);
     connect(m_removeButton, &QPushButton::clicked, this, &LocalMusicSettingsWidget::removeMusicPath);
-    connect(this, &LocalMusicSettingsWidget::signalAddButton, &Settings::instance(), &Settings::addMusicDirectory);
+    connect(this, &LocalMusicSettingsWidget::signalAddButton, &Settings::instance(), &Settings::addLocalMusicDirectory);
     connect(this, &LocalMusicSettingsWidget::signalRemoveButton, &Settings::instance(), &Settings::removeMusicDirectory);
 }
 

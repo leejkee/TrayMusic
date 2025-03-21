@@ -32,7 +32,7 @@ WindowManager::WindowManager(QWidget *parent)
     } catch (DatabaseInitializationError &e) {
         qDebug() << "Failed to open database: " << e.what();
     }
-    MusicListCache::instance().load();
+    MusicListCache::instance().loadLists();
 
     this->m_player = new Player();
     this->m_viewWidget = new ViewWidget(this);
@@ -107,9 +107,22 @@ void WindowManager::createConnections() {
     connect(m_leftWidget, &MusicListWidget::signalMusicListButtonClicked, m_viewWidget, &ViewWidget::showMusicList);
 
     // connect(m_leftWidget, &MusicListWidget::signalMusicListButtonAdded, ,)
-    connect(&Settings::instance(), &Settings::signalSettingsChanged, this, [this]() {
+    connect(&Settings::instance(), &Settings::signalLocalSettingsChanged, this, [this]() {
         MusicListCache::instance().reloadLocalMusicList();
     });
+
+    connect(&Settings::instance(), &Settings::signalUserListAdded, this, [this](const QString &name) {
+        MusicListCache::instance().insertList(name);
+    });
+
+    // connect(&Settings::instance(), &Settings::signalUserListRemoved, this, [this](const QString &name) {
+    //     MusicListCache::instance().delList(name);
+    // });
+
+    connect(&Settings::instance(), &Settings::signalUserListAdded, this, [this](const QString &name) {
+        DBManager::instance().createTable(name);
+    });
+
 }
 
 WindowManager::~WindowManager() = default;

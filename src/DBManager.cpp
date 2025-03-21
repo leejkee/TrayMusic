@@ -25,6 +25,10 @@ void DBManager::createTable(const QString &tableName) const {
         qDebug() << "Table " << tableName << " exists.";
         return;
     }
+    // if (tableName.isEmpty() || tableName.at(0).isDigit()) {
+    //     qDebug() << "Table Name: " << tableName << " is invalid.";
+    //     return;
+    // }
     qDebug() << "Table " << tableName << " created.";
     const QString COLUMN_ID = "id";
     const QString COLUMN_PATH = "path";

@@ -7,7 +7,6 @@
 #include <QMap>
 #include "Assets.h"
 #include "DBManager.h"
-#include "PlayList.h"
 #include "Settings.h"
 
 
@@ -26,7 +25,7 @@ QStringList MusicListCache::getSongNameListByName(const QString &listName) const
     return songName;
 }
 
-void MusicListCache::load() {
+void MusicListCache::loadLists() {
     qDebug() << "Loading MusicListCache";
 
     // Local Music cache first
@@ -38,7 +37,7 @@ void MusicListCache::load() {
     }
 }
 
-void MusicListCache::insert(const QString &list) {
+void MusicListCache::insertList(const QString &list) {
     if (m_ListMap.contains(list)) {
         qDebug() << "[MusicListCache::insert]: " << list << " already exists";
         return;
@@ -46,7 +45,7 @@ void MusicListCache::insert(const QString &list) {
     m_ListMap[list] = {};
 }
 
-void MusicListCache::del(const QString &list) {
+void MusicListCache::delList(const QString &list) {
     if (m_ListMap.contains(list)) {
         m_ListMap.remove(list);
     }
@@ -58,6 +57,7 @@ void MusicListCache::del(const QString &list) {
 void MusicListCache::reloadLocalMusicList() {
     m_ListMap[User::LOCAL_LIST_KEY] = getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
 }
+
 
 QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) {
     QList<Song> musicList;

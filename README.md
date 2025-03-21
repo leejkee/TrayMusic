@@ -2,52 +2,69 @@
 
 [**简体中文**](README_cn.md)  
 
-If you are looking for a reference project for the following purposes, this project may be useful:
+If you have any of the following goals, this project can serve as a reference:
+- Learning **Qt Widget** development.
+- Looking for a **lightweight offline music player**, even for deployment on **embedded devices**.
 
-- Learning **Qt Widget** development
-- Finding a lightweight offline music player, even for deployment on **embedded devices**
+## Running Screenshot (Windows 11)
+![Run](/doc/img/ss.png)
 
-### Screenshot(Windows 11)
-
-![Run](/doc/img/run.png)
-
-### Dependencies
-
-**TagLib** – A C++ library for parsing MP3 **ID3 tag** information and retrieving music file durations.
-
+## Dependencies
+`TagLib` - A C++ library for parsing ID3 tag information from MP3 files and retrieving the duration of audio files.
 - [TagLib](https://github.com/taglib/taglib)
 
-### Project Structure & Features
-- **MainWindow**
-  - [x] System tray support
-   
-- **WindowManager**
-  - [x] Manages the overall window layout, window switching, and signal-slot connections
+## Project Structure & Features
 
-- **Player**
-  - [x] Handles playback of individual music files
+### **Assets**
+- [x] Stores constants
 
-- **PlayerWidget**
-  - [x] UI for basic music player functionalities
+### **MainWindow**
+- [x] System tray support
 
-- **PlayList**
-  - [x] Manages playlists, including **user-defined playlists** and **local directory scanning**
-  - [x] Uses **TagLib API** to read music durations
+### **WindowManager**
+- [x] Manages overall window layout
+- [x] Handles window switching
+- [x] Manages signal-slot connections
 
-- **ViewWidget**
-  - [x] UI for displaying the song list
+### **Player**
+- [x] Controls the playback of a single music file
 
-- **TopBarWidget**
-  - [x] Manages the top bar, displaying the **logo**, **settings button**, and **back button**
+### **PlayerWidget**
+- [x] UI for basic music player functionality
 
-- **MusicListManager**
-  - [x] UI for the settings page
+### **PlayList**
+- [x] Manages the currently loaded playlist, including user-defined playlists and local directory scanning
+- [x] Uses **TagLib** API to read music duration
 
-- **Settings**
-  - [x] Reads and writes configuration files
+### **ViewWidget**
+- [x] Main UI for displaying the song list or switching to other settings pages
 
-- **SettingsWidget**
-  - [x] Adds and removes the paths of local music, updates the playlist
-   
-- **DBManager**
-  - [ ] Handles database operations (**CRUD**)  
+### **TopBarWidget**
+- [x] Manages the top bar
+- [x] Displays the **logo, settings button, and back button**
+
+### **MusicListWidget**
+- [x] UI for the **left-side** playlist panel
+- [x] Controls playlist switching
+
+### **MusicListCache**
+- [x] Caches all playlists' data
+- [x] Loads local music files from directories and user playlists from the database
+- [x] Provides song data for components like **PlayList** and **ViewWidget**, allowing them to query songs by playlist name
+
+### **Settings**
+- [x] Reads configuration files, including:
+  - Local music directory list
+  - User-created playlist names
+  - Database file location
+  - Default player settings
+
+### **LocalMusicSettingsWidget**
+- [x] Manages local music directories
+- [x] Allows users to **add, remove, and update directories** in real-time
+- [x] Automatically updates the UI when the current view is the local music list
+
+### **DBManager**
+- [ ] Handles **CRUD (Create, Read, Update, Delete) operations** on the database
+- [x] Reads and stores user data
+

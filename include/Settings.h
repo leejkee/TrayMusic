@@ -42,10 +42,14 @@ public:
 
 
 Q_SIGNALS:
-    void signalSettingsChanged();
+    void signalLocalSettingsChanged();
+    void signalUserListAdded(const QString &);
+    void signalUserListRemoved(const QString &);
 
 public Q_SLOTS:
-    void addMusicDirectory(const QString &path);
+    void addLocalMusicDirectory(const QString &path);
+
+    void addUserMusicList(const QString &path);
 
     void removeMusicDirectory(const QString &path);
 
