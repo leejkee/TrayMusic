@@ -18,6 +18,8 @@ public:
 
     ~Player() override;
 
+    void playMusic();
+
     [[nodiscard]] float getVolume() const;
 
     [[nodiscard]] bool playStatus() const { return m_isPlay; };
@@ -28,7 +30,6 @@ private:
 
     bool m_isPlay;
     float m_volume;
-    void loadMusic(const QUrl &mp3Url);
     void setPlayStatus(bool playStatus);
 
 Q_SIGNALS:

@@ -21,20 +21,13 @@ public:
 
     [[nodiscard]] QString getCurrentMusicName() const;
     [[nodiscard]] QString getCurrentMusicPath() const;
-
+    [[nodiscard]] QString getFirstMusicPath() const;
     [[nodiscard]] int getCurrentMusicDuration() const;
 
     void loadMusicFromDirectories(const QStringList& filePathList);
     void loadMusicFromDirectory(const QString& path);
-
     void loadMusicFromUserList(const QStringList &fileAbsolutePathList);
-
     void switchMusicList(const QList<Song> &songs);
-
-    ///
-    /// @param path local music paths in settings
-    /// @return Song structure
-    static QList<Song> getSongListFromDirectories(const QStringList& path);
 
     ///
     /// @return return the list which contain the music name with no suffix(eg: ".mp3")
@@ -43,7 +36,7 @@ public:
     [[nodiscard]] int getCurrentMusicIndex() const;
     void setCurrentMusicIndex(int index);
 
-    [[nodiscard]] bool isEmpty() const;
+    [[nodiscard]] bool isEmptyPlayList() const;
 
 
 Q_SIGNALS:
@@ -56,6 +49,7 @@ public Q_SLOTS:
     void previousMusic();
     void loadMusicByName(const QString& name);
 
+    void playFromFirst();
 
 private:
     PlayList(){}

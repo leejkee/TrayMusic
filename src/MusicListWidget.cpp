@@ -10,7 +10,6 @@
 #include "DBManager.h"
 #include "ListButton.h"
 #include "Settings.h"
-#include "PlayList.h"
 
 MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {

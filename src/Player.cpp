@@ -43,9 +43,13 @@ Player::~Player() {
     delete m_audioOut;
 }
 
-
-void Player::loadMusic(const QUrl &mp3Url) {
+void Player::playMusic() {
+    const QUrl mp3Url = QUrl::fromLocalFile(PlayList::instance().getCurrentMusicPath());
     m_player->setSource(mp3Url);
+    if (! m_isPlay) {
+        m_player->play();
+        setPlayStatus(true);
+    }
 }
 
 void Player::setVolume(int volume) {

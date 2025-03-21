@@ -34,6 +34,10 @@ public:
 
     void reloadLocalMusicList();
 
+    /// @param path local music paths in settings
+    /// @return Song structure
+    static QList<Song> getSongListFromDirectories(const QStringList &path);
+
 private:
     MusicListCache() {
     }

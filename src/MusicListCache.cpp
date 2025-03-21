@@ -3,6 +3,7 @@
 //
 
 #include "MusicListCache.h"
+#include <QDirIterator>
 #include <QMap>
 #include "Assets.h"
 #include "DBManager.h"
@@ -29,7 +30,7 @@ void MusicListCache::load() {
     qDebug() << "Loading MusicListCache";
 
     // Local Music cache first
-    m_ListMap[User::LOCAL_LIST_KEY] = PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
+    m_ListMap[User::LOCAL_LIST_KEY] = getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
     // User
     const auto userList = Settings::instance().getUserMusicList();
     for (const auto &list : userList) {
@@ -55,5 +56,18 @@ void MusicListCache::del(const QString &list) {
 }
 
 void MusicListCache::reloadLocalMusicList() {
-    m_ListMap[User::LOCAL_LIST_KEY] = PlayList::getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
+    m_ListMap[User::LOCAL_LIST_KEY] = getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
+}
+
+QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) {
+    QList<Song> musicList;
+    for (const auto &filePath: path) {
+        QDirIterator it(filePath, QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            it.next();
+            Song song(it.filePath());
+            musicList.append(song);
+        }
+    }
+    return musicList;
 }

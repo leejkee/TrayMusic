@@ -6,9 +6,7 @@
 #include <QDir>
 #include <QString>
 #include <QDirIterator>
-
 #include "MusicListCache.h"
-
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();
@@ -52,30 +50,25 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
     m_currentIndex = 0;
 }
 
-QList<Song> PlayList::getSongListFromDirectories(const QStringList &path) {
-    QList<Song> musicList;
-    for (const auto &filePath: path) {
-        QDirIterator it(filePath, QDir::Files, QDirIterator::Subdirectories);
-        while (it.hasNext()) {
-            it.next();
-            Song song(it.filePath());
-            musicList.append(song);
-        }
-    }
-    return musicList;
-}
-
 
 QString PlayList::getCurrentMusicName() const {
     return m_musicList.at(m_currentIndex).getName();
 }
 
 QString PlayList::getCurrentMusicPath() const {
-    if (isEmpty()) {
+    if (isEmptyPlayList()) {
         qDebug() << "PlayList::getCurrentMusicPath() is empty";
         return {};
     }
     return m_musicList.at(m_currentIndex).getPath();
+}
+
+QString PlayList::getFirstMusicPath() const {
+    if (isEmptyPlayList()) {
+        qDebug() << "PlayList::getFirstMusicPath() is empty";
+        return {};
+    }
+    return m_musicList.begin()->getPath();
 }
 
 int PlayList::getCurrentMusicDuration() const {
@@ -97,8 +90,8 @@ int PlayList::getCurrentMusicIndex() const {
 void PlayList::setCurrentMusicIndex(const int index) {
     if (index != m_currentIndex) {
         m_currentIndex = index;
-        emit currentMusicIndexChanged(index);
-        emit currentMusicNameChanged(getCurrentMusicName());
+        Q_EMIT currentMusicIndexChanged(index);
+        Q_EMIT currentMusicNameChanged(getCurrentMusicName());
     }
 }
 
@@ -122,10 +115,18 @@ void PlayList::previousMusic() {
     setCurrentMusicIndex(index);
 }
 
-bool PlayList::isEmpty() const {
+bool PlayList::isEmptyPlayList() const {
     return m_musicList.isEmpty();
 }
 
 void PlayList::loadMusicByName(const QString &name) {
     loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
+    playFromFirst();
+}
+
+
+void PlayList::playFromFirst() {
+    setCurrentMusicIndex(0);
+    Q_EMIT currentMusicIndexChanged(0);
+    Q_EMIT currentMusicNameChanged(getCurrentMusicName());
 }
