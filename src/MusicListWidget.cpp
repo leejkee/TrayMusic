@@ -13,19 +13,21 @@
 
 MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {
-    // todo
     m_localListButton = new ListButton(User::LOCAL_LIST_KEY);
-    m_expandButton = new QPushButton(QIcon(SvgRes::DownSVG), "List", this);
-    ListButton::loadStyleSheet(m_expandButton, QssRes::BUTTON_EXPAND_LIST);
+    m_expandButton = new QPushButton(QIcon(SvgRes::UpSVG), User::EXPAND_BTN_TEXT, this);
+    ListButton::loadStyleSheet(m_expandButton, QssRes::BUTTON_EXPAND_QSS);
 
-    m_addButton = new QPushButton(QIcon(SvgRes::AddSVG), "", this);
-    ListButton::loadStyleSheet(m_addButton, QssRes::BUTTON_ADD_LIST);
+    m_addButton = new QPushButton(this);
+    m_addButton->setIcon(QIcon(SvgRes::AddSVG));
+    // m_addButton->setText("+");
+    ListButton::loadStyleSheet(m_addButton, QssRes::BUTTON_ADD_QSS);
 
     const auto buttonLayout = new QHBoxLayout;
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
     buttonLayout->addWidget(m_expandButton);
-    buttonLayout->addWidget(m_addButton);
+
     buttonLayout->addItem(spaceH);
+    buttonLayout->addWidget(m_addButton);
 
     m_buttonWidget = new QWidget(this);
     m_buttonLayout = new QVBoxLayout;
@@ -69,7 +71,7 @@ void MusicListWidget::createConnections() {
 }
 
 
-void MusicListWidget::toggleExpand() {
+void MusicListWidget::toggleExpand() const {
     const bool isV = m_buttonWidget->isVisible();
     m_buttonWidget->setVisible(!isV);
     if (!isV) {

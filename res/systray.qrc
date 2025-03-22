@@ -21,5 +21,6 @@
    <file>settings/init.json</file>
    <file>qss/MusicListButton/ButtonAddList.qss</file>
    <file>qss/MusicListButton/ButtonExpand.qss</file>
+   <file>qss/MusicListButton/ButtonNormal.qss</file>
 </qresource>
 </RCC>

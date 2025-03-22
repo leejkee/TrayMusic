@@ -29,14 +29,19 @@ namespace SvgRes {
 namespace User {
     inline const auto LINUX_SETTINGS_PATH = QStringLiteral("../res/settings/init_linux.json");
     inline const auto WIN_SETTINGS_PATH = QStringLiteral("../res/settings/init.json");
+
     inline const auto PLAY_ALL_KEY = QStringLiteral("Play All");
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
+
+    inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
+
 }
 
 
 namespace QssRes {
-    inline const auto BUTTON_ADD_LIST = QStringLiteral(":/qss/MusicListButton/ButtonAddList.qss");
-    inline const auto BUTTON_EXPAND_LIST = QStringLiteral(":/qss/MusicListButton/ButtonExpand.qss");
+    inline const auto BUTTON_ADD_QSS = QStringLiteral(":/qss/MusicListButton/ButtonAddList.qss");
+    inline const auto BUTTON_EXPAND_QSS = QStringLiteral(":/qss/MusicListButton/ButtonExpand.qss");
+    inline const auto BUTTON_NORMAL_QSS = QStringLiteral(":/qss/MusicListButton/ButtonNormal.qss");
 }
 
 

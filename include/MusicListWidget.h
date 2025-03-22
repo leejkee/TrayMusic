@@ -26,7 +26,7 @@ Q_SIGNALS:
 private Q_SLOTS:
 
     // expand icon
-    void toggleExpand();
+    void toggleExpand() const;
 
 private:
     QPushButton *m_expandButton;
