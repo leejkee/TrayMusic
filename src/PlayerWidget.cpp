@@ -12,32 +12,32 @@
 #include <QStackedLayout>
 #include <QWidgetAction>
 #include <QToolButton>
+#include "ListButton.h"
 #include "PlayList.h"
 #include "Settings.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
-    m_pushButtonPlay = new QPushButton(QIcon(SvgRes::PlayIconSVG), "");
+    m_pushButtonPlay = new ListButton(QIcon(SvgRes::PlayIconSVG), this);
     m_pushButtonPlay->setFixedSize(30, 30);
     m_labelMusicFileName = new QLabel;
     // init fun
     // m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
-    m_pushButtonPre = new QPushButton(QIcon(SvgRes::PreIconSVG), "");
+    m_pushButtonPre = new ListButton(QIcon(SvgRes::PreIconSVG), this);
     m_pushButtonPre->setFixedSize(30, 30);
-    m_pushButtonNext = new QPushButton(QIcon(SvgRes::NextIconSVG), "");
+    m_pushButtonNext = new ListButton(QIcon(SvgRes::NextIconSVG), this);
     m_pushButtonNext->setFixedSize(30, 30);
     setButtonVisible(true);
 
     // VolumeCtrl Section Begin
     m_volumeWidget = new VolumeWidget(this);
     m_volumeWidget->loadDefaultSetting();
-    m_pushButtonVolume = new QPushButton(this);
-    m_pushButtonVolume->setIcon(QIcon(SvgRes::VolumeSVG));
+    m_pushButtonVolume = new ListButton(QIcon(SvgRes::VolumeSVG),this);
     m_pushButtonVolume->setFixedSize(30, 30);
     m_menuVolume = new QMenu(this);
     auto *action = new QWidgetAction(this);
     action->setDefaultWidget(m_volumeWidget);
     m_menuVolume->addAction(action);
-    m_pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");
+    // m_pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");
     // VolumeCtrl Section End
 
     m_progressWidget = new ProgressBarWidget(this);
@@ -108,7 +108,7 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     connect(m_sliderV, &QSlider::valueChanged, m_labelVolume, [=]() {
         m_labelVolume->setText(QString("%1%").arg(m_sliderV->value()));
     });
-    m_buttonMute = new QPushButton(QIcon(SvgRes::VolumeSVG), "", this);
+    m_buttonMute = new ListButton(QIcon(SvgRes::VolumeSVG), this);
     m_buttonMute->setIconSize(QSize(10, 10));
 
     QVBoxLayout *layout = new QVBoxLayout;

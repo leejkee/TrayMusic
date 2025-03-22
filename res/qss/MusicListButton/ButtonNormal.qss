@@ -1,6 +1,4 @@
 QPushButton {
-/*    max-width: 60px;*/
-/*    max-height: 30px;*/
     font-size: 15px;
     qproperty-iconSize: 15px;
     border: 2px solid transparent;

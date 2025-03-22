@@ -25,7 +25,9 @@ void ViewWidget::createConnections() {
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_labelName = new QLabel(this);
-    m_playAllButton = new QPushButton(QIcon(SvgRes::PlayIconSVG), User::PLAY_ALL_KEY, this);
+    m_playAllButton = new ListButton(this);
+    m_playAllButton->setText(User::PLAY_ALL_KEY);
+    m_playAllButton->setIcon(QIcon(SvgRes::PlayIconSVG));
     m_playAllButton->setFixedWidth(80);
     ListButton::loadStyleSheet(m_playAllButton, QssRes::BUTTON_NORMAL_QSS);
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
