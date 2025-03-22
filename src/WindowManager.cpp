@@ -136,3 +136,4 @@ void WindowManager::showSettingsWidget() {
     qDebug() << "Windowmanager::showSettingsWidget";
     m_stackedWidget->setCurrentIndex(1);
 }
+

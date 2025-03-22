@@ -76,7 +76,7 @@ void MainWindow::createTrayIcon() {
     m_trayIconMenu->addSeparator();
     m_trayIconMenu->addAction(m_quitAction);
     m_systemTrayIcon->setContextMenu(m_trayIconMenu);
-    const auto icon = QIcon(Res::TrayIconSVG);
+    const auto icon = QIcon(SvgRes::TrayIconSVG);
     m_systemTrayIcon->setIcon(icon);
     this->setWindowIcon(icon);
     m_systemTrayIcon->setToolTip("Tray Music");

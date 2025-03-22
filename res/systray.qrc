@@ -19,5 +19,7 @@
    <file>images/list.svg</file>
    <file>images/setting.svg</file>
    <file>settings/init.json</file>
+   <file>qss/MusicListButton/ButtonAddList.qss</file>
+   <file>qss/MusicListButton/ButtonExpand.qss</file>
 </qresource>
 </RCC>

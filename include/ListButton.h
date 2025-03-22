@@ -12,6 +12,7 @@ class ListButton final : public QPushButton {
 
 public:
     explicit ListButton(const QString &name, QWidget *parent = nullptr);
+    static void loadStyleSheet(QPushButton *, const QString &);
 
 signals:
     void signalButtonClicked(const QString &listName);

@@ -15,23 +15,11 @@ MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {
     // todo
     m_localListButton = new ListButton(User::LOCAL_LIST_KEY);
-    m_expandButton = new QPushButton(QIcon(Res::DownSVG), "List", this);
-    m_expandButton->setStyleSheet(R"(
-    QPushButton {
-        height: 30px;
-        width: 60px;
-        icon-size: 7px;
-        padding: 0;
-    })");
+    m_expandButton = new QPushButton(QIcon(SvgRes::DownSVG), "List", this);
+    ListButton::loadStyleSheet(m_expandButton, QssRes::BUTTON_EXPAND_LIST);
 
-    m_addButton = new QPushButton(QIcon(Res::AddSVG), "", this);
-    m_addButton->setStyleSheet(R"(
-    QPushButton {
-        width: 30px;
-        height: 30px;
-        border: none;
-        padding: 0;
-    })");
+    m_addButton = new QPushButton(QIcon(SvgRes::AddSVG), "", this);
+    ListButton::loadStyleSheet(m_addButton, QssRes::BUTTON_ADD_LIST);
 
     const auto buttonLayout = new QHBoxLayout;
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
@@ -85,9 +73,9 @@ void MusicListWidget::toggleExpand() {
     const bool isV = m_buttonWidget->isVisible();
     m_buttonWidget->setVisible(!isV);
     if (!isV) {
-        m_expandButton->setIcon(QIcon(Res::UpSVG));
+        m_expandButton->setIcon(QIcon(SvgRes::UpSVG));
     } else {
-        m_expandButton->setIcon(QIcon(Res::DownSVG));
+        m_expandButton->setIcon(QIcon(SvgRes::DownSVG));
     }
 }
 
