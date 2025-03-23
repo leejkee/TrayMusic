@@ -2,8 +2,8 @@
 // Created by cww on 25-2-19.
 //
 
-#ifndef PLAYERUI_H
-#define PLAYERUI_H
+#ifndef PLAYERWIDGET_H
+#define PLAYERWIDGET_H
 #include <QWidget>
 
 class QGroupBox;
@@ -71,4 +71,4 @@ public Q_SLOTS:
 };
 
 
-#endif //PLAYERUI_H
+#endif
