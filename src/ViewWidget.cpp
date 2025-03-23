@@ -3,6 +3,8 @@
 //
 #include <QHBoxLayout>
 #include "ViewWidget.h"
+
+#include <QApplication>
 #include <QLabel>
 #include "PlayList.h"
 #include <QListView>
@@ -11,7 +13,52 @@
 #include "Assets.h"
 #include "ListButton.h"
 #include "MusicListCache.h"
+#include <QPainter>
+#include <QMouseEvent>
 
+void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+                             const QModelIndex &index) const {
+    if (!index.isValid()) return;
+
+    // 获取文本数据
+    const QString text = index.data(Qt::DisplayRole).toString();
+
+    // 计算按钮区域
+    QRect buttonRect(option.rect.right() - 50, option.rect.top(), 25, option.rect.height() - 4 );
+
+    // 绘制背景（选中状态）
+    if (option.state & QStyle::State_Selected) {
+        painter->fillRect(option.rect, option.palette.highlight());
+    }
+
+    // 绘制文本
+    painter->drawText(option.rect.adjusted(5, 5, -50, -5), Qt::AlignVCenter | Qt::AlignLeft, text);
+
+    // 绘制按钮
+    QStyleOptionButton button;
+    button.rect = buttonRect;
+    button.icon = QIcon(SvgRes::PlayIconSVG);
+    button.state = QStyle::State_Enabled;
+    QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
+}
+
+bool PlayListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+                                   const QModelIndex &index) {
+    if (!index.isValid()) return false;
+
+    // 计算按钮区域
+    const QRect buttonRect(option.rect.right() - 50, option.rect.top() , 40, option.rect.height()  );
+
+    if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
+        if (const auto *mouseEvent = dynamic_cast<QMouseEvent *>(event); buttonRect.contains(mouseEvent->pos())) {
+            if (event->type() == QEvent::MouseButtonRelease) {
+                emit playButtonClicked(index);
+            }
+            return true; // 表示事件已处理
+        }
+    }
+    return false;
+}
 
 void ViewWidget::createConnections() {
     connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
@@ -41,8 +88,10 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListView->setModel(m_playListModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_playListView->setStyleSheet("QListView { font-size: 15px; }");
-
+    m_playListView->setStyleSheet("QListView { font-size: 16px; }");
+    PlayListDelegate *playListDelegate = new PlayListDelegate(this);
+    m_playListView->setItemDelegate(playListDelegate);
+    connect(playListDelegate, &PlayListDelegate::playButtonClicked, this, &ViewWidget::viewDoubleClick);
     auto *Layout = new QVBoxLayout;
     Layout->addWidget(m_labelName);
     Layout->addItem(layoutH);
