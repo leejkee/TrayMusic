@@ -7,7 +7,6 @@
 #include "PlayList.h"
 #include <QListView>
 #include <QMenu>
-#include <QPushButton>
 #include <QStringListModel>
 #include "Assets.h"
 #include "ListButton.h"
@@ -55,6 +54,12 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
 
 void ViewWidget::viewDoubleClick(const QModelIndex &index) {
     qDebug() << "ViewWidget::viewDoubleClick";
+    if (PlayList::instance().isEmptyPlayList()) {
+        qDebug() << "PlayList is empty";
+        qDebug() << "Q_EMIT ViewWidget::signalPlayAllClicked to load PlayList";
+        Q_EMIT signalPlayAllClicked(m_labelName->text());
+    }
+    // Then, check music to play this song
     PlayList::instance().setCurrentMusicIndex(index.row());
 }
 
@@ -92,7 +97,6 @@ void ViewWidget::showMusicList(const QString &listName) const {
     this->m_playListModel->setStringList(songNameList);
     m_labelName->setText(listName);
 }
-
 
 void ViewWidget::setDefaultList() const {
     showMusicList(User::LOCAL_LIST_KEY);

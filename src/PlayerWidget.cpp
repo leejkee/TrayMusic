@@ -4,14 +4,12 @@
 #include "Assets.h"
 #include "PlayerWidget.h"
 #include <QCoreApplication>
-#include <QPushButton>
 #include <QLabel>
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QSlider>
 #include <QStackedLayout>
 #include <QWidgetAction>
-#include <QToolButton>
 #include "ListButton.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -20,8 +18,6 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new ListButton(QIcon(SvgRes::PlayIconSVG), this);
     m_pushButtonPlay->setFixedSize(30, 30);
     m_labelMusicFileName = new QLabel;
-    // init fun
-    // m_labelMusicFileName->setText(PlayList::instance()->getCurrentMusicName());
     m_pushButtonPre = new ListButton(QIcon(SvgRes::PreIconSVG), this);
     m_pushButtonPre->setFixedSize(30, 30);
     m_pushButtonNext = new ListButton(QIcon(SvgRes::NextIconSVG), this);

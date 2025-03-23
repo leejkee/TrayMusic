@@ -25,10 +25,12 @@ namespace SvgRes {
     inline const auto SettingSVG = QStringLiteral(":/images/setting.svg");
 }
 
-
 namespace User {
+#if defined(__linux__)
     inline const auto LINUX_SETTINGS_PATH = QStringLiteral("../res/settings/init_linux.json");
+#elif defined(_WIN32)
     inline const auto WIN_SETTINGS_PATH = QStringLiteral("../res/settings/init.json");
+#endif
 
     inline const auto PLAY_ALL_KEY = QStringLiteral("Play All");
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
@@ -36,7 +38,6 @@ namespace User {
     inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
 
 }
-
 
 namespace QssRes {
     inline const auto BUTTON_ADD_QSS = QStringLiteral(":/qss/MusicListButton/ButtonAddList.qss");
