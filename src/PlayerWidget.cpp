@@ -33,7 +33,6 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     auto *action = new QWidgetAction(this);
     action->setDefaultWidget(m_volumeWidget);
     m_menuVolume->addAction(action);
-    // m_pushButtonVolume->setStyleSheet("QToolButton::menu-indicator { image: none !important; }");
     // VolumeCtrl Section End
 
     m_progressWidget = new ProgressBarWidget(this);
