@@ -36,6 +36,8 @@ namespace User {
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
 
     inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
+    constexpr int VIEW_BUTTON_PADDING = 2;
+    constexpr int VIEW_TEXT_PADDING = 2;
 
 }
 

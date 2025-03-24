@@ -24,7 +24,9 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     const QString text = index.data(Qt::DisplayRole).toString();
 
     // 计算按钮区域
-    QRect buttonRect(option.rect.right() - 50, option.rect.top(), 25, option.rect.height() - 4 );
+    const QRect buttonRect(option.rect.right() - 50, option.rect.top() + User::VIEW_BUTTON_PADDING, 25,
+                           option.rect.height() -
+                           User::VIEW_BUTTON_PADDING * 2);
 
     // 绘制背景（选中状态）
     if (option.state & QStyle::State_Selected) {
@@ -32,7 +34,9 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     // 绘制文本
-    painter->drawText(option.rect.adjusted(5, 5, -50, -5), Qt::AlignVCenter | Qt::AlignLeft, text);
+    painter->drawText(option.rect.adjusted(5, User::VIEW_TEXT_PADDING, -50, -User::VIEW_TEXT_PADDING),
+                      Qt::AlignVCenter | Qt::AlignLeft,
+                      text);
 
     // 绘制按钮
     QStyleOptionButton button;
@@ -47,7 +51,9 @@ bool PlayListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
     if (!index.isValid()) return false;
 
     // 计算按钮区域
-    const QRect buttonRect(option.rect.right() - 50, option.rect.top() , 40, option.rect.height()  );
+    const QRect buttonRect(option.rect.right() - 50, option.rect.top() + User::VIEW_BUTTON_PADDING, 25,
+                           option.rect.height() -
+                           User::VIEW_BUTTON_PADDING * 2);
 
     if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
         if (const auto *mouseEvent = dynamic_cast<QMouseEvent *>(event); buttonRect.contains(mouseEvent->pos())) {
@@ -88,7 +94,7 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListView->setModel(m_playListModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_playListView->setStyleSheet("QListView { font-size: 16px; }");
+    // m_playListView->setStyleSheet("QListView { font-size: 12px; }");
     PlayListDelegate *playListDelegate = new PlayListDelegate(this);
     m_playListView->setItemDelegate(playListDelegate);
     connect(playListDelegate, &PlayListDelegate::playButtonClicked, this, &ViewWidget::viewDoubleClick);
