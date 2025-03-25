@@ -15,7 +15,7 @@ public:
 
     /// This function must be called first
     /// This function should be called after calling function DBManager::initDB() and Settings::loadFromJson()
-    void loadLists();
+    void initCache();
 
     MusicListCache(const MusicListCache &other) = delete;
 
@@ -38,11 +38,14 @@ public:
 
     void delList(const QString &list);
 
+    QString getRandomLogo() const;
+
 private:
     MusicListCache() {
     }
 
     QMap<QString, QList<Song> > m_ListMap{};
+    QVector<QString> m_logoPaths{};
 
 };
 

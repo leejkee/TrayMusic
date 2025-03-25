@@ -32,7 +32,7 @@ WindowManager::WindowManager(QWidget *parent)
     } catch (DatabaseInitializationError &e) {
         qDebug() << "Failed to open database: " << e.what();
     }
-    MusicListCache::instance().loadLists();
+    MusicListCache::instance().initCache();
 
     this->m_player = new Player();
     this->m_viewWidget = new ViewWidget(this);

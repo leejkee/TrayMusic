@@ -4,7 +4,6 @@
 #include "MainWindow.h"
 
 
-
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
@@ -17,6 +16,7 @@ int main(int argc, char** argv)
         // Otherwise "lurk": if a system tray is started later, the icon will appear.
     }
     // QApplication::setQuitOnLastWindowClosed(false);
+
     MainWindow w;
     w.show();
 

@@ -5,12 +5,14 @@
 #include "MusicListCache.h"
 #include <QDirIterator>
 #include <QMap>
+#include <QDir>
 #include "Assets.h"
 #include "DBManager.h"
 #include "Settings.h"
+#include "Utils.h"
 
 
-QList<Song> MusicListCache::getSongListByName(const QString &listName) const{
+QList<Song> MusicListCache::getSongListByName(const QString &listName) const {
     return m_ListMap.value(listName);
 }
 
@@ -19,21 +21,30 @@ QStringList MusicListCache::getSongNameListByName(const QString &listName) const
         return {};
     }
     QStringList songName;
-    for (const auto &song : m_ListMap.value(listName)) {
+    for (const auto &song: m_ListMap.value(listName)) {
         songName.append(song.getName());
     }
     return songName;
 }
 
-void MusicListCache::loadLists() {
-    qDebug() << "Loading MusicListCache";
+void MusicListCache::initCache() {
+    qDebug() << "MusicListCache: Loading MusicListCache";
 
     // Local Music cache first
     m_ListMap[User::LOCAL_LIST_KEY] = getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
     // User
     const auto userList = Settings::instance().getUserMusicList();
-    for (const auto &list : userList) {
+    for (const auto &list: userList) {
         m_ListMap[list] = DBManager::instance().getMusicList(list);
+    }
+
+    qDebug() << "MusicListCache: load logos";
+    QDirIterator it(User::LOGO_PNG_DIR, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        QFileInfo fileInfo(it.next());
+        QString png = fileInfo.absoluteFilePath();
+        m_logoPaths.append(png);
     }
 }
 
@@ -48,8 +59,7 @@ void MusicListCache::insertList(const QString &list) {
 void MusicListCache::delList(const QString &list) {
     if (m_ListMap.contains(list)) {
         m_ListMap.remove(list);
-    }
-    else {
+    } else {
         qDebug() << "[MusicListCache::del]: ERROR " << "NO " << list;
     }
 }
@@ -70,4 +80,12 @@ QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) 
         }
     }
     return musicList;
+}
+
+QString MusicListCache::getRandomLogo() const {
+    auto it =  Tools::getRandomItem(m_logoPaths);
+    if (it.isEmpty()) {
+        qDebug() << "[MusicListCache::getRandomLogo]: ERROR " << "NO " << it;
+    }
+    return it;
 }

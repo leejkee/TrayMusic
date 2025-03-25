@@ -32,6 +32,8 @@ namespace User {
     inline const auto WIN_SETTINGS_PATH = QStringLiteral("../res/settings/init.json");
 #endif
 
+    inline const auto LOGO_PNG_DIR = QStringLiteral("../res/music_logo/data");
+
     inline const auto PLAY_ALL_KEY = QStringLiteral("Play All");
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
 

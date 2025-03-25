@@ -37,6 +37,14 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->fillRect(option.rect, palette.highlight());
     }
 
+    // image
+    const QRect imgRect (option.rect.left(), option.rect.top() +(option.rect.height() - 35) / 2 , 35, 35);
+    const auto fileP = MusicListCache::instance().getRandomLogo();
+   QPixmap pixmap(fileP);
+    if ( !pixmap.isNull()) {
+        pixmap = pixmap.scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        painter->drawPixmap(imgRect, pixmap);
+    }
     // 绘制文本
     // painter->drawText(nameRect, Qt::AlignLeft, getName(text));
     // painter->drawText(artistRect, Qt::AlignLeft, getArtist(text));
