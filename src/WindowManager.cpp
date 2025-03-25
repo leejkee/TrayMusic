@@ -12,7 +12,7 @@
 #include <QStackedWidget>
 
 #include "DBManager.h"
-#include "ListButton.h"
+#include "BetterButton.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
@@ -102,7 +102,7 @@ void WindowManager::createConnections() {
 
     connect(m_settingsWidget, &LocalMusicSettingsWidget::signalLocalMusicPathSettingsChanged, m_viewWidget, &ViewWidget::refreshForLocalMusic);
 
-    connect(m_viewWidget, &ViewWidget::signalPlayAllClicked, &PlayList::instance(), &PlayList::loadMusicByName);
+    connect(m_viewWidget, &ViewWidget::signalPlayAllClicked, &PlayList::instance(), &PlayList::playMusicListByName);
 
     connect(m_leftWidget, &MusicListWidget::signalMusicListButtonClicked, m_viewWidget, &ViewWidget::showMusicList);
 

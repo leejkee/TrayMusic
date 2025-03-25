@@ -6,6 +6,7 @@
 #define TOPBARWIDGET_H
 #include <QWidget>
 
+class BetterButton;
 class QPushButton;
 class QSvgWidget;
 
@@ -16,8 +17,8 @@ public:
     void setPreBtnShow(bool b);
 
     QSvgWidget *m_svgWidget;
-    QPushButton *m_preButton;
-    QPushButton *m_settingsButton;
+    BetterButton *m_preButton;
+    BetterButton *m_settingsButton;
 
     bool m_preButtonIsVisible = false;
 };

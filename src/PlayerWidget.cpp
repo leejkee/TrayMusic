@@ -10,24 +10,24 @@
 #include <QSlider>
 #include <QStackedLayout>
 #include <QWidgetAction>
-#include "ListButton.h"
 #include "PlayList.h"
 #include "Settings.h"
+#include "BetterButton.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
-    m_pushButtonPlay = new ListButton(QIcon(SvgRes::PlayIconSVG), this);
+    m_pushButtonPlay = new BetterButton(QIcon(SvgRes::PlayIconSVG), this);
     m_pushButtonPlay->setFixedSize(30, 30);
     m_labelMusicFileName = new QLabel;
-    m_pushButtonPre = new ListButton(QIcon(SvgRes::PreIconSVG), this);
+    m_pushButtonPre = new BetterButton(QIcon(SvgRes::PreIconSVG), this);
     m_pushButtonPre->setFixedSize(30, 30);
-    m_pushButtonNext = new ListButton(QIcon(SvgRes::NextIconSVG), this);
+    m_pushButtonNext = new BetterButton(QIcon(SvgRes::NextIconSVG), this);
     m_pushButtonNext->setFixedSize(30, 30);
     setButtonVisible(true);
 
     // VolumeCtrl Section Begin
     m_volumeWidget = new VolumeWidget(this);
     m_volumeWidget->loadDefaultSetting();
-    m_pushButtonVolume = new ListButton(QIcon(SvgRes::VolumeSVG),this);
+    m_pushButtonVolume = new BetterButton(QIcon(SvgRes::VolumeSVG),this);
     m_pushButtonVolume->setFixedSize(30, 30);
     m_menuVolume = new QMenu(this);
     auto *action = new QWidgetAction(this);
@@ -103,7 +103,7 @@ VolumeWidget::VolumeWidget(QWidget *parent) : QWidget(parent) {
     connect(m_sliderV, &QSlider::valueChanged, m_labelVolume, [=]() {
         m_labelVolume->setText(QString("%1%").arg(m_sliderV->value()));
     });
-    m_buttonMute = new ListButton(QIcon(SvgRes::VolumeSVG), this);
+    m_buttonMute = new BetterButton(QIcon(SvgRes::VolumeSVG), this);
     m_buttonMute->setIconSize(QSize(10, 10));
 
     QVBoxLayout *layout = new QVBoxLayout;

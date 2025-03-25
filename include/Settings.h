@@ -65,6 +65,7 @@ private:
     QStringList m_userMusicList;
     float m_volume{};
 
+
     Settings() {
     }
 

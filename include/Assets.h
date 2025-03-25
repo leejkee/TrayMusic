@@ -36,7 +36,7 @@ namespace User {
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
 
     inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
-    constexpr int VIEW_BUTTON_PADDING = 2;
+    constexpr int VIEW_BUTTON_PADDING = 4;
     constexpr int VIEW_TEXT_PADDING = 2;
 
 }
@@ -44,7 +44,9 @@ namespace User {
 namespace QssRes {
     inline const auto BUTTON_ADD_QSS = QStringLiteral(":/qss/MusicListButton/ButtonAddList.qss");
     inline const auto BUTTON_EXPAND_QSS = QStringLiteral(":/qss/MusicListButton/ButtonExpand.qss");
-    inline const auto BUTTON_NORMAL_QSS = QStringLiteral(":/qss/MusicListButton/ButtonNormal.qss");
+    inline const auto BUTTON_LIST_QSS = QStringLiteral(":/qss/MusicListButton/ButtonNormal.qss");
+    inline const auto BUTTON_SQUARE_QSS = QStringLiteral(":/qss/MusicListButton/ButtonSquare.qss");
+    inline const auto LIST_VIEW_QSS = QStringLiteral(":/qss/ListView/PlayListView.qss");
 }
 
 

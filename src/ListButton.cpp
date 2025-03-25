@@ -2,45 +2,40 @@
 // Created by cww on 25-3-6.
 //
 
-#include "ListButton.h"
+#include "BetterButton.h"
 #include <QEvent>
 #include "Assets.h"
 #include <QPushButton>
-#include <QFile>
-#include <utility>
+#include "Utils.h"
 
-ListButton::ListButton(const QString &name, QWidget *parent) : QPushButton(parent) {
+BetterButton::BetterButton(const QString &name, QWidget *parent) : QPushButton(parent) {
     setIcon(QIcon(SvgRes::MusicListSVG));
     setFixedHeight(30);
     setText(name);
     m_listName = name;
-    loadStyleSheet(this, QssRes::BUTTON_NORMAL_QSS);
-    connect(this, &QPushButton::clicked, this , &ListButton::onButtonClicked);
+    loadStyleSheet(QssRes::BUTTON_LIST_QSS);
+    connect(this, &QPushButton::clicked, this , &BetterButton::onButtonClicked);
     installEventFilter(this);
 }
 
-ListButton::ListButton(QWidget *parent) : QPushButton(parent) {
+BetterButton::BetterButton(QWidget *parent) : QPushButton(parent) {
     installEventFilter(this);
 }
 
-ListButton::ListButton(const QIcon &icon, QWidget *parent, QString name) : QPushButton(parent)
+BetterButton::BetterButton(const QIcon &icon, QWidget *parent, QString name) : QPushButton(parent)
         , m_listName(std::move(name)){
     setIcon(icon);
-    loadStyleSheet(this, QssRes::BUTTON_NORMAL_QSS);
+    setText(m_listName);
+    loadStyleSheet(QssRes::BUTTON_LIST_QSS);
     installEventFilter(this);
 }
 
 
-void ListButton::loadStyleSheet(QPushButton* p, const QString &qssPath) {
-    if (QFile file(qssPath); file.open(QFile::ReadOnly)) {
-        p->setStyleSheet(file.readAll());
-        file.close();
-    } else {
-        qDebug() << "Failed to load QSS file:" << qssPath;
-    }
+void BetterButton::loadStyleSheet(const QString &qssPath) {
+    this->setStyleSheet(Tools::readQSS(qssPath));
 }
 
-bool ListButton::eventFilter(QObject *watched, QEvent *event) {
+bool BetterButton::eventFilter(QObject *watched, QEvent *event) {
     if (watched == this) {
         if (event->type() == QEvent::Enter) {
             setCursor(Qt::PointingHandCursor);

@@ -121,6 +121,10 @@ bool PlayList::isEmptyPlayList() const {
 
 void PlayList::loadMusicByName(const QString &name) {
     loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
+}
+
+void PlayList::playMusicListByName(const QString &name) {
+    loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
     playFromFirst();
 }
 

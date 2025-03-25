@@ -48,13 +48,14 @@ public Q_SLOTS:
     void nextMusic();
     void previousMusic();
     void loadMusicByName(const QString& name);
+    void playMusicListByName(const QString &name);
 
-    void playFromFirst();
 
 private:
     PlayList(){}
     int m_currentIndex{0};
     QList<Song> m_musicList{};
+    void playFromFirst();
     void loadMusicFromSongs(const QList<Song> &songs);
 };
 

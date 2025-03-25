@@ -8,19 +8,18 @@
 #include <QPropertyAnimation>
 #include <QInputDialog>
 #include "DBManager.h"
-#include "ListButton.h"
+#include "BetterButton.h"
 #include "Settings.h"
 
 MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {
-    m_localListButton = new ListButton(User::LOCAL_LIST_KEY);
-    m_expandButton = new QPushButton(QIcon(SvgRes::UpSVG), User::EXPAND_BTN_TEXT, this);
-    ListButton::loadStyleSheet(m_expandButton, QssRes::BUTTON_EXPAND_QSS);
+    m_localListButton = new BetterButton(User::LOCAL_LIST_KEY, this);
 
-    m_addButton = new QPushButton(this);
-    m_addButton->setIcon(QIcon(SvgRes::AddSVG));
-    // m_addButton->setText("+");
-    ListButton::loadStyleSheet(m_addButton, QssRes::BUTTON_ADD_QSS);
+    m_expandButton = new BetterButton(QIcon(SvgRes::UpSVG), this, User::EXPAND_BTN_TEXT);
+    m_expandButton->loadStyleSheet(QssRes::BUTTON_EXPAND_QSS);
+
+    m_addButton = new BetterButton(QIcon(SvgRes::AddSVG), this);
+    m_addButton->loadStyleSheet(QssRes::BUTTON_ADD_QSS);
 
     const auto buttonLayout = new QHBoxLayout;
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
@@ -64,7 +63,7 @@ MusicListWidget::MusicListWidget(QWidget *parent)
 }
 
 void MusicListWidget::createConnections() {
-    connect(m_localListButton, &ListButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
+    connect(m_localListButton, &BetterButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
     connect(m_expandButton, &QPushButton::clicked, this, &MusicListWidget::toggleExpand);
     connect(m_addButton, &QPushButton::clicked, this, &MusicListWidget::addButton);
     connect(this, &MusicListWidget::signalMusicListButtonAdded, &Settings::instance(), &Settings::addUserMusicList);
@@ -99,11 +98,11 @@ void MusicListWidget::addButton() {
 }
 
 void MusicListWidget::newButton(const QString &playlistName) {
-    auto *button = new ListButton(playlistName, this);
+    auto *button = new BetterButton(playlistName, this);
     m_buttonLayout->addWidget(button);
     // button->setMusicListFromSongs(DBManager::instance().getMusicList(playlistName));
     // if no key, inserts a default-constructed value into the map
-    connect(button, &ListButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
+    connect(button, &BetterButton::signalButtonClicked, this, &MusicListWidget::handleMusicButtonClicked);
 }
 
 

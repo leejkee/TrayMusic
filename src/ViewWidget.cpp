@@ -2,19 +2,20 @@
 // Created by cww on 25-2-19.
 //
 #include <QHBoxLayout>
-#include "ViewWidget.h"
-
 #include <QApplication>
 #include <QLabel>
-#include "PlayList.h"
 #include <QListView>
 #include <QMenu>
 #include <QStringListModel>
-#include "Assets.h"
-#include "ListButton.h"
-#include "MusicListCache.h"
 #include <QPainter>
 #include <QMouseEvent>
+
+#include "ViewWidget.h"
+#include "PlayList.h"
+#include "Assets.h"
+#include "MusicListCache.h"
+#include "BetterButton.h"
+#include "Utils.h"
 
 void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                              const QModelIndex &index) const {
@@ -23,6 +24,7 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     // 获取文本数据
     const QString text = index.data(Qt::DisplayRole).toString();
 
+
     // 计算按钮区域
     const QRect buttonRect(option.rect.right() - 50, option.rect.top() + User::VIEW_BUTTON_PADDING, 25,
                            option.rect.height() -
@@ -30,13 +32,29 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     // 绘制背景（选中状态）
     if (option.state & QStyle::State_Selected) {
-        painter->fillRect(option.rect, option.palette.highlight());
+        QPalette palette = option.palette;
+        palette.setColor(QPalette::Highlight, Qt::gray);
+        painter->fillRect(option.rect, palette.highlight());
     }
 
     // 绘制文本
-    painter->drawText(option.rect.adjusted(5, User::VIEW_TEXT_PADDING, -50, -User::VIEW_TEXT_PADDING),
-                      Qt::AlignVCenter | Qt::AlignLeft,
-                      text);
+    // painter->drawText(nameRect, Qt::AlignLeft, getName(text));
+    // painter->drawText(artistRect, Qt::AlignLeft, getArtist(text));
+    painter->save();
+    const QFont nameFont("Microsoft YaHei", 12);
+    painter->setFont(nameFont);
+    const QRect nameRect = option.rect.adjusted(35, 2, -50, -20);
+    painter->drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, getName(text));
+    // 恢复 QPainter 状态
+    painter->restore();
+
+    // 设置歌手名的字体
+    painter->save();
+    const QFont artistFont("Arial", 9);
+    painter->setFont(artistFont);
+    const QRect artistRect = option.rect.adjusted(65, 22, -50, -2);
+    painter->drawText(artistRect, Qt::AlignLeft | Qt::AlignTop, getArtist(text));
+    painter->restore();
 
     // 绘制按钮
     QStyleOptionButton button;
@@ -66,6 +84,15 @@ bool PlayListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
     return false;
 }
 
+
+QString PlayListDelegate::getArtist(const QString &str) {
+    return str.right(str.length() - str.indexOf("-") - 1).trimmed();
+}
+
+QString PlayListDelegate::getName(const QString &str) {
+    return str.left(str.indexOf("-"));
+}
+
 void ViewWidget::createConnections() {
     connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
     connect(m_playListView, &QListView::doubleClicked, this, &ViewWidget::viewDoubleClick);
@@ -73,15 +100,14 @@ void ViewWidget::createConnections() {
     connect(m_playAllButton, &QPushButton::clicked, this, [this]() {
         Q_EMIT signalPlayAllClicked(m_labelName->text());
     });
+    connect(m_viewItemDelegate, &PlayListDelegate::playButtonClicked, this, &ViewWidget::viewDoubleClick);
 }
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_labelName = new QLabel(this);
-    m_playAllButton = new ListButton(this);
-    m_playAllButton->setText(User::PLAY_ALL_KEY);
-    m_playAllButton->setIcon(QIcon(SvgRes::PlayIconSVG));
+    m_playAllButton = new BetterButton(QIcon(SvgRes::PlayIconSVG), this, User::PLAY_ALL_KEY);
     m_playAllButton->setFixedWidth(80);
-    ListButton::loadStyleSheet(m_playAllButton, QssRes::BUTTON_NORMAL_QSS);
+
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     const auto layoutH = new QHBoxLayout;
     layoutH->addWidget(m_playAllButton);
@@ -94,10 +120,13 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
     m_playListView->setModel(m_playListModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
-    // m_playListView->setStyleSheet("QListView { font-size: 12px; }");
-    PlayListDelegate *playListDelegate = new PlayListDelegate(this);
-    m_playListView->setItemDelegate(playListDelegate);
-    connect(playListDelegate, &PlayListDelegate::playButtonClicked, this, &ViewWidget::viewDoubleClick);
+    m_playListView->setStyleSheet(Tools::readQSS(QssRes::LIST_VIEW_QSS));
+
+
+    // Delegate Func
+    m_viewItemDelegate = new PlayListDelegate(this);
+    m_playListView->setItemDelegate(m_viewItemDelegate);
+
     auto *Layout = new QVBoxLayout;
     Layout->addWidget(m_labelName);
     Layout->addItem(layoutH);
@@ -110,9 +139,13 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
 void ViewWidget::viewDoubleClick(const QModelIndex &index) {
     qDebug() << "ViewWidget::viewDoubleClick";
     if (PlayList::instance().isEmptyPlayList()) {
-        qDebug() << "PlayList is empty";
+        qDebug() << "List is not loaded, PlayList is empty, load music first";
         qDebug() << "Q_EMIT ViewWidget::signalPlayAllClicked to load PlayList";
-        Q_EMIT signalPlayAllClicked(m_labelName->text());
+        if (m_labelName) {
+            Q_EMIT signalPlayAllClicked(m_labelName->text());
+        } else {
+            qDebug() << "m_labelName is nullptr!";
+        }
     }
     // Then, check music to play this song
     PlayList::instance().setCurrentMusicIndex(index.row());
@@ -161,6 +194,7 @@ void ViewWidget::setDefaultList() const {
 void ViewWidget::refreshForLocalMusic() const {
     if (m_labelName->text() == User::LOCAL_LIST_KEY) {
         showMusicList(User::LOCAL_LIST_KEY);
+        PlayList::instance().loadMusicByName(m_labelName->text());
         qDebug() << "ViewWidget::refreshForLocalMusic";
     }
 }

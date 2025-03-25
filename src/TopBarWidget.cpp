@@ -5,18 +5,18 @@
 #include "TopBarWidget.h"
 
 #include <QHBoxLayout>
-#include <QPushButton>
 #include "Assets.h"
 #include <QSvgWidget>
+#include "BetterButton.h"
 
 TopBarWidget::TopBarWidget(QWidget *parent) : QWidget(parent) {
 
     m_svgWidget = new QSvgWidget(SvgRes::LogoSVG);
     m_svgWidget->setFixedSize(130, 25);
-    m_preButton = new QPushButton(QIcon(SvgRes::BackPageSVG), "",this);
-    m_preButton->setStyleSheet("background: transparent; border: none;");
-    m_settingsButton = new QPushButton(QIcon(SvgRes::SettingSVG), "", this);
-    m_settingsButton->setStyleSheet("background: transparent; border: none;");
+    m_preButton = new BetterButton(QIcon(SvgRes::BackPageSVG), this, "");
+    m_preButton->loadStyleSheet(QssRes::BUTTON_SQUARE_QSS);
+    m_settingsButton = new BetterButton(QIcon(SvgRes::SettingSVG),  this, "");
+    m_settingsButton->loadStyleSheet(QssRes::BUTTON_SQUARE_QSS);
 
     const auto spacerH = new QSpacerItem(-1, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     const auto layout = new QHBoxLayout(this);

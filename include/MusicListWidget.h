@@ -6,7 +6,7 @@
 #define MUSICLISTMANAGER_H
 #include <QWidget>
 #include "Song.h"
-class ListButton;
+class BetterButton;
 class QVBoxLayout;
 class QPushButton;
 class QScrollArea;
@@ -29,14 +29,14 @@ private Q_SLOTS:
     void toggleExpand() const;
 
 private:
-    QPushButton *m_expandButton;
-    QPushButton *m_addButton;
+    BetterButton *m_expandButton;
+    BetterButton *m_addButton;
     QScrollArea *m_scrollArea;
 
     QWidget *m_buttonWidget;
     QVBoxLayout *m_buttonLayout;
 
-    ListButton *m_localListButton;
+    BetterButton *m_localListButton;
 
     void createConnections();
 

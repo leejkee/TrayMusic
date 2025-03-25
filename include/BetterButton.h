@@ -7,14 +7,19 @@
 #include <QPushButton>
 
 
-class ListButton final : public QPushButton {
+class BetterButton final : public QPushButton {
     Q_OBJECT
 
 public:
-    explicit ListButton(QWidget *parent = nullptr);
-    explicit ListButton(const QIcon &icon, QWidget *parent = nullptr, QString name = "");
-    explicit ListButton(const QString &name, QWidget *parent = nullptr);
-    static void loadStyleSheet(QPushButton *, const QString &);
+
+    // others
+    explicit BetterButton(QWidget *parent = nullptr);
+    explicit BetterButton(const QIcon &icon, QWidget *parent = nullptr, QString name = "");
+
+    // Music List buttons
+    explicit BetterButton(const QString &name, QWidget *parent = nullptr);
+
+    void loadStyleSheet(const QString &);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
