@@ -38,6 +38,8 @@ namespace User {
     inline const auto LOCAL_LIST_KEY = QStringLiteral("Local");
 
     inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
+
+    inline const auto FONT_MIRCRO_HEI = QStringLiteral("Microsoft YaHei");
     constexpr int VIEW_BUTTON_PADDING = 4;
     constexpr int VIEW_TEXT_PADDING = 2;
 

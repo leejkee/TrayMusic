@@ -22,10 +22,11 @@ QStringList MusicListCache::getSongNameListByName(const QString &listName) const
     }
     QStringList songName;
     for (const auto &song: m_ListMap.value(listName)) {
-        songName.append(song.getName());
+        songName.append(song.getFullName());
     }
     return songName;
 }
+
 
 void MusicListCache::initCache() {
     qDebug() << "MusicListCache: Loading MusicListCache";
@@ -41,10 +42,10 @@ void MusicListCache::initCache() {
     qDebug() << "MusicListCache: load logos";
     QDirIterator it(User::LOGO_PNG_DIR, QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        it.next();
-        QFileInfo fileInfo(it.next());
-        QString png = fileInfo.absoluteFilePath();
-        m_logoPaths.append(png);
+        QFile img(it.next());
+        img.open(QIODevice::ReadOnly);
+        m_logos.append(img.readAll());
+        img.close();
     }
 }
 
@@ -75,6 +76,7 @@ QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) 
         QDirIterator it(filePath, QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
             it.next();
+            // auto p = it.filePath();
             Song song(it.filePath());
             musicList.append(song);
         }
@@ -82,8 +84,8 @@ QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) 
     return musicList;
 }
 
-QString MusicListCache::getRandomLogo() const {
-    auto it =  Tools::getRandomItem(m_logoPaths);
+QByteArray MusicListCache::getRandomLogo() const{
+    auto it =  Tools::getRandomItem(m_logos);
     if (it.isEmpty()) {
         qDebug() << "[MusicListCache::getRandomLogo]: ERROR " << "NO " << it;
     }

@@ -4,8 +4,8 @@
 
 #ifndef SONG_H
 #define SONG_H
-#include <QDir>
 #include <QString>
+#include <utility>
 
 class Song {
 public:
@@ -13,31 +13,36 @@ public:
 
     Song(const Song &song) = default;
 
-    Song(QString name, QString path, const int duration) : name(std::move(name)), path(std::move(path)),
-                                                           duration(duration) {
-    }
+    Song(QString fullName, QString path, const int duration): m_fullName(std::move(fullName)), m_path(std::move(path)), m_duration(duration) {}
 
-    explicit Song(const QString &file);
+    explicit Song(const QString &songFilePath);
 
     [[nodiscard]] int getDuration() const {
-        return duration;
+        return m_duration;
     }
 
-    [[nodiscard]] QString getName() const {
-        return name;
+    [[nodiscard]] QString getFullName() const {
+        return m_fullName;
     }
 
     [[nodiscard]] QString getPath() const {
-        return path;
+        return m_path;
     }
 
     static QString removeSuffix(const QString &str);
 
-    static int musicLength(const QString &path);
+
 
 private:
-    QString name;
-    QString path;
-    int duration{};
+    QString m_fullName;
+    QString m_path;
+    int m_duration{};
+
+
+
+    ///
+    /// @param path should be the @m_path
+    /// @return the length of this music(Format: 00:00)
+    static int musicLength(const QString &path);
 };
 #endif //SONG_H

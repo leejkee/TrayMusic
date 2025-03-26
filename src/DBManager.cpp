@@ -87,7 +87,7 @@ void DBManager::insertSongToTable(const QString &tableName, const Song &song) co
 
     query.prepare(insertQuery);
     query.bindValue(":path", song.getPath());
-    query.bindValue(":name", song.getName());
+    query.bindValue(":name", song.getFullName());
     query.bindValue(":duration", song.getDuration());
 
     if (!query.exec()) {

@@ -4,15 +4,18 @@
 #include "Song.h"
 #include "taglib/fileref.h"
 
-Song::Song(const QString &file) {
-    if (const QFileInfo fileInfo(file); fileInfo.exists() && fileInfo.isFile()) {
-        path = fileInfo.absoluteFilePath();
-        name = removeSuffix(path);
-        duration = musicLength(path);
+Song::Song(const QString &songFilePath) {
+    // if (const QFileInfo fileInfo(file); fileInfo.exists() && fileInfo.isFile()) {
+    // m_path = fileInfo.absoluteFilePath();
+    if (!songFilePath.isEmpty()) {
+        m_path = songFilePath;
+        m_fullName = removeSuffix(m_path);
+
+        m_duration = musicLength(m_path);
     } else {
-        path = "";
-        name = "";
-        duration = 0;
+        m_fullName = "";
+        m_path = "";
+        m_duration = 0;
     }
 }
 
@@ -33,3 +36,5 @@ int Song::musicLength(const QString &path) {
     }
     return {};
 }
+
+

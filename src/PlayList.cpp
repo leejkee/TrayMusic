@@ -52,8 +52,9 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
 
 
 QString PlayList::getCurrentMusicName() const {
-    return m_musicList.at(m_currentIndex).getName();
+    return m_musicList.at(m_currentIndex).getFullName();
 }
+
 
 QString PlayList::getCurrentMusicPath() const {
     if (isEmptyPlayList()) {
@@ -63,6 +64,7 @@ QString PlayList::getCurrentMusicPath() const {
     return m_musicList.at(m_currentIndex).getPath();
 }
 
+
 QString PlayList::getFirstMusicPath() const {
     if (isEmptyPlayList()) {
         qDebug() << "PlayList::getFirstMusicPath() is empty";
@@ -71,14 +73,16 @@ QString PlayList::getFirstMusicPath() const {
     return m_musicList.begin()->getPath();
 }
 
+
 int PlayList::getCurrentMusicDuration() const {
     return m_musicList.at(m_currentIndex).getDuration();
 }
 
+
 QStringList PlayList::getMusicNameList() const {
     QStringList musicNames;
     for (const auto &it: m_musicList) {
-        musicNames.append(it.getName());
+        musicNames.append(it.getFullName());
     }
     return musicNames;
 }

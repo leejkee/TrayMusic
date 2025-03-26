@@ -25,9 +25,6 @@ protected:
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                      const QModelIndex &index) override;
 
-private:
-    static QString getArtist(const QString &);
-    static QString getName(const QString &);
 
 Q_SIGNALS:
     void playButtonClicked(const QModelIndex &index);

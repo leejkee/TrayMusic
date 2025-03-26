@@ -5,6 +5,7 @@
 #ifndef MUSICLISTCACHE_H
 #define MUSICLISTCACHE_H
 #include "Song.h"
+#include <QMap>
 
 class MusicListCache {
 public:
@@ -38,14 +39,14 @@ public:
 
     void delList(const QString &list);
 
-    QString getRandomLogo() const;
+    [[nodiscard]] QByteArray getRandomLogo() const;
 
 private:
     MusicListCache() {
     }
 
     QMap<QString, QList<Song> > m_ListMap{};
-    QVector<QString> m_logoPaths{};
+    QList<QByteArray> m_logos{};
 
 };
 

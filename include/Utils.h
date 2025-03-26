@@ -14,6 +14,7 @@ namespace Tools {
     inline QString readQSS(const QString &qssPath) {
         if (QFile file(qssPath); file.open(QFile::ReadOnly)) {
             QString qss = QString::fromUtf8(file.readAll()).trimmed();
+            file.close();
             return std::move(qss);  // 避免不必要的拷贝
         }
         qWarning() << "Failed to load QSS file:" << qssPath;

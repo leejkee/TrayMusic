@@ -38,21 +38,20 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     // image
-    const QRect imgRect (option.rect.left(), option.rect.top() +(option.rect.height() - 35) / 2 , 35, 35);
-    const auto fileP = MusicListCache::instance().getRandomLogo();
-   QPixmap pixmap(fileP);
-    if ( !pixmap.isNull()) {
-        pixmap = pixmap.scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        painter->drawPixmap(imgRect, pixmap);
-    }
+    // const QRect imgRect (option.rect.left(), option.rect.top() +(option.rect.height() - 35) / 2 , 35, 35);
+    // const auto fileP = MusicListCache::instance().getRandomLogo();
+    // if (QPixmap pixmap(fileP); !pixmap.isNull()) {
+    //     pixmap = pixmap.scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    //     painter->drawPixmap(imgRect, pixmap);
+    // }
     // 绘制文本
     // painter->drawText(nameRect, Qt::AlignLeft, getName(text));
     // painter->drawText(artistRect, Qt::AlignLeft, getArtist(text));
     painter->save();
-    const QFont nameFont("Microsoft YaHei", 12);
+    const QFont nameFont("", 12);
     painter->setFont(nameFont);
     const QRect nameRect = option.rect.adjusted(35, 2, -50, -20);
-    painter->drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, getName(text));
+    painter->drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, text);
     // 恢复 QPainter 状态
     painter->restore();
 
@@ -61,7 +60,7 @@ void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     const QFont artistFont("Arial", 9);
     painter->setFont(artistFont);
     const QRect artistRect = option.rect.adjusted(65, 22, -50, -2);
-    painter->drawText(artistRect, Qt::AlignLeft | Qt::AlignTop, getArtist(text));
+    painter->drawText(artistRect, Qt::AlignLeft | Qt::AlignTop, text);
     painter->restore();
 
     // 绘制按钮
@@ -93,13 +92,7 @@ bool PlayListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
 }
 
 
-QString PlayListDelegate::getArtist(const QString &str) {
-    return str.right(str.length() - str.indexOf("-") - 1).trimmed();
-}
 
-QString PlayListDelegate::getName(const QString &str) {
-    return str.left(str.indexOf("-"));
-}
 
 void ViewWidget::createConnections() {
     connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
