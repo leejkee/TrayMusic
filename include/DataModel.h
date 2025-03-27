@@ -4,20 +4,21 @@
 
 #ifndef DATAMODELVIEW_H
 #define DATAMODELVIEW_H
-#include <QListView>
 #include <QAbstractListModel>
+#include <QStyledItemDelegate>
 
 
 
 class DataModel final : public QAbstractListModel {
 public:
-    explicit DataModel(QObject *parent = nullptr);
+    explicit DataModel(QObject *parent = nullptr) : QAbstractListModel(parent) {}
 
     struct SongInfo {
         QString name;
         QString artist;
-        QByteArray logo;
+        QPixmap logo;
     };
+    void setSongs(const QStringList &list);
 
 protected:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
@@ -27,7 +28,6 @@ protected:
 
 private:
     QList<SongInfo> m_list{};
-    void setSongs(const QStringList &list);
 
     ///
     /// @param str should be the @m_fullName
@@ -40,7 +40,20 @@ private:
     static QString convertToName(const QString &str);
 };
 
-class DataView final : public QListView {
+
+class SongDelegate final : public QStyledItemDelegate {
+    Q_OBJECT
+
+public:
+    explicit SongDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+        Q_UNUSED(index);
+        return QSize(200, 60);  // 自定义行高
+    }
 };
 
 
