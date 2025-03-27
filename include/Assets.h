@@ -3,6 +3,7 @@
 //
 #pragma once
 #include <QString>
+#include <QStringList>
 
 namespace SvgRes {
     inline const auto TrayIconSVG = QStringLiteral(":/images/icon.svg");
@@ -23,6 +24,8 @@ namespace SvgRes {
     inline const auto LocalSVG = QStringLiteral(":/images/local.svg");
     inline const auto MusicListSVG = QStringLiteral(":/images/list.svg");
     inline const auto SettingSVG = QStringLiteral(":/images/setting.svg");
+    inline const auto ViewPlaySVG = QStringLiteral(":/images/btnplay.svg");
+    inline const auto ViewPauseSVG = QStringLiteral(":/images/btnpause.svg");
 }
 
 namespace User {
@@ -39,10 +42,15 @@ namespace User {
 
     inline const auto EXPAND_BTN_TEXT = QStringLiteral("List");
 
-    inline const auto FONT_MIRCRO_HEI = QStringLiteral("Microsoft YaHei");
-    constexpr int VIEW_BUTTON_PADDING = 4;
-    constexpr int VIEW_TEXT_PADDING = 2;
 
+    inline const QStringList MUSIC_FILTERS = {
+        QStringLiteral("*.mp3"), QStringLiteral("*.flac"), QStringLiteral("*.wav"),
+        QStringLiteral("*.ogg"), QStringLiteral("*.m4a"), QStringLiteral("*.aac")
+    };
+
+    inline const QStringList IMAGE_FILTERS = {
+        QStringLiteral("*.png"), QStringLiteral("*.jpeg")
+    };
 }
 
 namespace QssRes {
@@ -54,3 +62,12 @@ namespace QssRes {
 }
 
 
+namespace ViewConfig {
+
+    inline const auto FONT_MIRC_HEI = QStringLiteral("Microsoft YaHei");
+
+    constexpr int VIEW_BUTTON_SIZE = 20;
+
+    constexpr int VIEW_LOGO_PADDING = 5;
+
+}

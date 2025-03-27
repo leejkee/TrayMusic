@@ -4,27 +4,29 @@
 
 #ifndef DATAMODELVIEW_H
 #define DATAMODELVIEW_H
-#include <QAbstractListModel>
 #include <QStyledItemDelegate>
-
+#include <QAbstractListModel>
 
 
 class DataModel final : public QAbstractListModel {
 public:
-    explicit DataModel(QObject *parent = nullptr) : QAbstractListModel(parent) {}
+    explicit DataModel(QObject *parent = nullptr) : QAbstractListModel(parent) {
+    }
 
     struct SongInfo {
         QString name;
         QString artist;
-        QPixmap logo;
+        qsizetype logoIndex;
+        bool playable;
     };
+
     void setSongs(const QStringList &list);
 
 protected:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
 
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
-
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 private:
     QList<SongInfo> m_list{};
@@ -45,15 +47,18 @@ class SongDelegate final : public QStyledItemDelegate {
     Q_OBJECT
 
 public:
-    explicit SongDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+    explicit SongDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
+    }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
+protected:
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+                     const QModelIndex &index) override;
 
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
-        Q_UNUSED(index);
-        return QSize(200, 60);  // 自定义行高
-    }
+
+Q_SIGNALS:
+    void playButtonClicked(const QModelIndex &index);
 };
 
 

@@ -6,7 +6,6 @@
 #define UTILS_H
 #include <QFile>
 #include <QDebug>
-#include <QRandomGenerator>
 
 
 namespace Tools {
@@ -21,24 +20,6 @@ namespace Tools {
         return {};
     }
 
-    template <class T>
-    T getRandomItem(const QList<T> &list) {
-        if (!list.isEmpty()) {
-            static QList<T> savedList = list;
-            if (savedList.isEmpty()) {
-                savedList = list;
-            }
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_int_distribution<> dis(0, savedList.size() - 1);
-            auto num = dis(gen);
-            auto item = savedList.at(num);
-            savedList.remove(num);
-            return item;
-        }
-        qDebug() << "getRandomItem" << "list is empty";
-        return {};
-    }
 }
 
 

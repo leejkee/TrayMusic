@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QSystemTrayIcon>
 #include "MainWindow.h"
+#include "MusicListCache.h"
 
 
 int main(int argc, char** argv)
@@ -19,6 +20,7 @@ int main(int argc, char** argv)
 
     MainWindow w;
     w.show();
+
 
     return app.exec();
 }

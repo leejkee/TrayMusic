@@ -5,7 +5,8 @@
 #ifndef MUSICLISTCACHE_H
 #define MUSICLISTCACHE_H
 #include "Song.h"
-#include <QMap>
+#include <QHash>
+#include <QPixmap>
 
 class MusicListCache {
 public:
@@ -33,21 +34,29 @@ public:
     /// @return Song structure
     static QList<Song> getSongListFromDirectories(const QStringList &path);
 
+
     void reloadLocalMusicList();
 
     void insertList(const QString &list);
 
     void delList(const QString &list);
 
-    [[nodiscard]] QByteArray getRandomLogo() const;
+    [[nodiscard]] const QPixmap &getLogo(qsizetype index) const;
+
+
+    /// Returns a unique random index from the available set.
+    ///
+    /// This function generates a random index from the range [0, size-1] without repetition
+    /// until all indices have been used. Once all numbers have been used, the function
+    /// reshuffles the list and starts over.
+    ///
+    /// @return A unique random index within the valid range.
+    [[nodiscard]] qsizetype getRandomIndex() const;
 
 private:
-    MusicListCache() {
-    }
-
-    QMap<QString, QList<Song> > m_ListMap{};
-    QList<QByteArray> m_logos{};
-
+    MusicListCache() {}
+    QHash<QString, QList<Song> > m_ListMap{};
+    QVector<QPixmap> m_logos{};
 };
 
 

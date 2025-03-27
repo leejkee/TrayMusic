@@ -4,32 +4,33 @@
 #ifndef ICONWIDGET_H
 #define ICONWIDGET_H
 #include "Song.h"
-#include <QStyledItemDelegate>
 
+class SongDelegate;
+class DataModel;
 class QListView;
 class QStringListModel;
 class QLabel;
 class QPainter;
 class BetterButton;
 
-class PlayListDelegate final : public QStyledItemDelegate {
-    Q_OBJECT
-
-public:
-    explicit PlayListDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
-    }
-
-protected:
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
-                     const QModelIndex &index) override;
-
-
-Q_SIGNALS:
-    void playButtonClicked(const QModelIndex &index);
-
-};
+// class PlayListDelegate final : public QStyledItemDelegate {
+//     Q_OBJECT
+//
+// public:
+//     explicit PlayListDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
+//     }
+//
+// protected:
+//     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+//
+//     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+//                      const QModelIndex &index) override;
+//
+//
+// Q_SIGNALS:
+//     void playButtonClicked(const QModelIndex &index);
+//
+// };
 
 
 class ViewWidget final : public QWidget {
@@ -74,9 +75,12 @@ public Q_SLOTS:
 private:
     QLabel *m_labelName;
     QListView *m_playListView;
-    QStringListModel *m_playListModel;
+    // QStringListModel *m_playListModel;
     BetterButton *m_playAllButton;
-    PlayListDelegate *m_viewItemDelegate;
+    // PlayListDelegate *m_viewItemDelegate;
+
+    DataModel *m_dataModel;
+    SongDelegate *m_songDelegate;
 
     void createConnections();
 };

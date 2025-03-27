@@ -2,10 +2,11 @@
 // Created by cww on 25-3-16.
 //
 
-#include "MusicListCache.h"
 #include <QDirIterator>
-#include <QMap>
 #include <QDir>
+#include <QRandomGenerator>
+
+#include "MusicListCache.h"
 #include "Assets.h"
 #include "DBManager.h"
 #include "Settings.h"
@@ -40,12 +41,9 @@ void MusicListCache::initCache() {
     }
 
     qDebug() << "MusicListCache: load logos";
-    QDirIterator it(User::LOGO_PNG_DIR, QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(User::LOGO_PNG_DIR, User::IMAGE_FILTERS, QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        QFile img(it.next());
-        img.open(QIODevice::ReadOnly);
-        m_logos.append(img.readAll());
-        img.close();
+        m_logos.append(QPixmap(it.next()));
     }
 }
 
@@ -57,6 +55,7 @@ void MusicListCache::insertList(const QString &list) {
     m_ListMap[list] = {};
 }
 
+
 void MusicListCache::delList(const QString &list) {
     if (m_ListMap.contains(list)) {
         m_ListMap.remove(list);
@@ -64,6 +63,7 @@ void MusicListCache::delList(const QString &list) {
         qDebug() << "[MusicListCache::del]: ERROR " << "NO " << list;
     }
 }
+
 
 void MusicListCache::reloadLocalMusicList() {
     m_ListMap[User::LOCAL_LIST_KEY] = getSongListFromDirectories(Settings::instance().getLocalMusicDirectories());
@@ -73,10 +73,9 @@ void MusicListCache::reloadLocalMusicList() {
 QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) {
     QList<Song> musicList;
     for (const auto &filePath: path) {
-        QDirIterator it(filePath, QDir::Files, QDirIterator::Subdirectories);
+        QDirIterator it(filePath, User::MUSIC_FILTERS, QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
             it.next();
-            // auto p = it.filePath();
             Song song(it.filePath());
             musicList.append(song);
         }
@@ -84,10 +83,25 @@ QList<Song> MusicListCache::getSongListFromDirectories(const QStringList &path) 
     return musicList;
 }
 
-QByteArray MusicListCache::getRandomLogo() const{
-    auto it =  Tools::getRandomItem(m_logos);
-    if (it.isEmpty()) {
-        qDebug() << "[MusicListCache::getRandomLogo]: ERROR " << "NO " << it;
+const QPixmap &MusicListCache::getLogo(const qsizetype index) const {
+    return m_logos.at(index);
+}
+
+
+qsizetype MusicListCache::getRandomIndex() const{
+    static QVector<int> numbers;
+    static qsizetype count = 0;
+    static std::mt19937 gen(std::random_device{}());
+
+    if (count == 0) {
+        numbers.resize(m_logos.size());
+        std::iota(numbers.begin(), numbers.end(), 0);
+        std::shuffle(numbers.begin(), numbers.end(), gen); // 打乱顺序
+        count = numbers.size();
     }
-    return it;
+
+    const int number = numbers.back(); // 获取最后一个元素
+    numbers.pop_back();                // 移除最后一个元素
+    count--;
+    return number;
 }
