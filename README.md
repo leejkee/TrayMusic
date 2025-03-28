@@ -7,7 +7,7 @@ If you have any of the following goals, this project can serve as a reference:
 - Looking for a **lightweight offline music player**, even for deployment on **embedded devices**.
 
 ## Running Screenshot (Windows 11)
-![Run](/doc/img/run_03.png)
+![Run](/doc/img/run_04.png)
 
 ## Dependencies
 `TagLib` - A C++ library for parsing ID3 tag information from MP3 files and retrieving the duration of audio files.
