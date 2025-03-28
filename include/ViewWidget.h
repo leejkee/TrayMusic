@@ -7,30 +7,10 @@
 
 class SongDelegate;
 class DataModel;
-class QListView;
-class QStringListModel;
 class QLabel;
-class QPainter;
+class QListView;
 class BetterButton;
 
-// class PlayListDelegate final : public QStyledItemDelegate {
-//     Q_OBJECT
-//
-// public:
-//     explicit PlayListDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {
-//     }
-//
-// protected:
-//     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-//
-//     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
-//                      const QModelIndex &index) override;
-//
-//
-// Q_SIGNALS:
-//     void playButtonClicked(const QModelIndex &index);
-//
-// };
 
 
 class ViewWidget final : public QWidget {
@@ -40,19 +20,21 @@ public:
     explicit ViewWidget(QWidget *parent = nullptr);
 
 Q_SIGNALS:
-    void signalViewDoubleClicked(int index);
+    void signalViewDoubleClicked(int);
 
     void signalPlayAllClicked(const QString &name);
+
+    void signalPlayToggle();
 
 private Q_SLOTS:
     void showContextMenu(const QPoint &pos);
 
-    void handleAction(int index);
+    void handleAction(int);
 
 public Q_SLOTS:
     void viewDoubleClick(const QModelIndex &index);
 
-    void updateCurrentIndex(int index);
+    void updateCurrentIndex(int);
 
     void showMusicList(const QString &listName) const;
 
@@ -72,13 +54,12 @@ public Q_SLOTS:
     ///       local music.
     void refreshForLocalMusic() const;
 
+    void playingStatusChange(bool b) const;
+
 private:
     QLabel *m_labelName;
     QListView *m_playListView;
-    // QStringListModel *m_playListModel;
     BetterButton *m_playAllButton;
-    // PlayListDelegate *m_viewItemDelegate;
-
     DataModel *m_dataModel;
     SongDelegate *m_songDelegate;
 

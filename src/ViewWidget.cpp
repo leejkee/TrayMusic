@@ -18,64 +18,6 @@
 #include "DataModel.h"
 #include "Utils.h"
 
-// void PlayListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-//                              const QModelIndex &index) const {
-//     if (!index.isValid()) return;
-//
-//     // 获取文本数据
-//     const QString text = index.data(Qt::DisplayRole).toString();
-//
-//
-//     // 计算按钮区域
-//     const QRect buttonRect(option.rect.right() - 50, option.rect.top() + User::VIEW_BUTTON_PADDING, 25,
-//                            option.rect.height() -
-//                            User::VIEW_BUTTON_PADDING * 2);
-//
-//     // 绘制背景（选中状态）
-//     if (option.state & QStyle::State_Selected) {
-//         QPalette palette = option.palette;
-//         palette.setColor(QPalette::Highlight, Qt::gray);
-//         painter->fillRect(option.rect, palette.highlight());
-//     }
-//
-//     // image
-//     // const QRect imgRect (option.rect.left(), option.rect.top() +(option.rect.height() - 35) / 2 , 35, 35);
-//     // const auto fileP = MusicListCache::instance().getRandomLogo();
-//     // if (QPixmap pixmap(fileP); !pixmap.isNull()) {
-//     //     pixmap = pixmap.scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-//     //     painter->drawPixmap(imgRect, pixmap);
-//     // }
-//     // 绘制文本
-//     // painter->drawText(nameRect, Qt::AlignLeft, getName(text));
-//     // painter->drawText(artistRect, Qt::AlignLeft, getArtist(text));
-//     painter->save();
-//     const QFont nameFont("", 12);
-//     painter->setFont(nameFont);
-//     const QRect nameRect = option.rect.adjusted(35, 2, -50, -20);
-//     painter->drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, text);
-//     // 恢复 QPainter 状态
-//     painter->restore();
-//
-//     // 设置歌手名的字体
-//     painter->save();
-//     const QFont artistFont("Arial", 9);
-//     painter->setFont(artistFont);
-//     const QRect artistRect = option.rect.adjusted(65, 22, -50, -2);
-//     painter->drawText(artistRect, Qt::AlignLeft | Qt::AlignTop, text);
-//     painter->restore();
-//
-//     // 绘制按钮
-//     QStyleOptionButton button;
-//     button.rect = buttonRect;
-//     button.icon = QIcon(SvgRes::PlayIconSVG);
-//     button.state = QStyle::State_Enabled;
-//     QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
-// }
-//
-
-
-
-
 
 void ViewWidget::createConnections() {
     connect(m_playListView, &QListView::customContextMenuRequested, this, &ViewWidget::showContextMenu);
@@ -84,7 +26,10 @@ void ViewWidget::createConnections() {
     connect(m_playAllButton, &QPushButton::clicked, this, [this]() {
         Q_EMIT signalPlayAllClicked(m_labelName->text());
     });
-    connect(m_songDelegate, &SongDelegate::playButtonClicked, this, &ViewWidget::viewDoubleClick);
+    connect(m_songDelegate, &SongDelegate::signalViewPlayButtonClick, &PlayList::instance(), &PlayList::setCurrentMusicIndex);
+    connect(m_songDelegate, &SongDelegate::signalPlayToggle, this, [this]() {
+        Q_EMIT signalPlayToggle();
+    });
 }
 
 ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
@@ -99,11 +44,11 @@ ViewWidget::ViewWidget(QWidget *parent): QWidget(parent) {
 
     // m_playListModel = new QStringListModel(this);
     m_dataModel = new DataModel(this);
-    m_songDelegate = new SongDelegate(this);
 
     // init fun
     // m_playListModel->setStringList(PlayList::instance()->getMusicNameWithoutSuffixList());
     m_playListView = new QListView(this);
+    m_songDelegate = new SongDelegate(m_playListView);
     m_playListView->setModel(m_dataModel);
     m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_playListView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -139,10 +84,12 @@ void ViewWidget::viewDoubleClick(const QModelIndex &index) {
     PlayList::instance().setCurrentMusicIndex(index.row());
 }
 
-void ViewWidget::updateCurrentIndex(const int index) {
+
+void ViewWidget::updateCurrentIndex(const int row) {
     qDebug() << "ViewWidget::updateCurrentIndex";
     // m_playListView->selectionModel()->select(m_playListModel->index(index, 0), QItemSelectionModel::ClearAndSelect);
-    m_playListView->selectionModel()->select(m_dataModel->index(index, 0), QItemSelectionModel::ClearAndSelect);
+    m_playListView->selectionModel()->select(m_dataModel->index(row, 0), QItemSelectionModel::ClearAndSelect);
+    m_songDelegate->setPreviousIndex(row);
 }
 
 void ViewWidget::showContextMenu(const QPoint &pos) {
@@ -171,9 +118,13 @@ void ViewWidget::showMusicList(const QString &listName) const {
     if (songNameList.isEmpty()) {
         qDebug() << "ViewWidget::showMusicList" << "MusicList is empty(MusicListCache::getSongNameListByName)";
     }
-    // this->m_playListModel->setStringList(songNameList);
+
+    // update the model
     m_dataModel->setSongs(songNameList);
     m_labelName->setText(listName);
+
+    // load play list when the list was loaded to the Model-View
+    PlayList::instance().loadMusicByName(listName);
 }
 
 void ViewWidget::setDefaultList() const {
@@ -184,7 +135,10 @@ void ViewWidget::setDefaultList() const {
 void ViewWidget::refreshForLocalMusic() const {
     if (m_labelName->text() == User::LOCAL_LIST_KEY) {
         showMusicList(User::LOCAL_LIST_KEY);
-        PlayList::instance().loadMusicByName(m_labelName->text());
         qDebug() << "ViewWidget::refreshForLocalMusic";
     }
+}
+
+void ViewWidget::playingStatusChange(const bool b) const {
+    m_songDelegate->setPlayStatus(b);
 }

@@ -123,6 +123,9 @@ void WindowManager::createConnections() {
         DBManager::instance().createTable(name);
     });
 
+    connect(m_viewWidget, &ViewWidget::signalPlayToggle, m_player, &Player::playToggle);
+
+    connect(m_player, &Player::playStatusChanged, m_viewWidget, &ViewWidget::playingStatusChange);
 }
 
 WindowManager::~WindowManager() = default;

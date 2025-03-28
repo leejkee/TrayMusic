@@ -47,5 +47,6 @@ public Q_SLOTS:
     void playToggle();
     void changeSource();
     void setPlayPosition(qint64 position);
+    void handleViewButtonClick(int cur, int pre);
 };
 #endif //PLAYER_H

@@ -7,7 +7,6 @@
 #include <QFile>
 #include <QDebug>
 
-
 namespace Tools {
 
     inline QString readQSS(const QString &qssPath) {

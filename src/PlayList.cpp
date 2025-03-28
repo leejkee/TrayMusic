@@ -3,7 +3,6 @@
 //
 #include "PlayList.h"
 #include "Song.h"
-#include <QDir>
 #include <QString>
 #include <QDirIterator>
 #include "MusicListCache.h"
@@ -128,7 +127,10 @@ void PlayList::loadMusicByName(const QString &name) {
 }
 
 void PlayList::playMusicListByName(const QString &name) {
-    loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
+    if (isEmptyPlayList()) {
+        qDebug() << "PlayList::playMusicListByName() is empty, load list by name";
+        loadMusicFromSongs(MusicListCache::instance().getSongListByName(name));
+    }
     playFromFirst();
 }
 
@@ -137,4 +139,7 @@ void PlayList::playFromFirst() {
     setCurrentMusicIndex(0);
     Q_EMIT currentMusicIndexChanged(0);
     Q_EMIT currentMusicNameChanged(getCurrentMusicName());
+}
+
+void PlayList::playStatusCtrl() {
 }

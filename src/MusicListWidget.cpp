@@ -1,13 +1,13 @@
 //
 // Created by cww on 25-2-28.
 //
-#include "MusicListWidget.h"
-#include "Assets.h"
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QPropertyAnimation>
 #include <QInputDialog>
 #include "DBManager.h"
+#include "MusicListWidget.h"
+#include "Assets.h"
 #include "BetterButton.h"
 #include "Settings.h"
 
@@ -108,6 +108,7 @@ void MusicListWidget::newButton(const QString &playlistName) {
 
 
 void MusicListWidget::initUserListButtons() {
+
     const auto listName = Settings::instance().getUserMusicList();
     for (const auto &name: listName) {
         newButton(name);

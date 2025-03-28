@@ -3,6 +3,7 @@
 //
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QDebug>
 #include "Player.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -89,4 +90,12 @@ void Player::changeSource() {
 
 void Player::setPlayPosition(const qint64 position) {
     m_player->setPosition(position);
+}
+
+
+void Player::handleViewButtonClick(const int cur, const int pre) {
+    if (PlayList::instance().isEmptyPlayList()) {
+        
+    }
+
 }

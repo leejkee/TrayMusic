@@ -5,7 +5,6 @@
 #ifndef MUSICLISTMANAGER_H
 #define MUSICLISTMANAGER_H
 #include <QWidget>
-#include "Song.h"
 class BetterButton;
 class QVBoxLayout;
 class QPushButton;

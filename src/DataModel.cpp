@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
-
+#include <QListView>
 #include "Assets.h"
 #include "MusicListCache.h"
 
@@ -20,7 +20,6 @@ void DataModel::setSongs(const QStringList &list) {
         info.name = convertToName(song);
         info.artist = convertToArtist(song);
         info.logoIndex = MusicListCache::instance().getRandomIndex();
-        info.playable = false;
         m_list.append(info);
     }
     endResetModel();
@@ -32,12 +31,11 @@ int DataModel::rowCount(const QModelIndex &parent) const {
 
 QVariant DataModel::data(const QModelIndex &index, const int role) const {
     if (!index.isValid() || index.row() >= m_list.size()) return {};
-    const auto &[name, artist, logoIndex, playable] = m_list[index.row()];
+    const auto &[name, artist, logoIndex] = m_list[index.row()];
     switch (role) {
         case Qt::DisplayRole: return name;
         case Qt::UserRole: return artist;
         case Qt::DecorationRole: return MusicListCache::instance().getLogo(logoIndex);
-        case Qt::UserRole + 1: return playable;
         default: return {};
     }
 }
@@ -50,6 +48,36 @@ QString DataModel::convertToName(const QString &str) {
     return str.left(str.indexOf("-"));
 }
 
+
+SongDelegate::SongDelegate(QObject *parent) : QStyledItemDelegate(parent) {
+
+    connect(this, &SongDelegate::signalPreviousIndexChanged, this, [this](const int index) {
+    if (auto *view = qobject_cast<QListView*>(this->parent())) {
+        qDebug() << "Song index: " << index;
+        // 更新新旧索引对应的项
+        if (m_previousIndex >= 0) {
+            view->update(view->model()->index(m_previousIndex, 0));
+        }
+        if (index >= 0) {
+            view->update(view->model()->index(index, 0));
+        }
+    }
+});
+
+    connect(this, &SongDelegate::signalPlayingStatusChanged, this, [this](const bool b) {
+        qDebug() << "signalPlayingStatusChanged emitted. b =" << b
+         << "m_previousIndex =" << m_previousIndex;
+        Q_UNUSED(b);
+        if (auto *view = qobject_cast<QListView*>(this->parent())) {
+            // 更新当前播放索引对应的项
+            if (m_previousIndex >= 0) {
+                qDebug() << "signalPlayingStatusChanged:" << m_previousIndex;
+                view->update(view->model()->index(m_previousIndex, 0));
+            }
+        }
+    });
+}
+
 void SongDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                          const QModelIndex &index) const {
     painter->save();
@@ -59,8 +87,6 @@ void SongDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     const auto cover = index.data(Qt::DecorationRole).value<QPixmap>();
     const QString title = index.data(Qt::DisplayRole).toString();
     const QString artist = index.data(Qt::UserRole).toString();
-    const bool isPlaying = index.data(Qt::UserRole + 1).toBool();
-
     // 设置字体
     const QFont titleFont(ViewConfig::FONT_MIRC_HEI, 12, QFont::Normal);
     // const QFont btnFont(ViewConfig::FONT_MIRC_HEI, 15, QFont::Normal);
@@ -97,10 +123,14 @@ void SongDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     static QSvgRenderer svgPlayingRenderer(SvgRes::ViewPlaySVG);
     static QSvgRenderer svgPauseRenderer(SvgRes::ViewPauseSVG);
 
-    if (isPlaying) {
-        svgPauseRenderer.render(painter, buttonRect);
-    } else {
+    if (index.row() != m_previousIndex) {
         svgPlayingRenderer.render(painter, buttonRect);
+    } else {
+        if (m_isPlaying) {
+            svgPauseRenderer.render(painter, buttonRect);
+        } else {
+            svgPlayingRenderer.render(painter, buttonRect);
+        }
     }
 
     painter->restore();
@@ -111,9 +141,10 @@ bool DataModel::setData(const QModelIndex &index, const QVariant &value, const i
         return false;
 
     switch (role) {
-        case Qt::DisplayRole: m_list[index.row()].name = value.toString(); break;
-        case Qt::UserRole: m_list[index.row()].artist = value.toString(); break;
-        case Qt::UserRole + 1: m_list[index.row()].playable = value.toBool(); break;
+        case Qt::DisplayRole: m_list[index.row()].name = value.toString();
+            break;
+        case Qt::UserRole: m_list[index.row()].artist = value.toString();
+            break;
         default: break;
     }
     return QAbstractListModel::setData(index, value, role);
@@ -132,17 +163,31 @@ bool SongDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const Q
     if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
         if (const auto *mouseEvent = dynamic_cast<QMouseEvent *>(event); buttonRect.contains(mouseEvent->pos())) {
             if (event->type() == QEvent::MouseButtonRelease) {
-                const bool isPlaying = index.data(Qt::UserRole + 1).toBool();
-                model->setData(index, !isPlaying, Qt::UserRole + 1);
-                // Q_EMIT model->dataChanged(index, index);
-                // // 强制视图重绘
-                // if (auto *view = qobject_cast<QAbstractItemView *>(parent())) {
-                //     view->update(index);
-                // }
-                emit playButtonClicked(index);
+                if (index.row() == m_previousIndex) {
+                    m_isPlaying = !m_isPlaying;
+                    Q_EMIT signalPlayToggle();
+                } else {
+                    m_previousIndex = index.row();
+                    Q_EMIT signalViewPlayButtonClick(index.row());
+                }
             }
             return true;
         }
     }
     return false;
+}
+
+void SongDelegate::setPreviousIndex(const int index) {
+    if (index != m_previousIndex) {
+        m_previousIndex = index;
+        Q_EMIT signalPreviousIndexChanged(index);
+    }
+}
+
+void SongDelegate::setPlayStatus(const bool playable) {
+    if (playable != m_isPlaying) {
+        qDebug() << "SongDelegate::setPlayStatus" << playable;
+        m_isPlaying = playable;
+        Q_EMIT signalPlayingStatusChanged(playable);
+    }
 }

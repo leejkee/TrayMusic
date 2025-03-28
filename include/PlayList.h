@@ -56,6 +56,9 @@ private:
     int m_currentIndex{0};
     QList<Song> m_musicList{};
     void playFromFirst();
+
+    void playStatusCtrl();
+
     void loadMusicFromSongs(const QList<Song> &songs);
 };
 

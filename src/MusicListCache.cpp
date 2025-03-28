@@ -96,12 +96,12 @@ qsizetype MusicListCache::getRandomIndex() const{
     if (count == 0) {
         numbers.resize(m_logos.size());
         std::iota(numbers.begin(), numbers.end(), 0);
-        std::shuffle(numbers.begin(), numbers.end(), gen); // 打乱顺序
+        std::shuffle(numbers.begin(), numbers.end(), gen);
         count = numbers.size();
     }
 
-    const int number = numbers.back(); // 获取最后一个元素
-    numbers.pop_back();                // 移除最后一个元素
+    const auto number = numbers.back();
+    numbers.pop_back();
     count--;
     return number;
 }
