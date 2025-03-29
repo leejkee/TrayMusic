@@ -7,9 +7,9 @@
 #include <QWidget>
 
 
+class QSplitter;
 class MusicListWidget;
 class QGridLayout;
-class QHBoxLayout;
 class PlayerWidget;
 class QListWidget;
 class ViewWidget;
@@ -34,7 +34,7 @@ private:
     LocalMusicSettingsWidget *m_settingsWidget;
     TopBarWidget *m_topBarWidget;
     Player *m_player;
-    QHBoxLayout *m_viewLayout;
+    QSplitter *m_leftViewSplitter;
     void createConnections();
 
 public slots:

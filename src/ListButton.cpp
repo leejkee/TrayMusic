@@ -10,7 +10,7 @@
 
 BetterButton::BetterButton(const QString &name, QWidget *parent) : QPushButton(parent) {
     setIcon(QIcon(SvgRes::MusicListSVG));
-    setFixedHeight(30);
+    // setFixedHeight(30);
     setText(name);
     m_listName = name;
     loadStyleSheet(QssRes::BUTTON_LIST_QSS);

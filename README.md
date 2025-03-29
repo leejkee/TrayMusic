@@ -9,8 +9,11 @@ This project can serve as a reference if you have the following goals:
 - Just learning Qt Widget
 - Looking for a lightweight offline music player that can even be deployed to embedded devices
 
-## Screenshot (Windows 11)
-![Run](/doc/img/run_04.png)
+## Screenshot
+- Windows 11  
+  ![Run](/doc/img/run_04.png)
+- Arch Linux (Plasma 6.3.3 X11 Theme: Breeze)  
+  ![Run](/doc/img/run_05.png)
 
 ## Dependencies
 - `TagLib`: A C++ library for parsing ID3 tag information of MP3 files and obtaining music file duration

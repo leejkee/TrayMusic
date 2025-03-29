@@ -55,7 +55,7 @@ public Q_SLOTS:
 
 private:
 #if defined (__linux__)
-    const QString m_settingsPath{Constants::LINUX_SETTINGS_PATH};
+    const QString m_settingsPath{User::LINUX_SETTINGS_PATH};
 #elif defined (_WIN32)
     const QString m_settingsPath{User::WIN_SETTINGS_PATH};
 #endif

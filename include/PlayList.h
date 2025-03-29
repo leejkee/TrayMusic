@@ -4,6 +4,7 @@
 
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
+#include "Assets.h"
 #include "Song.h"
 #include <QObject>
 
@@ -52,9 +53,11 @@ public Q_SLOTS:
 
 
 private:
+
     PlayList(){}
-    int m_currentIndex{0};
+    int m_currentIndex{User::UNINITIALIZED_VALUE};
     QList<Song> m_musicList{};
+
     void playFromFirst();
 
     void playStatusCtrl();

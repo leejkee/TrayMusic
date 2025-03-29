@@ -6,8 +6,12 @@ Tips:
 如果你有以下目的，这个项目可以作为你的参考
 - 仅仅学习Qt Widget
 - 希望寻找一款轻量级的离线音乐播放器，甚至将其部署到嵌入式设备
-## 运行截图(Windows 11)
-![Run](/doc/img/run_04.png)
+## 运行截图
+- Windows 11
+  ![Run](/doc/img/run_04.png)
+- Arch Linux (Plasma 6.3.3 X11 Theme: Breeze)  
+  ![Run](/doc/img/run_05.png)
+
 ## 依赖
 - `TabLig` 一个用来解析Mp3文件的ID3标签信息，以及获取音乐文件时长的C++库
   - 本项目使用了其中解析音乐时长的功能，部分linux发行版或许已经安装了该库，Windows

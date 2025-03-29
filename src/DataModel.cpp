@@ -8,6 +8,8 @@
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QListView>
+#include <qdebug.h>
+#include <qlogging.h>
 #include "Assets.h"
 #include "MusicListCache.h"
 
@@ -166,9 +168,11 @@ bool SongDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const Q
                 if (index.row() == m_previousIndex) {
                     m_isPlaying = !m_isPlaying;
                     Q_EMIT signalPlayToggle();
+                    qDebug() << "signalPlayTg";
                 } else {
                     m_previousIndex = index.row();
                     Q_EMIT signalViewPlayButtonClick(index.row());
+                    qDebug() << "signalViewPlayButtonClick";
                 }
             }
             return true;

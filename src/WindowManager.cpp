@@ -1,18 +1,7 @@
 //
 // Created by cww on 25-2-22.
 //
-
-#include "WindowManager.h"
-#include "MusicListWidget.h"
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QListWidget>
-#include <QSlider>
-#include <QStackedWidget>
-
 #include "DBManager.h"
-#include "BetterButton.h"
 #include "TopBarWidget.h"
 #include "Player.h"
 #include "PlayerWidget.h"
@@ -21,6 +10,19 @@
 #include "ViewWidget.h"
 #include "LocalMusicSettingsWidget.h"
 #include "MusicListCache.h"
+#include "WindowManager.h"
+#include "MusicListWidget.h"
+#include "BetterButton.h"
+#include <QPushButton>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QSplitter>
+#include <QInputDialog>
+#include <QListWidget>
+#include <QSlider>
+#include <QStackedWidget>
+
+
 
 WindowManager::WindowManager(QWidget *parent)
     : QWidget(parent) {
@@ -44,11 +46,9 @@ WindowManager::WindowManager(QWidget *parent)
     m_stackedWidget->addWidget(m_viewWidget);
     m_stackedWidget->addWidget(m_settingsWidget);
 
-    m_viewLayout = new QHBoxLayout;
-    m_viewLayout->setSpacing(0);
-    m_viewLayout->setContentsMargins(0, 0, 0, 0);
-    m_viewLayout->addWidget(m_leftWidget);
-    m_viewLayout->addWidget(m_stackedWidget);
+    m_leftViewSplitter = new QSplitter(Qt::Horizontal);
+    m_leftViewSplitter->addWidget(m_leftWidget);
+    m_leftViewSplitter->addWidget(m_stackedWidget);
 
     // bottom layout
     const auto m_bottomLayout = new QHBoxLayout;
@@ -57,12 +57,14 @@ WindowManager::WindowManager(QWidget *parent)
     m_bottomLayout->addWidget(m_bottomWidget);
     const auto bottomGroup = new QGroupBox;
     bottomGroup->setLayout(m_bottomLayout);
+    bottomGroup->setFixedHeight(100);
     // bottom layout
 
     const auto Layout = new QVBoxLayout(this);
     Layout->addWidget(m_topBarWidget);
-    Layout->addItem(m_viewLayout);
+    Layout->addWidget(m_leftViewSplitter);
     Layout->addWidget(bottomGroup);
+    // Layout->addWidget(m_bottomWidget);
     createConnections();
 }
 
@@ -97,8 +99,8 @@ void WindowManager::createConnections() {
         m_player->setPlayPosition(value);
     });
 
-    connect(m_topBarWidget->m_settingsButton, &QPushButton::clicked, this, &WindowManager::showSettingsWidget);
-    connect(m_topBarWidget->m_preButton, &QPushButton::clicked, this, &WindowManager::showMainWidget);
+    connect(m_topBarWidget->m_settingsButton, &BetterButton::clicked, this, &WindowManager::showSettingsWidget);
+    connect(m_topBarWidget->m_preButton, &BetterButton::clicked, this, &WindowManager::showMainWidget);
 
     connect(m_settingsWidget, &LocalMusicSettingsWidget::signalLocalMusicPathSettingsChanged, m_viewWidget, &ViewWidget::refreshForLocalMusic);
 

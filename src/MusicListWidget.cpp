@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QPropertyAnimation>
 #include <QInputDialog>
+#include <qsizepolicy.h>
 #include "DBManager.h"
 #include "MusicListWidget.h"
 #include "Assets.h"
@@ -25,8 +26,8 @@ MusicListWidget::MusicListWidget(QWidget *parent)
     const auto spaceH = new QSpacerItem(-1, 0, QSizePolicy::Expanding);
     buttonLayout->addWidget(m_expandButton);
 
-    buttonLayout->addItem(spaceH);
     buttonLayout->addWidget(m_addButton);
+    buttonLayout->addItem(spaceH);
 
     m_buttonWidget = new QWidget(this);
     m_buttonLayout = new QVBoxLayout;
@@ -50,14 +51,16 @@ MusicListWidget::MusicListWidget(QWidget *parent)
     const auto mainWidget = new QWidget(this);
     mainWidget->setLayout(m_mainLayout);
     m_scrollArea->setWidget(mainWidget);
-    m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    // m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     const auto layout = new QVBoxLayout;
     layout->addWidget(m_scrollArea);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
-    setFixedWidth(110);
+    // setFixedWidth(110);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+    // setMaximumWidth(150);
     createConnections();
     initUserListButtons();
 }

@@ -51,6 +51,8 @@ namespace User {
     inline const QStringList IMAGE_FILTERS = {
         QStringLiteral("*.png"), QStringLiteral("*.jpeg")
     };
+
+    inline constexpr int UNINITIALIZED_VALUE = -1;
 }
 
 namespace QssRes {

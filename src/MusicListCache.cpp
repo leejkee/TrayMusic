@@ -10,7 +10,6 @@
 #include "Assets.h"
 #include "DBManager.h"
 #include "Settings.h"
-#include "Utils.h"
 
 
 QList<Song> MusicListCache::getSongListByName(const QString &listName) const {

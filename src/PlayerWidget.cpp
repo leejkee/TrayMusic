@@ -48,6 +48,7 @@ PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     buttonLayout->addWidget(m_pushButtonVolume);
     Layout->addLayout(buttonLayout);
     this->setLayout(Layout);
+    // this->setFixedHeight(100);
     createConnections();
 }
 

@@ -6,6 +6,7 @@
 #include <QString>
 #include <QDirIterator>
 #include "MusicListCache.h"
+#include "Assets.h"
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();
@@ -15,7 +16,7 @@ void PlayList::loadMusicFromDirectory(const QString &path) {
         Song song(dir.absoluteFilePath(file));
         m_musicList.append(song);
     }
-    m_currentIndex = 0;
+    m_currentIndex = User::UNINITIALIZED_VALUE;
 }
 
 void PlayList::loadMusicFromUserList(const QStringList &fileAbsolutePathList) {
@@ -24,7 +25,7 @@ void PlayList::loadMusicFromUserList(const QStringList &fileAbsolutePathList) {
         Song song(file);
         m_musicList.append(song);
     }
-    m_currentIndex = 0;
+    m_currentIndex = User::UNINITIALIZED_VALUE;
 }
 
 void PlayList::loadMusicFromSongs(const QList<Song> &songs) {
@@ -46,7 +47,7 @@ void PlayList::loadMusicFromDirectories(const QStringList &filePathList) {
             m_musicList.append(song);
         }
     }
-    m_currentIndex = 0;
+    m_currentIndex = User::UNINITIALIZED_VALUE;
 }
 
 
@@ -117,6 +118,7 @@ void PlayList::previousMusic() {
     }
     setCurrentMusicIndex(index);
 }
+
 
 bool PlayList::isEmptyPlayList() const {
     return m_musicList.isEmpty();
