@@ -27,7 +27,6 @@ public:
     ~WindowManager() override;
 
 private:
-
     QStackedWidget *m_stackedWidget;
     ViewWidget* m_viewWidget;
     PlayerWidget* m_bottomWidget;

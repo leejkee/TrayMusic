@@ -128,8 +128,9 @@ void WindowManager::createConnections() {
     connect(m_player, &Player::playStatusChanged, m_viewWidget, &ViewWidget::playingStatusChange);
 }
 
-WindowManager::~WindowManager() = default;
-
+WindowManager::~WindowManager() {
+    delete m_player;
+}
 void WindowManager::showMainWidget() {
     qDebug() << "Windowmanager::showMainWidget";
     m_stackedWidget->setCurrentIndex(0);

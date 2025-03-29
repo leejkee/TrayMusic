@@ -1,70 +1,63 @@
-### A Lightweight Music Player Using Qt Widget 6.8.2
+# A Very Simple Music Player Using Qt Widget 6.8.2
 
-[**简体中文**](README_cn.md)  
+[**简体中文**](README_cn.md)
+## Tips:
+- This project is for learning and communication purposes only
+- The song icons used in this project are AI-generated.
 
-If you have any of the following goals, this project can serve as a reference:
-- Learning **Qt Widget** development.
-- Looking for a **lightweight offline music player**, even for deployment on **embedded devices**.
+This project can serve as a reference if you have the following goals:
+- Just learning Qt Widget
+- Looking for a lightweight offline music player that can even be deployed to embedded devices
 
-## Running Screenshot (Windows 11)
+## Screenshot (Windows 11)
 ![Run](/doc/img/run_04.png)
 
 ## Dependencies
-`TagLib` - A C++ library for parsing ID3 tag information from MP3 files and retrieving the duration of audio files.
-- [TagLib](https://github.com/taglib/taglib)
+- `TagLib`: A C++ library for parsing ID3 tag information of MP3 files and obtaining music file duration
+  - This project uses its music duration parsing functionality. Some Linux distributions may already have this library installed. Windows users should compile from source or use the pre-compiled dll provided in this project's `3rdParty` folder
+- [TagLib's repository address](https://github.com/taglib/taglib)
 
-## Project Structure & Features
+## Project Structure
 
-### **Assets**
-- [x] Stores constants
-
-### **MainWindow**
+### MainWindow
 - [x] System tray support
 
-### **WindowManager**
-- [x] Manages overall window layout
-- [x] Handles window switching
-- [x] Manages signal-slot connections
+### WindowManager
+- [x] Manages overall layout, window switching, and signal-slot connections between objects
+- [x] Initializes data cache management objects
 
-### **Player**
-- [x] Controls the playback of a single music file
+### Player
+- [x] Single music file playback
 
-### **PlayerWidget**
-- [x] UI for basic music player functionality
+### PlayerWidget
+- [x] Music playback UI components
 
-### **PlayList**
-- [x] Manages the currently loaded playlist, including user-defined playlists and local directory scanning
-- [x] Uses **TagLib** API to read music duration
+### ViewWidget
+- [x] List display UI, shows song list and provides some playback control UI
 
-### **ViewWidget**
-- [x] Main UI for displaying the song list or switching to other settings pages
+### TopBarWidget
+- [x] Top bar displaying logo, settings button, and back button
 
-### **TopBarWidget**
-- [x] Manages the top bar
-- [x] Displays the **logo, settings button, and back button**
+### MusicListWidget
+- [x] Left sidebar UI for switching playlists
 
-### **MusicListWidget**
-- [x] UI for the **left-side** playlist panel
-- [x] Controls playlist switching
+### LocalMusicSettingsWidget
+- [x] Local music directory settings page with real-time updates during local music playback
 
-### **MusicListCache**
-- [x] Caches all playlists' data
-- [x] Loads local music files from directories and user playlists from the database
-- [x] Provides song data for components like **PlayList** and **ViewWidget**, allowing them to query songs by playlist name
+### Data Cache Classes
 
-### **Settings**
-- [x] Reads configuration files, including:
+#### PlayList
+- [x] Manages currently loaded playlists
+
+#### MusicListCache
+- [x] Provides data read/write interfaces for other data-using classes
+
+#### Settings
+- [x] Reads configuration files including:
   - Local music directory list
-  - User-created playlist names
-  - Database file location
-  - Default player settings
+  - User playlist name list
+  - Database file directory
+  - Player default settings
 
-### **LocalMusicSettingsWidget**
-- [x] Manages local music directories
-- [x] Allows users to **add, remove, and update directories** in real-time
-- [x] Automatically updates the UI when the current view is the local music list
-
-### **DBManager**
-- [ ] Handles **CRUD (Create, Read, Update, Delete) operations** on the database
-- [x] Reads and stores user data
-
+#### DBManager
+- [x] Provides read/write interfaces for user data
