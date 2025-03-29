@@ -11,7 +11,7 @@ This project can serve as a reference if you have the following goals:
 
 ## Screenshot
 - Windows 11  
-  ![Run](/doc/img/run_04.png)
+  ![Run](/doc/img/run_06.png)
 - Arch Linux (Plasma 6.3.3 X11 Theme: Breeze)  
   ![Run](/doc/img/run_05.png)
 

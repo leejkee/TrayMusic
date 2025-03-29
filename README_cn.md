@@ -8,7 +8,7 @@ Tips:
 - 希望寻找一款轻量级的离线音乐播放器，甚至将其部署到嵌入式设备
 ## 运行截图
 - Windows 11
-  ![Run](/doc/img/run_04.png)
+  ![Run](/doc/img/run_06.png)
 - Arch Linux (Plasma 6.3.3 X11 Theme: Breeze)  
   ![Run](/doc/img/run_05.png)
 
