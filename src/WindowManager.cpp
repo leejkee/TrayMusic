@@ -13,6 +13,7 @@
 #include "WindowManager.h"
 #include "MusicListWidget.h"
 #include "BetterButton.h"
+
 #include <QPushButton>
 #include <QGroupBox>
 #include <QHBoxLayout>

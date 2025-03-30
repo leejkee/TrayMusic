@@ -7,10 +7,9 @@
 #include <QStyledItemDelegate>
 #include <QAbstractListModel>
 
-
 class DataModel final : public QAbstractListModel {
 public:
-    explicit DataModel(QObject *parent = nullptr) : QAbstractListModel(parent) {
+    explicit DataModel(QObject *parent = nullptr) : QAbstractListModel(parent){
     }
 
     struct SongInfo {
@@ -70,8 +69,8 @@ Q_SIGNALS:
     void signalPlayingStatusChanged(bool);
 
 private:
-    int m_previousIndex = -1;
-    bool m_isPlaying = false;
+    int m_previousIndex;
+    bool m_isPlaying;
 };
 
 

@@ -2,14 +2,15 @@
 // Created by cww on 25-3-16.
 //
 
-#include <QDirIterator>
-#include <QDir>
-#include <QRandomGenerator>
-
 #include "MusicListCache.h"
 #include "Assets.h"
 #include "DBManager.h"
 #include "Settings.h"
+
+#include <QDirIterator>
+#include <QDir>
+#include <QRandomGenerator>
+
 
 
 QList<Song> MusicListCache::getSongListByName(const QString &listName) const {

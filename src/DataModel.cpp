@@ -2,16 +2,15 @@
 // Created by cww on 25-3-26.
 //
 
+#include "Assets.h"
+#include "MusicListCache.h"
 #include "DataModel.h"
-#include <qabstractitemview.h>
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QListView>
-#include <qdebug.h>
-#include <qlogging.h>
-#include "Assets.h"
-#include "MusicListCache.h"
+#include <QDebug>
 
 
 void DataModel::setSongs(const QStringList &list) {
@@ -51,27 +50,24 @@ QString DataModel::convertToName(const QString &str) {
 }
 
 
-SongDelegate::SongDelegate(QObject *parent) : QStyledItemDelegate(parent) {
-
+SongDelegate::SongDelegate(QObject *parent) : QStyledItemDelegate(parent), m_previousIndex(User::UNINITIALIZED_VALUE)
+                                              , m_isPlaying(false) {
     connect(this, &SongDelegate::signalPreviousIndexChanged, this, [this](const int index) {
-    if (auto *view = qobject_cast<QListView*>(this->parent())) {
-        qDebug() << "Song index: " << index;
-        // 更新新旧索引对应的项
-        if (m_previousIndex >= 0) {
-            view->update(view->model()->index(m_previousIndex, 0));
+        if (auto *view = qobject_cast<QListView *>(this->parent())) {
+            qDebug() << "Song index: " << index;
+            if (m_previousIndex >= 0) {
+                view->update(view->model()->index(m_previousIndex, 0));
+            }
+            if (index >= 0) {
+                view->update(view->model()->index(index, 0));
+            }
         }
-        if (index >= 0) {
-            view->update(view->model()->index(index, 0));
-        }
-    }
-});
+    });
 
     connect(this, &SongDelegate::signalPlayingStatusChanged, this, [this](const bool b) {
-        qDebug() << "signalPlayingStatusChanged emitted. b =" << b
-         << "m_previousIndex =" << m_previousIndex;
+        qDebug() << "signalPlayingStatusChanged emitted. b =" << b << "m_previousIndex =" << m_previousIndex;
         Q_UNUSED(b);
-        if (auto *view = qobject_cast<QListView*>(this->parent())) {
-            // 更新当前播放索引对应的项
+        if (auto *view = qobject_cast<QListView *>(this->parent())) {
             if (m_previousIndex >= 0) {
                 qDebug() << "signalPlayingStatusChanged:" << m_previousIndex;
                 view->update(view->model()->index(m_previousIndex, 0));
@@ -83,55 +79,62 @@ SongDelegate::SongDelegate(QObject *parent) : QStyledItemDelegate(parent) {
 void SongDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                          const QModelIndex &index) const {
     painter->save();
-    // painter->setRenderHint(QPainter::Antialiasing);
-    // painter->setRenderHint(QPainter::TextAntialiasing);
+
     const QRect rect = option.rect;
     const auto cover = index.data(Qt::DecorationRole).value<QPixmap>();
     const QString title = index.data(Qt::DisplayRole).toString();
     const QString artist = index.data(Qt::UserRole).toString();
-    // 设置字体
+
+    // font
     const QFont titleFont(ViewConfig::FONT_MIRC_HEI, 12, QFont::Normal);
-    // const QFont btnFont(ViewConfig::FONT_MIRC_HEI, 15, QFont::Normal);
     const QFont artistFont(ViewConfig::FONT_MIRC_HEI, 9);
 
     const int coverSize = rect.height() - 2 * ViewConfig::VIEW_LOGO_PADDING;
 
-    // 绘制背景（如果需要）
+    // background
     if (option.state & QStyle::State_Selected) {
         painter->fillRect(rect, QColor(224, 224, 224)); // 选中背景颜色
     }
 
-    // 绘制封面
+    // icon of song
     painter->drawPixmap(rect.left() + ViewConfig::VIEW_LOGO_PADDING * 6, rect.top() + ViewConfig::VIEW_LOGO_PADDING,
                         coverSize, coverSize, cover);
 
-    // 绘制歌名
+    // name of song
     painter->setFont(titleFont);
     painter->drawText(rect.left() + coverSize + 8 * ViewConfig::VIEW_LOGO_PADDING,
                       rect.top() + ViewConfig::VIEW_LOGO_PADDING * 4, title);
 
-    // 绘制歌手名
+    // Artist
     painter->setFont(artistFont);
     painter->setPen(Qt::gray);
     painter->drawText(rect.left() + coverSize + 8 * ViewConfig::VIEW_LOGO_PADDING,
                       rect.top() + ViewConfig::VIEW_LOGO_PADDING * 7, artist);
 
-    // 绘制Play/pause
-    const QRect buttonRect(rect.left() + ViewConfig::VIEW_LOGO_PADDING,
+    // Play/pause
+    const QRect buttonPlayRect(rect.left() + ViewConfig::VIEW_LOGO_PADDING,
+                               rect.center().y() - ViewConfig::VIEW_BUTTON_SIZE / 2,
+                               ViewConfig::VIEW_BUTTON_SIZE,
+                               ViewConfig::VIEW_BUTTON_SIZE);
+
+    const QRect buttonRect(rect.right() - 80,
                            rect.center().y() - ViewConfig::VIEW_BUTTON_SIZE / 2,
                            ViewConfig::VIEW_BUTTON_SIZE,
                            ViewConfig::VIEW_BUTTON_SIZE);
+
+    static QSvgRenderer svgAddToListRender(SvgRes::AdddSVG);
+    svgAddToListRender.render(painter, buttonRect);
 
     static QSvgRenderer svgPlayingRenderer(SvgRes::ViewPlaySVG);
     static QSvgRenderer svgPauseRenderer(SvgRes::ViewPauseSVG);
 
     if (index.row() != m_previousIndex) {
-        svgPlayingRenderer.render(painter, buttonRect);
+        svgPlayingRenderer.render(painter, buttonPlayRect);
     } else {
         if (m_isPlaying) {
-            svgPauseRenderer.render(painter, buttonRect);
+            svgPauseRenderer.render(painter, buttonPlayRect);
         } else {
-            svgPlayingRenderer.render(painter, buttonRect);
+            svgPlayingRenderer.render(painter, buttonPlayRect);
         }
     }
 

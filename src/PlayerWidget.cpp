@@ -3,6 +3,10 @@
 //
 #include "Assets.h"
 #include "PlayerWidget.h"
+#include "PlayList.h"
+#include "Settings.h"
+#include "BetterButton.h"
+
 #include <QCoreApplication>
 #include <QLabel>
 #include <QMenu>
@@ -10,9 +14,6 @@
 #include <QSlider>
 #include <QStackedLayout>
 #include <QWidgetAction>
-#include "PlayList.h"
-#include "Settings.h"
-#include "BetterButton.h"
 
 PlayerWidget::PlayerWidget(QWidget *parent) : QWidget(parent) {
     m_pushButtonPlay = new BetterButton(QIcon(SvgRes::PlayIconSVG), this);

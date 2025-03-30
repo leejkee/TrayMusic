@@ -1,16 +1,17 @@
 //
 // Created by cww on 25-2-28.
 //
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QPropertyAnimation>
-#include <QInputDialog>
-#include <qsizepolicy.h>
 #include "DBManager.h"
 #include "MusicListWidget.h"
 #include "Assets.h"
 #include "BetterButton.h"
 #include "Settings.h"
+
+#include <QSizePolicy>
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include <QPropertyAnimation>
+#include <QInputDialog>
 
 MusicListWidget::MusicListWidget(QWidget *parent)
     : QWidget(parent) {

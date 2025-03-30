@@ -3,10 +3,11 @@
 //
 #include "PlayList.h"
 #include "Song.h"
-#include <QString>
-#include <QDirIterator>
 #include "MusicListCache.h"
 #include "Assets.h"
+
+#include <QString>
+#include <QDirIterator>
 
 void PlayList::loadMusicFromDirectory(const QString &path) {
     m_musicList.clear();

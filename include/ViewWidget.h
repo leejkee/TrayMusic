@@ -3,7 +3,8 @@
 //
 #ifndef ICONWIDGET_H
 #define ICONWIDGET_H
-#include "Song.h"
+
+#include <QWidget>
 
 class SongDelegate;
 class DataModel;

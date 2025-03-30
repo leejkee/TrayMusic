@@ -1,15 +1,6 @@
 //
 // Created by cww on 25-2-19.
 //
-#include <QHBoxLayout>
-#include <QApplication>
-#include <QLabel>
-#include <QListView>
-#include <QMenu>
-#include <QStringListModel>
-#include <QPainter>
-#include <QMouseEvent>
-
 #include "ViewWidget.h"
 #include "PlayList.h"
 #include "Assets.h"
@@ -17,6 +8,14 @@
 #include "BetterButton.h"
 #include "DataModel.h"
 #include "Utils.h"
+
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QListView>
+#include <QMenu>
+#include <QPainter>
+#include <QMouseEvent>
+
 
 
 void ViewWidget::createConnections() {
@@ -114,9 +113,13 @@ void ViewWidget::handleAction(const int index) {
 
 
 void ViewWidget::showMusicList(const QString &listName) const {
+    if (listName == m_labelName->text()) {
+        return;
+    }
     const auto songNameList = MusicListCache::instance().getSongNameListByName(listName);
     if (songNameList.isEmpty()) {
         qDebug() << "ViewWidget::showMusicList" << "MusicList is empty(MusicListCache::getSongNameListByName)";
+        return;
     }
 
     // update the model

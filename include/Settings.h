@@ -3,9 +3,8 @@
 //
 #ifndef SETTINGS_H
 #define SETTINGS_H
-#include <QObject>
-#include <QStringList>
 #include "Assets.h"
+#include <QObject>
 
 class Settings final : public QObject {
     Q_OBJECT
